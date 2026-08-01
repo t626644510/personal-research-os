@@ -51,6 +51,9 @@ KEY_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]*$")
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 H1_PATTERN = re.compile(r"^# (.+?)\s*$", re.MULTILINE)
 H2_PATTERN = re.compile(r"^## (.+?)\s*$", re.MULTILINE)
+WIKILINK_PATTERN = re.compile(
+    r"\[\[([^\]#|]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]"
+)
 
 
 class ConceptFormatError(ValueError):
@@ -328,6 +331,18 @@ def _normalized_term(value: str) -> str:
     return " ".join(value.split()).casefold()
 
 
+def _extract_wikilinks(markdown: str) -> list[str]:
+    links: list[str] = []
+    seen: set[str] = set()
+    for match in WIKILINK_PATTERN.finditer(markdown):
+        target = match.group(1).strip()
+        normalized = _normalized_term(target)
+        if target and normalized not in seen:
+            links.append(target)
+            seen.add(normalized)
+    return links
+
+
 def _display_path(path: Path) -> str:
     try:
         return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
@@ -364,6 +379,7 @@ def scan_concepts(
 
     ids: dict[str, Path] = {}
     terms: dict[str, tuple[str, Path]] = {}
+    canonical_by_term: dict[str, str] = {}
     for concept in concepts:
         concept_id = concept.metadata.get("id")
         if isinstance(concept_id, str):
@@ -394,6 +410,24 @@ def scan_concepts(
                 )
             else:
                 terms[normalized] = (candidate, concept.path)
+                canonical_by_term[normalized] = concept.name
+
+    related_by_path: dict[Path, list[str]] = {}
+    for concept in concepts:
+        related: list[str] = []
+        for target in _extract_wikilinks(concept.sections.get("Related Concepts", "")):
+            canonical = canonical_by_term.get(_normalized_term(target))
+            if canonical is None:
+                errors.append(
+                    f"{_display_path(concept.path)}: related concept '{target}' does not exist"
+                )
+            elif canonical == concept.name:
+                errors.append(
+                    f"{_display_path(concept.path)}: related concept '{target}' is a self-link"
+                )
+            elif canonical not in related:
+                related.append(canonical)
+        related_by_path[concept.path] = related
 
     if errors:
         raise ConceptFormatError("Concept scan failed:\n- " + "\n- ".join(errors))
@@ -406,6 +440,9 @@ def scan_concepts(
             "path": relative_path,
             "aliases": concept.metadata["aliases"],
             "hover_summary": " ".join(concept.sections["Hover Summary"].split()),
+            "id": concept.metadata["id"],
+            "category": concept.metadata["category"],
+            "related_concepts": related_by_path[concept.path],
         }
 
     serialized = json.dumps(index, ensure_ascii=False, indent=2) + "\n"

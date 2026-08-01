@@ -12,6 +12,7 @@ Personal Research OS 是一个以 Obsidian 为阅读界面、Git 为审计与版
 ```powershell
 python ResearchOS/99_Meta/tools/concept_tools.py validate
 python ResearchOS/99_Meta/tools/concept_tools.py scan
+python ResearchOS/99_Meta/tools/hover_resolver.py "HOM impedance and wake field"
 ```
 
 工具只依赖 Python 3.9+ 标准库。`scan` 会先校验全部 Concept，并检查 ID、规范名称和别名冲突；只有全部通过时才会原子更新 `ResearchOS/99_Meta/concept_index.json`。若 Windows 已安装 Python Launcher 但 `python` 不在 `PATH`，把上述命令中的 `python` 换成 `py -3.9`（或已安装的对应版本）。
@@ -33,7 +34,9 @@ ResearchOS/
     ├── Concept_Schema_v0.1.md
     ├── concept_index.json
     ├── templates/Concept.md
-    └── tools/concept_tools.py
+    └── tools/
+        ├── concept_tools.py
+        └── hover_resolver.py
 ```
 
 每个 Concept 的稳定身份由 YAML `id` 提供，文件名和 H1 是规范显示名称，`aliases` 保存缩写、译名和历史名称。正文遵循固定的十个 H2 区块；详细约束见 [Concept Schema v0.1](ResearchOS/99_Meta/Concept_Schema_v0.1.md)。
@@ -45,12 +48,52 @@ ResearchOS/
   "Concept name": {
     "path": "01_Concept/Concept name.md",
     "aliases": ["alternate name"],
-    "hover_summary": "A short, stable summary."
+    "hover_summary": "A short, stable summary.",
+    "id": "concept_id",
+    "category": ["research domain"],
+    "related_concepts": ["Related concept"]
   }
 }
 ```
 
-`concept_index.json` 是派生数据，不手工编辑。路径统一使用 Vault 相对的 `/` 分隔形式，因此索引可在 Windows、macOS 和 Linux 间复用。
+`concept_index.json` 是派生数据，不手工编辑。P01 保留了原有的 `path`、`aliases` 和 `hover_summary`，因此旧消费者仍可工作；新增字段提供稳定 ID、分类和规范化关系。路径统一使用 Vault 相对的 `/` 分隔形式，因此索引可在 Windows、macOS 和 Linux 间复用。
+
+## Offline Hover Encyclopedia prototype
+
+`hover_resolver.py` 只读取本地 JSON，不进行 AI 或网络调用。它在输入 Markdown 中匹配规范名称与 aliases，大小写不敏感，并在同一位置优先选择最长词组。例如 `HOM impedance` 会优先于别名 `HOM`。输出按文本位置排序，每个非重叠命中包含位置、规范名称、匹配词、摘要和索引元数据。
+
+直接解析一段 Markdown：
+
+```powershell
+py -3.9 ResearchOS/99_Meta/tools/hover_resolver.py "HOM impedance overlaps the bunch spectrum."
+```
+
+解析 UTF-8 Markdown 文件：
+
+```powershell
+py -3.9 ResearchOS/99_Meta/tools/hover_resolver.py --file ResearchOS/00_Inbox/notes/example.md
+```
+
+Python API：
+
+```python
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("ResearchOS/99_Meta/tools").resolve()))
+from hover_resolver import load_concept_index, resolve_mentions
+
+index = load_concept_index()
+matches = resolve_mentions("Wake field and HOM impedance", index)
+```
+
+P01 有意扫描原始 Markdown 字符串，不解析 Markdown AST；因此 fenced code、inline code、frontmatter 和 link target 中出现的词也可能命中。后续若真实使用场景证明需要，再增加确定性的 Markdown 区域屏蔽，不在本阶段引入解析依赖。
+
+运行测试：
+
+```powershell
+py -3.9 -m unittest discover -s tests -v
+```
 
 ## 日常工作流
 

@@ -17,12 +17,12 @@ flowchart LR
     V -->|"all valid"| X["scan_concepts()<br/>atomic index build"]
     X --> J["99_Meta/concept_index.json<br/>hover read model"]
     C --> O["Obsidian<br/>wikilinks and native preview"]
-    J --> H["Future Hover Encyclopedia<br/>local deterministic lookup"]
+    J --> H["P01 hover_resolver.py<br/>local deterministic lookup"]
     C --> G["Git<br/>review and history"]
     J --> G
 ```
 
-AI 只位于人工触发的知识处理环节。Hover 的运行路径是 `term → local index → Markdown note`，不包含模型调用。
+AI 只位于人工触发的知识处理环节。P01 Hover 的运行路径是 `Markdown text → local index → matched summary`，不包含模型或网络调用。
 
 ## 3. 物理结构与职责
 
@@ -46,7 +46,7 @@ AI 只位于人工触发的知识处理环节。Hover 的运行路径是 `term �
 
 YAML 必填字段为 `id`、`aliases`、`category`、`level`、`confidence`、`origin`、`created` 和 `updated`。正文必须按 Schema 顺序包含 Hover Summary、Definition、My Understanding、Engineering View、Formula、Application、Related Concepts、Sources、Decision Log 和 History。
 
-`Hover Summary` 是面向读取路径的反规范化字段：单段、最多 280 字符、无需打开全文即可理解。`Related Concepts` 使用 Obsidian wikilink；v0.1 不另建图数据库。
+`Hover Summary` 是面向读取路径的反规范化字段：单段、最多 280 字符、无需打开全文即可理解。`Related Concepts` 使用 Obsidian wikilink；scan 将其解析成 index 中的 canonical `related_concepts`。P01 不另建图数据库。
 
 完整约束以 `ResearchOS/99_Meta/Concept_Schema_v0.1.md` 为准。
 
@@ -57,8 +57,9 @@ YAML 必填字段为 `id`、`aliases`、`category`、`level`、`confidence`、`o
 1. 以 UTF-8 读取 Markdown，并解析受控的 YAML 子集。
 2. 校验元数据类型、枚举、日期、文件名/H1 和必填正文区块。
 3. 在全库检查重复 `id`，以及规范名称/别名冲突。
-4. 按规范名称确定性排序，生成 Vault 相对 POSIX 路径。
-5. 先写临时文件，再原子替换 `concept_index.json`。
+4. 解析 Related Concepts wikilink，并拒绝缺失目标或 self-link。
+5. 按规范名称确定性排序，生成 Vault 相对 POSIX 路径与增强索引字段。
+6. 先写临时文件，再原子替换 `concept_index.json`。
 
 任一文件失败时，命令返回非零状态，不替换旧索引。这保证 Hover 消费者不会读到只包含部分 Concept 的索引。JSON 可以随时由 Markdown 重建，因此不得把 JSON 当作知识事实源。
 
@@ -87,7 +88,7 @@ Git 记录谁在何时接受了哪次知识变更；`Decision Log` 记录为什�
 
 - 七个标准 Vault 顶层目录存在并可被 Git 跟踪。
 - Concept Schema v0.1 和可复制模板存在。
-- `HOM impedance`、`Wakefield`、`Q factor`、`S parameter`、`CST wakefield solver` 五个样例通过校验。
-- `concept_index.json` 可由脚本确定性重建，且包含五个规范名称。
+- 初始五个样例与 P01 新增的二十个 accelerator/RF Concept 全部通过校验。
+- `concept_index.json` 可由脚本确定性重建，且包含二十五个规范名称与增强字段。
 - README 说明结构、工作流、命令和 Codex Agent 接入边界。
 - 仓库不包含 RAG、向量数据库、实时 AI 查询或自动爬虫实现。

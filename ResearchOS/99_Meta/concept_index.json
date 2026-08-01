@@ -1,4 +1,104 @@
 {
+  "Beam coupling impedance": {
+    "path": "01_Concept/Beam coupling impedance.md",
+    "aliases": [
+      "coupling impedance",
+      "beam impedance",
+      "束流耦合阻抗"
+    ],
+    "hover_summary": "束流耦合阻抗是加速器环境对束流电流扰动的频域响应，连接结构产生的 wake 与束流能量变化、横向踢力、发热和集体不稳定性。",
+    "id": "beam_coupling_impedance",
+    "category": [
+      "accelerator physics",
+      "collective effects"
+    ],
+    "related_concepts": [
+      "Longitudinal impedance",
+      "Transverse impedance",
+      "Wakefield",
+      "Bunch spectrum"
+    ]
+  },
+  "Beam pipe cutoff frequency": {
+    "path": "01_Concept/Beam pipe cutoff frequency.md",
+    "aliases": [
+      "beam-pipe cutoff",
+      "waveguide cutoff frequency",
+      "束管截止频率"
+    ],
+    "hover_summary": "Beam pipe cutoff frequency 是给定波导 mode 从倏逝变为可传播的最低频率；它决定 cavity HOM 能否沿束管逃逸到外部 absorber 或被局域困住。",
+    "id": "beam_pipe_cutoff_frequency",
+    "category": [
+      "RF engineering",
+      "waveguide theory"
+    ],
+    "related_concepts": [
+      "Higher-order mode",
+      "HOM coupler",
+      "Cavity mode",
+      "S parameter"
+    ]
+  },
+  "Bunch spectrum": {
+    "path": "01_Concept/Bunch spectrum.md",
+    "aliases": [
+      "beam current spectrum",
+      "bunch frequency spectrum",
+      "束团频谱"
+    ],
+    "hover_summary": "Bunch spectrum 是束流纵向电荷或电流分布的频域表示；单束团 envelope 与重复束团形成的离散谱线共同决定哪些结构阻抗会被有效激励。",
+    "id": "bunch_spectrum",
+    "category": [
+      "accelerator physics",
+      "signal analysis"
+    ],
+    "related_concepts": [
+      "Gaussian bunch",
+      "Loss factor",
+      "Beam coupling impedance",
+      "Coupled-bunch instability"
+    ]
+  },
+  "Cavity mode": {
+    "path": "01_Concept/Cavity mode.md",
+    "aliases": [
+      "resonant cavity mode",
+      "electromagnetic cavity mode",
+      "腔模"
+    ],
+    "hover_summary": "Cavity mode 是满足结构边界条件的离散电磁本征场分布，每个 mode 具有特定频率、极化、储能、Q 和束流耦合强度。",
+    "id": "cavity_mode",
+    "category": [
+      "cavity physics",
+      "electromagnetics"
+    ],
+    "related_concepts": [
+      "Higher-order mode",
+      "R over Q",
+      "Q factor",
+      "Eigenmode solver"
+    ]
+  },
+  "Coupled-bunch instability": {
+    "path": "01_Concept/Coupled-bunch instability.md",
+    "aliases": [
+      "multi-bunch instability",
+      "coupled bunch instability",
+      "耦合束团不稳定性"
+    ],
+    "hover_summary": "Coupled-bunch instability 是多个束团通过长程 wake 或窄带阻抗相互耦合后出现的相干振荡增长；RF cavity HOM 常是重要驱动源。",
+    "id": "coupled_bunch_instability",
+    "category": [
+      "accelerator physics",
+      "collective effects"
+    ],
+    "related_concepts": [
+      "HOM impedance",
+      "Bunch spectrum",
+      "Longitudinal impedance",
+      "Transverse impedance"
+    ]
+  },
   "CST wakefield solver": {
     "path": "01_Concept/CST wakefield solver.md",
     "aliases": [
@@ -6,7 +106,117 @@
       "CST尾场求解器",
       "CST wakefield analysis"
     ],
-    "hover_summary": "CST Wakefield Solver 用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向 wake、损耗因子及阻抗谱。"
+    "hover_summary": "CST Wakefield Solver 用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向 wake、损耗因子及阻抗谱。",
+    "id": "cst_wakefield_solver",
+    "category": [
+      "simulation tool",
+      "accelerator physics"
+    ],
+    "related_concepts": [
+      "Wakefield",
+      "HOM impedance",
+      "Q factor"
+    ]
+  },
+  "Eigenmode solver": {
+    "path": "01_Concept/Eigenmode solver.md",
+    "aliases": [
+      "eigenmode analysis",
+      "cavity eigenmode solver",
+      "本征模求解器"
+    ],
+    "hover_summary": "Eigenmode solver 在无外部驱动下求解结构允许的离散电磁本征频率与场分布，并可派生 Q、R/Q、储能和 mode classification。",
+    "id": "eigenmode_solver",
+    "category": [
+      "simulation tool",
+      "electromagnetics"
+    ],
+    "related_concepts": [
+      "Cavity mode",
+      "Higher-order mode",
+      "R over Q",
+      "CST wakefield solver"
+    ]
+  },
+  "External Q": {
+    "path": "01_Concept/External Q.md",
+    "aliases": [
+      "external quality factor",
+      "Qext",
+      "外部Q值"
+    ],
+    "hover_summary": "External Q 衡量 cavity mode 通过某个外部端口或 coupler 泄出能量的速度；数值越低表示耦合越强、外部阻尼越快。",
+    "id": "external_q",
+    "category": [
+      "RF engineering",
+      "resonator physics"
+    ],
+    "related_concepts": [
+      "Loaded Q",
+      "Q factor",
+      "HOM coupler",
+      "Beam pipe cutoff frequency"
+    ]
+  },
+  "Gaussian bunch": {
+    "path": "01_Concept/Gaussian bunch.md",
+    "aliases": [
+      "Gaussian beam bunch",
+      "Gaussian longitudinal profile",
+      "高斯束团"
+    ],
+    "hover_summary": "Gaussian bunch 用高斯函数近似束团纵向电荷分布；其 rms 长度直接控制频谱宽度，因此是 wakefield 仿真和 loss/kick factor 比较的常用基准输入。",
+    "id": "gaussian_bunch",
+    "category": [
+      "accelerator physics",
+      "beam modeling"
+    ],
+    "related_concepts": [
+      "Bunch spectrum",
+      "Loss factor",
+      "Kick factor",
+      "CST wakefield solver"
+    ]
+  },
+  "Higher-order mode": {
+    "path": "01_Concept/Higher-order mode.md",
+    "aliases": [
+      "higher order mode",
+      "parasitic cavity mode",
+      "高次模"
+    ],
+    "hover_summary": "Higher-order mode 是加速结构中除目标工作模之外的本征电磁模；束流可激励这些 mode，导致附加能散、发热、emittance 增长或多束团不稳定性。",
+    "id": "higher_order_mode",
+    "category": [
+      "cavity physics",
+      "accelerator physics"
+    ],
+    "related_concepts": [
+      "Cavity mode",
+      "HOM impedance",
+      "HOM coupler",
+      "Beam pipe cutoff frequency"
+    ]
+  },
+  "HOM coupler": {
+    "path": "01_Concept/HOM coupler.md",
+    "aliases": [
+      "higher-order-mode coupler",
+      "HOM damper",
+      "高次模耦合器"
+    ],
+    "hover_summary": "HOM coupler 从 accelerating cavity 中选择性抽取高次模功率并送往负载，从而降低危险 mode 的 external Q、阻抗峰值和束流诱导热负荷。",
+    "id": "hom_coupler",
+    "category": [
+      "RF engineering",
+      "accelerator hardware"
+    ],
+    "related_concepts": [
+      "Higher-order mode",
+      "HOM impedance",
+      "External Q",
+      "Beam pipe cutoff frequency"
+    ]
   },
   "HOM impedance": {
     "path": "01_Concept/HOM impedance.md",
@@ -15,7 +225,137 @@
       "Higher-order-mode impedance",
       "高次模阻抗"
     ],
-    "hover_summary": "高次模阻抗描述束流与加速结构中非基模共振的频域耦合强度；峰值频率、分路阻抗和 Q 值共同决定能量损失、发热及束流不稳定风险。"
+    "hover_summary": "高次模阻抗描述束流与加速结构中非基模共振的频域耦合强度；峰值频率、分路阻抗和 Q 值共同决定能量损失、发热及束流不稳定风险。",
+    "id": "hom_impedance",
+    "category": [
+      "accelerator physics",
+      "RF engineering"
+    ],
+    "related_concepts": [
+      "Wakefield",
+      "Q factor",
+      "CST wakefield solver"
+    ]
+  },
+  "Kick factor": {
+    "path": "01_Concept/Kick factor.md",
+    "aliases": [
+      "transverse kick factor",
+      "k kick",
+      "踢因子"
+    ],
+    "hover_summary": "Kick factor 把有限长度束团激励的横向 wake 归一化为单位电荷、单位源偏移下的横向踢力强度，用于快速比较结构的 beam-break-up 风险。",
+    "id": "kick_factor",
+    "category": [
+      "accelerator physics",
+      "collective effects"
+    ],
+    "related_concepts": [
+      "Transverse wake potential",
+      "Transverse impedance",
+      "Gaussian bunch",
+      "Panofsky-Wenzel theorem"
+    ]
+  },
+  "Loaded Q": {
+    "path": "01_Concept/Loaded Q.md",
+    "aliases": [
+      "loaded quality factor",
+      "QL",
+      "加载Q值"
+    ],
+    "hover_summary": "Loaded Q 是谐振器同时计入内部损耗和所有外部耦合通道后的有效品质因数，决定实际共振带宽、场衰减时间和阻抗峰宽。",
+    "id": "loaded_q",
+    "category": [
+      "RF engineering",
+      "resonator physics"
+    ],
+    "related_concepts": [
+      "Q factor",
+      "External Q",
+      "Shunt impedance",
+      "HOM coupler"
+    ]
+  },
+  "Longitudinal impedance": {
+    "path": "01_Concept/Longitudinal impedance.md",
+    "aliases": [
+      "Z parallel",
+      "Z longitudinal",
+      "纵向阻抗"
+    ],
+    "hover_summary": "纵向阻抗描述束流电流如何激励沿运动方向的电压响应；其实部与能量损失相关，频率结构决定束内能散和纵向集体效应。",
+    "id": "longitudinal_impedance",
+    "category": [
+      "accelerator physics",
+      "collective effects"
+    ],
+    "related_concepts": [
+      "Beam coupling impedance",
+      "Longitudinal wake potential",
+      "Loss factor",
+      "Bunch spectrum"
+    ]
+  },
+  "Longitudinal wake potential": {
+    "path": "01_Concept/Longitudinal wake potential.md",
+    "aliases": [
+      "longitudinal wake",
+      "longitudinal wake voltage",
+      "纵向尾势"
+    ],
+    "hover_summary": "Longitudinal wake potential 是点电荷纵向 wake 与有限束团电荷分布的卷积，给出束团内部或后续测试粒子沿束流方向所见的感应电压。",
+    "id": "longitudinal_wake_potential",
+    "category": [
+      "accelerator physics",
+      "electromagnetics"
+    ],
+    "related_concepts": [
+      "Wakefield",
+      "Longitudinal impedance",
+      "Loss factor",
+      "Panofsky-Wenzel theorem"
+    ]
+  },
+  "Loss factor": {
+    "path": "01_Concept/Loss factor.md",
+    "aliases": [
+      "wake loss factor",
+      "k loss",
+      "损耗因子"
+    ],
+    "hover_summary": "Loss factor 把给定束团形状经过结构时的纵向能量损失归一化到束团电荷平方；它同时依赖结构阻抗和束团频谱，不是结构单独的常数。",
+    "id": "loss_factor",
+    "category": [
+      "accelerator physics",
+      "RF engineering"
+    ],
+    "related_concepts": [
+      "Longitudinal wake potential",
+      "Longitudinal impedance",
+      "Gaussian bunch",
+      "Bunch spectrum"
+    ]
+  },
+  "Panofsky-Wenzel theorem": {
+    "path": "01_Concept/Panofsky-Wenzel theorem.md",
+    "aliases": [
+      "Panofsky Wenzel theorem",
+      "P-W theorem",
+      "潘诺夫斯基-温泽尔定理"
+    ],
+    "hover_summary": "Panofsky-Wenzel theorem 用 Maxwell 方程把横向 wake 对纵向间距的变化与纵向 wake 的横向梯度联系起来，说明两类束流踢力不是独立响应。",
+    "id": "panofsky_wenzel_theorem",
+    "category": [
+      "accelerator physics",
+      "electromagnetics"
+    ],
+    "related_concepts": [
+      "Longitudinal wake potential",
+      "Transverse wake potential",
+      "Wakefield",
+      "Kick factor"
+    ]
   },
   "Q factor": {
     "path": "01_Concept/Q factor.md",
@@ -24,7 +364,37 @@
       "Q值",
       "品质因数"
     ],
-    "hover_summary": "Q factor 是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是 unloaded、external 还是 loaded Q。"
+    "hover_summary": "Q factor 是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是 unloaded、external 还是 loaded Q。",
+    "id": "q_factor",
+    "category": [
+      "resonator physics",
+      "RF engineering"
+    ],
+    "related_concepts": [
+      "HOM impedance",
+      "S parameter",
+      "Wakefield"
+    ]
+  },
+  "R over Q": {
+    "path": "01_Concept/R over Q.md",
+    "aliases": [
+      "R/Q",
+      "shunt impedance over Q",
+      "R比Q"
+    ],
+    "hover_summary": "R over Q 是仅由 cavity mode 场分布和几何决定的耦合指标，衡量单位储能能产生多少有效加速电压；它不依赖壁面电导率造成的 Q 损耗。",
+    "id": "r_over_q",
+    "category": [
+      "RF engineering",
+      "cavity physics"
+    ],
+    "related_concepts": [
+      "Shunt impedance",
+      "Cavity mode",
+      "Q factor",
+      "Eigenmode solver"
+    ]
   },
   "S parameter": {
     "path": "01_Concept/S parameter.md",
@@ -33,7 +403,76 @@
       "scattering parameter",
       "散射参数"
     ],
-    "hover_summary": "S parameter 用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。"
+    "hover_summary": "S parameter 用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。",
+    "id": "s_parameter",
+    "category": [
+      "microwave engineering",
+      "network analysis"
+    ],
+    "related_concepts": [
+      "Q factor",
+      "HOM impedance"
+    ]
+  },
+  "Shunt impedance": {
+    "path": "01_Concept/Shunt impedance.md",
+    "aliases": [
+      "shunt resistance",
+      "cavity shunt impedance",
+      "分路阻抗"
+    ],
+    "hover_summary": "Shunt impedance 衡量 RF cavity 用给定耗散功率建立加速电压的效率；它同时包含几何耦合能力 R/Q 与损耗水平 Q，比较时必须注明定义约定。",
+    "id": "shunt_impedance",
+    "category": [
+      "RF engineering",
+      "accelerator physics"
+    ],
+    "related_concepts": [
+      "R over Q",
+      "Q factor",
+      "Loaded Q",
+      "HOM impedance"
+    ]
+  },
+  "Transverse impedance": {
+    "path": "01_Concept/Transverse impedance.md",
+    "aliases": [
+      "Z transverse",
+      "transverse coupling impedance",
+      "横向阻抗"
+    ],
+    "hover_summary": "横向阻抗描述偏轴束流激励的电磁场如何对后续粒子施加横向踢力，常以 Ω/m 表示，是横向相干频移、emittance 增长和不稳定性分析的核心量。",
+    "id": "transverse_impedance",
+    "category": [
+      "accelerator physics",
+      "collective effects"
+    ],
+    "related_concepts": [
+      "Beam coupling impedance",
+      "Transverse wake potential",
+      "Kick factor",
+      "Panofsky-Wenzel theorem"
+    ]
+  },
+  "Transverse wake potential": {
+    "path": "01_Concept/Transverse wake potential.md",
+    "aliases": [
+      "transverse wake",
+      "transverse wake voltage",
+      "横向尾势"
+    ],
+    "hover_summary": "Transverse wake potential 是有限束团激励后对测试粒子产生的横向积分力响应，通常按源束团偏移归一化，并分为水平、垂直及交叉平面分量。",
+    "id": "transverse_wake_potential",
+    "category": [
+      "accelerator physics",
+      "electromagnetics"
+    ],
+    "related_concepts": [
+      "Wakefield",
+      "Transverse impedance",
+      "Kick factor",
+      "Panofsky-Wenzel theorem"
+    ]
   },
   "Wakefield": {
     "path": "01_Concept/Wakefield.md",
@@ -42,6 +481,16 @@
       "尾场",
       "尾流场"
     ],
-    "hover_summary": "尾场是带电粒子束经过结构后留下的电磁响应；它对后续粒子产生纵向能量变化或横向偏转，是阻抗、束流损失和集体不稳定分析的时域基础。"
+    "hover_summary": "尾场是带电粒子束经过结构后留下的电磁响应；它对后续粒子产生纵向能量变化或横向偏转，是阻抗、束流损失和集体不稳定分析的时域基础。",
+    "id": "wakefield",
+    "category": [
+      "accelerator physics",
+      "electromagnetics"
+    ],
+    "related_concepts": [
+      "HOM impedance",
+      "Q factor",
+      "CST wakefield solver"
+    ]
   }
 }

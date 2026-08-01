@@ -102,10 +102,10 @@ Dated note changes.
 
 ## Index contract
 
-`99_Meta/concept_index.json` is generated data. Its canonical name keys come from H1 titles; each value contains the Vault-relative `path`, `aliases`, and normalized `hover_summary`. Do not hand-edit the index. Run:
+`99_Meta/concept_index.json` is generated data. Its canonical name keys come from H1 titles. The original `path`, `aliases`, and normalized `hover_summary` fields remain stable; P01 adds `id`, `category`, and `related_concepts`. Related values are canonical Concept names resolved from wikilinks, including links written with aliases. Do not hand-edit the index. Run:
 
 ```powershell
 python ResearchOS/99_Meta/tools/concept_tools.py scan
 ```
 
-The scan is atomic: validation and collision checks complete before the existing index is replaced.
+The scan is atomic: validation, collision checks, and related-link resolution complete before the existing index is replaced. An unresolved or self-referential related Concept prevents replacement.
