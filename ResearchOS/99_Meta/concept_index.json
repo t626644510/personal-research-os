@@ -1,0 +1,47 @@
+{
+  "CST wakefield solver": {
+    "path": "01_Concept/CST wakefield solver.md",
+    "aliases": [
+      "CST Wakefield Solver",
+      "CST尾场求解器",
+      "CST wakefield analysis"
+    ],
+    "hover_summary": "CST Wakefield Solver 用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向 wake、损耗因子及阻抗谱。"
+  },
+  "HOM impedance": {
+    "path": "01_Concept/HOM impedance.md",
+    "aliases": [
+      "HOM",
+      "Higher-order-mode impedance",
+      "高次模阻抗"
+    ],
+    "hover_summary": "高次模阻抗描述束流与加速结构中非基模共振的频域耦合强度；峰值频率、分路阻抗和 Q 值共同决定能量损失、发热及束流不稳定风险。"
+  },
+  "Q factor": {
+    "path": "01_Concept/Q factor.md",
+    "aliases": [
+      "quality factor",
+      "Q值",
+      "品质因数"
+    ],
+    "hover_summary": "Q factor 是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是 unloaded、external 还是 loaded Q。"
+  },
+  "S parameter": {
+    "path": "01_Concept/S parameter.md",
+    "aliases": [
+      "S-parameter",
+      "scattering parameter",
+      "散射参数"
+    ],
+    "hover_summary": "S parameter 用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。"
+  },
+  "Wakefield": {
+    "path": "01_Concept/Wakefield.md",
+    "aliases": [
+      "wake field",
+      "尾场",
+      "尾流场"
+    ],
+    "hover_summary": "尾场是带电粒子束经过结构后留下的电磁响应；它对后续粒子产生纵向能量变化或横向偏转，是阻抗、束流损失和集体不稳定分析的时域基础。"
+  }
+}

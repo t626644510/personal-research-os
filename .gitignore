@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+
+# Obsidian machine-local UI state.
+ResearchOS/.obsidian/workspace*.json
+ResearchOS/.obsidian/cache/
