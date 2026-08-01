@@ -36,7 +36,8 @@ ResearchOS/
     ├── templates/Concept.md
     └── tools/
         ├── concept_tools.py
-        └── hover_resolver.py
+        ├── hover_resolver.py
+        └── hover_ui.py
 ```
 
 每个 Concept 的稳定身份由 YAML `id` 提供，文件名和 H1 是规范显示名称，`aliases` 保存缩写、译名和历史名称。正文遵循固定的十个 H2 区块；详细约束见 [Concept Schema v0.1](ResearchOS/99_Meta/Concept_Schema_v0.1.md)。
@@ -94,6 +95,40 @@ P01 有意扫描原始 Markdown 字符串，不解析 Markdown AST；因此 fenc
 ```powershell
 py -3.9 -m unittest discover -s tests -v
 ```
+
+## Hover Encyclopedia UI Validation
+
+P01.5 在现有解析器之后增加一个最小展示层，用于评估概念高亮密度、摘要长度和阅读干扰。它不改变 Concept Schema、索引格式或匹配规则，也不是 Obsidian 插件。`hover_ui.py` 将一篇 UTF-8 Markdown 笔记和本地 `concept_index.json` 合成为单个自包含 HTML 文件；样式全部内联，不启动服务器，不加载网络资源，也不调用 AI。
+
+先校验 Concept 并重新生成本地索引：
+
+```powershell
+python ResearchOS/99_Meta/tools/concept_tools.py validate
+python ResearchOS/99_Meta/tools/concept_tools.py scan
+```
+
+生成并打开示例笔记的演示页：
+
+```powershell
+python ResearchOS/99_Meta/tools/hover_ui.py "ResearchOS/00_Inbox/notes/HOM impedance reading note.md" --open
+```
+
+默认输出到操作系统临时目录中的 `personal-research-os-hover-demo.html`，命令会打印绝对路径。若浏览器无法自动打开，可手工打开该文件；也可通过 `--output <path>` 指定位置。把鼠标停在绿色高亮词上，或使用 Tab 键聚焦，即可看到 Concept name、Hover Summary、Category 和 Related concepts。卡片不会展示完整 Concept、公式、来源或决策记录。
+
+可用于人工比较的真实阅读样例位于 `ResearchOS/00_Inbox/notes/`：
+
+- `HOM impedance reading note.md`
+- `CST wakefield solver note.md`
+- `Q0 measurement note.md`
+- `PSO impedance fitting note.md`
+
+逐个替换上述命令中的输入文件即可检查不同概念密度和 alias 命中。自动验证运行：
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+演示页有意保留经过 HTML 转义的 Markdown 源文本及其换行，而不实现完整 Markdown 渲染；P01.5 只验证 Hover 交互是否帮助阅读。修改 Concept 或索引后应重新执行 `scan` 并再次生成页面，因为 HTML 是当时本地索引的静态快照。人工评估问题与已知限制记录在 [P01.5 UI Validation](ResearchOS/99_Meta/P01.5_UI_Validation.md)。
 
 ## 日常工作流
 
