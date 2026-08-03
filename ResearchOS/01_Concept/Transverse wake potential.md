@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Transverse wake potential
 
 ## Hover Summary
 
-Transverse wake potential 是有限束团激励后对测试粒子产生的横向积分力响应，通常按源束团偏移归一化，并分为水平、垂直及交叉平面分量。
+横向尾势是有限束团激励后对测试粒子产生的横向积分力响应，通常按源束团偏移归一化，并分为水平、垂直及交叉平面分量。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

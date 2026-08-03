@@ -15,14 +15,14 @@ origin:
   - textbook
   - measurement
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Coupled-bunch instability
 
 ## Hover Summary
 
-Coupled-bunch instability 是多个束团通过长程 wake 或窄带阻抗相互耦合后出现的相干振荡增长；RF cavity HOM 常是重要驱动源。
+耦合束团不稳定性是多个束团通过长程尾场或窄带阻抗相互耦合后产生的相干振荡增长；射频腔高次模常是重要驱动源。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

@@ -6,7 +6,7 @@
       "beam impedance",
       "束流耦合阻抗"
     ],
-    "hover_summary": "束流耦合阻抗是加速器环境对束流电流扰动的频域响应，连接结构产生的 wake 与束流能量变化、横向踢力、发热和集体不稳定性。",
+    "hover_summary": "束流耦合阻抗是加速器环境对束流电流扰动的频域响应，连接结构产生的尾场与束流能量变化、横向踢力、发热和集体不稳定性。",
     "id": "beam_coupling_impedance",
     "category": [
       "accelerator physics",
@@ -26,7 +26,7 @@
       "waveguide cutoff frequency",
       "束管截止频率"
     ],
-    "hover_summary": "Beam pipe cutoff frequency 是给定波导 mode 从倏逝变为可传播的最低频率；它决定 cavity HOM 能否沿束管逃逸到外部 absorber 或被局域困住。",
+    "hover_summary": "束管截止频率是给定波导模由倏逝转为传播的最低频率；它决定腔体高次模能否沿束管传到外部吸收器，或被局域俘获。",
     "id": "beam_pipe_cutoff_frequency",
     "category": [
       "RF engineering",
@@ -46,7 +46,7 @@
       "bunch frequency spectrum",
       "束团频谱"
     ],
-    "hover_summary": "Bunch spectrum 是束流纵向电荷或电流分布的频域表示；单束团 envelope 与重复束团形成的离散谱线共同决定哪些结构阻抗会被有效激励。",
+    "hover_summary": "束团频谱是束流纵向电荷或电流分布的频域表示；单束团包络与重复束团形成的离散谱线共同决定哪些结构阻抗会被有效激励。",
     "id": "bunch_spectrum",
     "category": [
       "accelerator physics",
@@ -66,7 +66,7 @@
       "electromagnetic cavity mode",
       "腔模"
     ],
-    "hover_summary": "Cavity mode 是满足结构边界条件的离散电磁本征场分布，每个 mode 具有特定频率、极化、储能、Q 和束流耦合强度。",
+    "hover_summary": "腔模是满足结构边界条件的离散电磁本征场分布；每个模具有特定频率、极化、储能、Q 值和束流耦合强度。",
     "id": "cavity_mode",
     "category": [
       "cavity physics",
@@ -86,7 +86,7 @@
       "coupled bunch instability",
       "耦合束团不稳定性"
     ],
-    "hover_summary": "Coupled-bunch instability 是多个束团通过长程 wake 或窄带阻抗相互耦合后出现的相干振荡增长；RF cavity HOM 常是重要驱动源。",
+    "hover_summary": "耦合束团不稳定性是多个束团通过长程尾场或窄带阻抗相互耦合后产生的相干振荡增长；射频腔高次模常是重要驱动源。",
     "id": "coupled_bunch_instability",
     "category": [
       "accelerator physics",
@@ -106,7 +106,7 @@
       "CST尾场求解器",
       "CST wakefield analysis"
     ],
-    "hover_summary": "CST Wakefield Solver 用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向 wake、损耗因子及阻抗谱。",
+    "hover_summary": "CST 尾场求解器用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向尾场、损耗因子及阻抗谱。",
     "id": "cst_wakefield_solver",
     "category": [
       "simulation tool",
@@ -125,7 +125,7 @@
       "cavity eigenmode solver",
       "本征模求解器"
     ],
-    "hover_summary": "Eigenmode solver 在无外部驱动下求解结构允许的离散电磁本征频率与场分布，并可派生 Q、R/Q、储能和 mode classification。",
+    "hover_summary": "本征模求解器在无外部驱动下求解结构允许的离散电磁本征频率与场分布，并可计算 Q、R/Q、储能和模态分类。",
     "id": "eigenmode_solver",
     "category": [
       "simulation tool",
@@ -145,7 +145,7 @@
       "Qext",
       "外部Q值"
     ],
-    "hover_summary": "External Q 衡量 cavity mode 通过某个外部端口或 coupler 泄出能量的速度；数值越低表示耦合越强、外部阻尼越快。",
+    "hover_summary": "外部 Q 值衡量腔模通过某个外部端口或耦合器泄出能量的速度；数值越低表示耦合越强、外部阻尼越快。",
     "id": "external_q",
     "category": [
       "RF engineering",
@@ -165,7 +165,7 @@
       "Gaussian longitudinal profile",
       "高斯束团"
     ],
-    "hover_summary": "Gaussian bunch 用高斯函数近似束团纵向电荷分布；其 rms 长度直接控制频谱宽度，因此是 wakefield 仿真和 loss/kick factor 比较的常用基准输入。",
+    "hover_summary": "高斯束团用高斯函数近似纵向电荷分布；其均方根（rms）长度直接控制频谱宽度，因此是尾场仿真及损耗因子、踢因子比较的常用基准输入。",
     "id": "gaussian_bunch",
     "category": [
       "accelerator physics",
@@ -185,7 +185,7 @@
       "parasitic cavity mode",
       "高次模"
     ],
-    "hover_summary": "Higher-order mode 是加速结构中除目标工作模之外的本征电磁模；束流可激励这些 mode，导致附加能散、发热、emittance 增长或多束团不稳定性。",
+    "hover_summary": "高次模是加速结构中除目标工作模之外的本征电磁模；束流可激励这些模，导致附加能量损失、发热、发射度增长或多束团不稳定性。",
     "id": "higher_order_mode",
     "category": [
       "cavity physics",
@@ -205,7 +205,7 @@
       "HOM damper",
       "高次模耦合器"
     ],
-    "hover_summary": "HOM coupler 从 accelerating cavity 中选择性抽取高次模功率并送往负载，从而降低危险 mode 的 external Q、阻抗峰值和束流诱导热负荷。",
+    "hover_summary": "高次模耦合器从加速腔中选择性抽取高次模功率并送往负载，从而降低危险模的外部 Q、阻抗峰值和束流诱导热负荷。",
     "id": "hom_coupler",
     "category": [
       "RF engineering",
@@ -244,7 +244,7 @@
       "k kick",
       "踢因子"
     ],
-    "hover_summary": "Kick factor 把有限长度束团激励的横向 wake 归一化为单位电荷、单位源偏移下的横向踢力强度，用于快速比较结构的 beam-break-up 风险。",
+    "hover_summary": "踢因子把有限长度束团激励的横向尾场归一化为单位电荷、单位源偏移下的横向踢力强度，用于快速比较结构的束流崩溃（BBU）风险。",
     "id": "kick_factor",
     "category": [
       "accelerator physics",
@@ -264,7 +264,7 @@
       "QL",
       "加载Q值"
     ],
-    "hover_summary": "Loaded Q 是谐振器同时计入内部损耗和所有外部耦合通道后的有效品质因数，决定实际共振带宽、场衰减时间和阻抗峰宽。",
+    "hover_summary": "加载 Q 值是谐振器同时计入内部损耗和所有外部耦合通道后的有效品质因数，决定实际共振带宽、场衰减时间和阻抗峰宽。",
     "id": "loaded_q",
     "category": [
       "RF engineering",
@@ -304,7 +304,7 @@
       "longitudinal wake voltage",
       "纵向尾势"
     ],
-    "hover_summary": "Longitudinal wake potential 是点电荷纵向 wake 与有限束团电荷分布的卷积，给出束团内部或后续测试粒子沿束流方向所见的感应电压。",
+    "hover_summary": "纵向尾势是点电荷纵向尾场与有限束团电荷分布的卷积，给出束团内部或后续测试粒子沿束流方向所见的感应电压。",
     "id": "longitudinal_wake_potential",
     "category": [
       "accelerator physics",
@@ -324,7 +324,7 @@
       "k loss",
       "损耗因子"
     ],
-    "hover_summary": "Loss factor 把给定束团形状经过结构时的纵向能量损失归一化到束团电荷平方；它同时依赖结构阻抗和束团频谱，不是结构单独的常数。",
+    "hover_summary": "损耗因子把给定束团形状经过结构时的纵向能量损失归一化到束团电荷平方；它同时依赖结构阻抗和束团频谱，不是只由结构决定的常数。",
     "id": "loss_factor",
     "category": [
       "accelerator physics",
@@ -344,7 +344,7 @@
       "P-W theorem",
       "潘诺夫斯基-温泽尔定理"
     ],
-    "hover_summary": "Panofsky-Wenzel theorem 用 Maxwell 方程把横向 wake 对纵向间距的变化与纵向 wake 的横向梯度联系起来，说明两类束流踢力不是独立响应。",
+    "hover_summary": "潘诺夫斯基-温泽尔定理根据麦克斯韦方程，把横向尾场随纵向间距的变化与纵向尾场的横向梯度联系起来，说明两类束流踢力不是独立响应。",
     "id": "panofsky_wenzel_theorem",
     "category": [
       "accelerator physics",
@@ -364,7 +364,7 @@
       "Q值",
       "品质因数"
     ],
-    "hover_summary": "Q factor 是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是 unloaded、external 还是 loaded Q。",
+    "hover_summary": "品质因数（Q）是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是无载 Q、外部 Q 还是加载 Q。",
     "id": "q_factor",
     "category": [
       "resonator physics",
@@ -383,7 +383,7 @@
       "shunt impedance over Q",
       "R比Q"
     ],
-    "hover_summary": "R over Q 是仅由 cavity mode 场分布和几何决定的耦合指标，衡量单位储能能产生多少有效加速电压；它不依赖壁面电导率造成的 Q 损耗。",
+    "hover_summary": "R/Q 是仅由腔模场分布和几何决定的耦合指标，衡量单位储能能够产生多少有效加速电压；它不依赖由壁面电导率决定的损耗 Q 值。",
     "id": "r_over_q",
     "category": [
       "RF engineering",
@@ -403,7 +403,7 @@
       "scattering parameter",
       "散射参数"
     ],
-    "hover_summary": "S parameter 用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。",
+    "hover_summary": "散射参数（S 参数）用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。",
     "id": "s_parameter",
     "category": [
       "microwave engineering",
@@ -421,7 +421,7 @@
       "cavity shunt impedance",
       "分路阻抗"
     ],
-    "hover_summary": "Shunt impedance 衡量 RF cavity 用给定耗散功率建立加速电压的效率；它同时包含几何耦合能力 R/Q 与损耗水平 Q，比较时必须注明定义约定。",
+    "hover_summary": "分路阻抗衡量射频腔用给定耗散功率建立加速电压的效率；它同时包含几何耦合能力 R/Q 与损耗水平 Q，比较时必须注明定义约定。",
     "id": "shunt_impedance",
     "category": [
       "RF engineering",
@@ -441,7 +441,7 @@
       "transverse coupling impedance",
       "横向阻抗"
     ],
-    "hover_summary": "横向阻抗描述偏轴束流激励的电磁场如何对后续粒子施加横向踢力，常以 Ω/m 表示，是横向相干频移、emittance 增长和不稳定性分析的核心量。",
+    "hover_summary": "横向阻抗描述偏轴束流激励的电磁场如何对后续粒子施加横向踢力，常以 Ω/m 表示，是横向相干频移、发射度增长和不稳定性分析的核心量。",
     "id": "transverse_impedance",
     "category": [
       "accelerator physics",
@@ -461,7 +461,7 @@
       "transverse wake voltage",
       "横向尾势"
     ],
-    "hover_summary": "Transverse wake potential 是有限束团激励后对测试粒子产生的横向积分力响应，通常按源束团偏移归一化，并分为水平、垂直及交叉平面分量。",
+    "hover_summary": "横向尾势是有限束团激励后对测试粒子产生的横向积分力响应，通常按源束团偏移归一化，并分为水平、垂直及交叉平面分量。",
     "id": "transverse_wake_potential",
     "category": [
       "accelerator physics",

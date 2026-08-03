@@ -1,19 +1,19 @@
-# Q0 measurement note
+# Q0 测量笔记
 
-## Measurement plan
+## 测量计划
 
-The vertical test will estimate Q0 from the decay time and stored energy. In the database, Q0 is treated as a measurement-specific form of the broader quality factor concept rather than as a separate Concept until the workflow stabilizes.
+垂直测试将根据衰减时间和储能估算 Q0。在当前数据库中，Q0 暂时作为品质因数在特定测量场景下的表达，而不是单独建立 Concept；待测量流程稳定后再评估是否拆分。
 
-The pickup and input coupler introduce external loading, so the observed QL cannot be reported as the intrinsic value. I will obtain Qext for both ports, verify the coupling state, and propagate those terms when converting the loaded decay constant to Q0.
+拾取端和输入耦合器都会引入外部负载，因此观测到的 QL 不能直接当作本征值。需要分别获得两个端口的 Qext、确认耦合状态，并在把加载衰减常数换算为 Q0 时传播这些修正项。
 
-## RF checks
+## 射频检查
 
-A low-power S-parameter sweep should locate the resonance and expose cable-delay or calibration errors before the decay measurement. The fitted bandwidth, phase rotation, and ring-down result should agree within their stated uncertainty.
+衰减测量前先进行低功率散射参数扫频，用于定位谐振并暴露电缆延迟或校准错误。拟合带宽、相位旋转和 ring-down 结果应在各自声明的不确定度范围内一致。
 
-R/Q comes from the cavity field model, whereas Q0 is dominated by surface loss. Their product enters the shunt impedance convention used in the performance table, so the report must state the convention instead of presenting a bare resistance value.
+R/Q 来自腔体场模型，而 Q0 主要由表面损耗决定。两者的乘积进入性能表所采用的分路阻抗定义，因此报告必须注明具体约定，不能只给出一个没有定义背景的电阻值。
 
-## Recording
+## 记录要求
 
-- Save the raw complex trace and the time-domain decay, not only fitted values.
-- Record temperature, field level, calibration plane, QL, and both Qext estimates.
-- Treat systematic disagreement between sweep and ring-down methods as an unresolved measurement issue.
+- 保存原始复数曲线和时域衰减数据，而不只是拟合结果。
+- 记录温度、场强、校准面、QL 以及两个 Qext 估计值。
+- 若扫频法与 ring-down 法存在系统性差异，将其标记为尚未解决的测量问题。

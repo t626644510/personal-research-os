@@ -15,14 +15,14 @@ origin:
   - paper
   - textbook
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Panofsky-Wenzel theorem
 
 ## Hover Summary
 
-Panofsky-Wenzel theorem 用 Maxwell 方程把横向 wake 对纵向间距的变化与纵向 wake 的横向梯度联系起来，说明两类束流踢力不是独立响应。
+潘诺夫斯基-温泽尔定理根据麦克斯韦方程，把横向尾场随纵向间距的变化与纵向尾场的横向梯度联系起来，说明两类束流踢力不是独立响应。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

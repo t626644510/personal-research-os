@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # HOM coupler
 
 ## Hover Summary
 
-HOM coupler 从 accelerating cavity 中选择性抽取高次模功率并送往负载，从而降低危险 mode 的 external Q、阻抗峰值和束流诱导热负荷。
+高次模耦合器从加速腔中选择性抽取高次模功率并送往负载，从而降低危险模的外部 Q、阻抗峰值和束流诱导热负荷。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

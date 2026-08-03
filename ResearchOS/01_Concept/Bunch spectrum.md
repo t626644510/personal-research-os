@@ -15,14 +15,14 @@ origin:
   - textbook
   - measurement
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Bunch spectrum
 
 ## Hover Summary
 
-Bunch spectrum 是束流纵向电荷或电流分布的频域表示；单束团 envelope 与重复束团形成的离散谱线共同决定哪些结构阻抗会被有效激励。
+束团频谱是束流纵向电荷或电流分布的频域表示；单束团包络与重复束团形成的离散谱线共同决定哪些结构阻抗会被有效激励。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

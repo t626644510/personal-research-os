@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Kick factor
 
 ## Hover Summary
 
-Kick factor 把有限长度束团激励的横向 wake 归一化为单位电荷、单位源偏移下的横向踢力强度，用于快速比较结构的 beam-break-up 风险。
+踢因子把有限长度束团激励的横向尾场归一化为单位电荷、单位源偏移下的横向踢力强度，用于快速比较结构的束流崩溃（BBU）风险。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

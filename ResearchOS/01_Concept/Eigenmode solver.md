@@ -15,14 +15,14 @@ origin:
   - software documentation
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Eigenmode solver
 
 ## Hover Summary
 
-Eigenmode solver 在无外部驱动下求解结构允许的离散电磁本征频率与场分布，并可派生 Q、R/Q、储能和 mode classification。
+本征模求解器在无外部驱动下求解结构允许的离散电磁本征频率与场分布，并可计算 Q、R/Q、储能和模态分类。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

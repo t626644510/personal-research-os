@@ -1,5 +1,5 @@
-import json
 import io
+import json
 import sys
 import tempfile
 import unittest
@@ -14,22 +14,27 @@ NOTES_DIR = REPO_ROOT / "ResearchOS" / "00_Inbox" / "notes"
 sys.path.insert(0, str(TOOLS_DIR))
 
 from hover_resolver import load_concept_index, resolve_mentions  # noqa: E402
-from hover_ui import generate_hover_demo, main  # noqa: E402
+from hover_ui import (  # noqa: E402
+    CATEGORY_LABELS,
+    CJK_PATTERN,
+    generate_hover_demo,
+    main,
+)
 
 
 SYNTHETIC_INDEX = {
     "HOM impedance": {
         "id": "never_show_this_id",
         "path": "01_Concept/never-show-full-note.md",
-        "aliases": ["HOM"],
-        "category": ["RF & beam physics"],
-        "hover_summary": "A compact <local> summary.",
+        "aliases": ["HOM", "高次模阻抗"],
+        "category": ["RF engineering"],
+        "hover_summary": "用于本地提示的紧凑<摘要>。",
         "related_concepts": ["Wakefield"],
     },
     "Wakefield": {
         "path": "01_Concept/Wakefield.md",
-        "aliases": ["wake field"],
-        "hover_summary": "The field left behind a bunch.",
+        "aliases": ["wake field", "尾场"],
+        "hover_summary": "束团经过后留下的电磁场。",
     },
 }
 
@@ -42,8 +47,8 @@ class HoverUITests(unittest.TestCase):
             index_path = root / "concept_index.json"
             output_path = root / "hover.html"
             note_path.write_text(
-                "# Review\n\nHOM impedance follows <script>alert('x')</script>. "
-                "The wake field remains.\n",
+                "# 中文审阅笔记\n\n高次模阻抗之后是 <script>alert('x')</script>，"
+                "尾场仍然存在。\n",
                 encoding="utf-8",
             )
             index_path.write_text(
@@ -59,12 +64,19 @@ class HoverUITests(unittest.TestCase):
             [match["concept"] for match in matches],
             ["HOM impedance", "Wakefield"],
         )
-        self.assertIn('<span class="concept-text">HOM impedance</span>', page)
-        self.assertIn('<span class="card-title">HOM impedance</span>', page)
-        self.assertIn("A compact &lt;local&gt; summary.", page)
-        self.assertIn("RF &amp; beam physics", page)
-        self.assertIn("Related:</span> Wakefield", page)
+        self.assertIn('<html lang="zh-CN">', page)
+        self.assertIn("<title>中文审阅笔记 · 离线概念百科</title>", page)
+        self.assertIn('<span class="concept-text">高次模阻抗</span>', page)
+        self.assertIn(
+            '<span class="card-title">高次模阻抗（HOM impedance）</span>', page
+        )
+        self.assertIn("用于本地提示的紧凑&lt;摘要&gt;。", page)
+        self.assertIn("分类：</span>射频工程", page)
+        self.assertIn("相关概念：</span>尾场（Wakefield）", page)
+        self.assertIn("2 处命中 · 2 个概念 · 仅使用本地索引", page)
         self.assertIn("&lt;script&gt;alert('x')&lt;/script&gt;", page)
+        self.assertNotIn("Category:", page)
+        self.assertNotIn("Related:", page)
         self.assertNotIn("<script", page)
         self.assertNotIn("http://", page)
         self.assertNotIn("https://", page)
@@ -77,7 +89,7 @@ class HoverUITests(unittest.TestCase):
             note_path = root / "review.md"
             index_path = root / "concept_index.json"
             output_path = root / "hover.html"
-            note_path.write_text("HOM impedance\n", encoding="utf-8")
+            note_path.write_text("高次模阻抗\n", encoding="utf-8")
             index_path.write_text(
                 json.dumps(SYNTHETIC_INDEX), encoding="utf-8"
             )
@@ -141,10 +153,32 @@ class HoverUITests(unittest.TestCase):
         for filename, expected in expected_by_note.items():
             with self.subTest(note=filename):
                 text = (NOTES_DIR / filename).read_text(encoding="utf-8")
-                resolved = {
-                    match["concept"] for match in resolve_mentions(text, index)
-                }
+                matches = resolve_mentions(text, index)
+                resolved = {match["concept"] for match in matches}
+                self.assertIsNotNone(CJK_PATTERN.search(text.splitlines()[0]))
+                self.assertTrue(
+                    any(CJK_PATTERN.search(match["matched_term"]) for match in matches)
+                )
                 self.assertTrue(expected <= resolved, expected - resolved)
+
+    def test_real_index_has_complete_chinese_display_metadata(self) -> None:
+        index = load_concept_index()
+        categories: set[str] = set()
+        for canonical_name, entry in index.items():
+            with self.subTest(concept=canonical_name):
+                self.assertTrue(
+                    any(CJK_PATTERN.search(alias) for alias in entry["aliases"]),
+                    f"{canonical_name} has no Chinese alias",
+                )
+                summary = entry["hover_summary"].lstrip()
+                self.assertTrue(
+                    CJK_PATTERN.match(summary)
+                    or summary.startswith(("CST ", "R/Q ")),
+                    f"{canonical_name} summary is not Chinese-primary",
+                )
+            categories.update(entry.get("category", []))
+
+        self.assertEqual(categories - CATEGORY_LABELS.keys(), set())
 
 
 if __name__ == "__main__":

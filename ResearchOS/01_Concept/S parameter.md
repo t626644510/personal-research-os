@@ -15,14 +15,14 @@ origin:
   - textbook
   - measurement
 created: 2026-08-01
-updated: 2026-08-01
+updated: 2026-08-03
 ---
 
 # S parameter
 
 ## Hover Summary
 
-S parameter 用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。
+散射参数（S 参数）用复数矩阵描述多端口网络中入射波到出射波的线性映射；它同时包含幅度与相位，并依赖端口参考阻抗和参考面。
 
 ## Definition
 
@@ -67,3 +67,4 @@ $$
 ## History
 
 - 2026-08-01 — 按 Concept Schema v0.1 创建验证样例。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

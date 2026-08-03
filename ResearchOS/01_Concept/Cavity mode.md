@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Cavity mode
 
 ## Hover Summary
 
-Cavity mode 是满足结构边界条件的离散电磁本征场分布，每个 mode 具有特定频率、极化、储能、Q 和束流耦合强度。
+腔模是满足结构边界条件的离散电磁本征场分布；每个模具有特定频率、极化、储能、Q 值和束流耦合强度。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Longitudinal wake potential
 
 ## Hover Summary
 
-Longitudinal wake potential 是点电荷纵向 wake 与有限束团电荷分布的卷积，给出束团内部或后续测试粒子沿束流方向所见的感应电压。
+纵向尾势是点电荷纵向尾场与有限束团电荷分布的卷积，给出束团内部或后续测试粒子沿束流方向所见的感应电压。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

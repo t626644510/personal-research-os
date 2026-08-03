@@ -59,7 +59,7 @@ ResearchOS/
 
 `concept_index.json` 是派生数据，不手工编辑。P01 保留了原有的 `path`、`aliases` 和 `hover_summary`，因此旧消费者仍可工作；新增字段提供稳定 ID、分类和规范化关系。路径统一使用 Vault 相对的 `/` 分隔形式，因此索引可在 Windows、macOS 和 Linux 间复用。
 
-## Offline Hover Encyclopedia prototype
+## 离线悬浮概念百科原型
 
 `hover_resolver.py` 只读取本地 JSON，不进行 AI 或网络调用。它在输入 Markdown 中匹配规范名称与 aliases，大小写不敏感，并在同一位置优先选择最长词组。例如 `HOM impedance` 会优先于别名 `HOM`。输出按文本位置排序，每个非重叠命中包含位置、规范名称、匹配词、摘要和索引元数据。
 
@@ -96,9 +96,9 @@ P01 有意扫描原始 Markdown 字符串，不解析 Markdown AST；因此 fenc
 py -3.9 -m unittest discover -s tests -v
 ```
 
-## Hover Encyclopedia UI Validation
+## 悬浮概念百科 UI 验证
 
-P01.5 在现有解析器之后增加一个最小展示层，用于评估概念高亮密度、摘要长度和阅读干扰。它不改变 Concept Schema、索引格式或匹配规则，也不是 Obsidian 插件。`hover_ui.py` 将一篇 UTF-8 Markdown 笔记和本地 `concept_index.json` 合成为单个自包含 HTML 文件；样式全部内联，不启动服务器，不加载网络资源，也不调用 AI。
+P01.5 在现有解析器之后增加一个最小展示层，用于评估概念高亮密度、摘要长度和阅读干扰。它不改变 Concept Schema、索引格式或匹配规则，也不是 Obsidian 插件。`hover_ui.py` 将一篇 UTF-8 Markdown 笔记和本地 `concept_index.json` 合成为单个自包含中文 HTML 文件；样式全部内联，不启动服务器，不加载网络资源，也不调用 AI。
 
 先校验 Concept 并重新生成本地索引：
 
@@ -113,14 +113,24 @@ python ResearchOS/99_Meta/tools/concept_tools.py scan
 python ResearchOS/99_Meta/tools/hover_ui.py "ResearchOS/00_Inbox/notes/HOM impedance reading note.md" --open
 ```
 
-默认输出到操作系统临时目录中的 `personal-research-os-hover-demo.html`，命令会打印绝对路径。若浏览器无法自动打开，可手工打开该文件；也可通过 `--output <path>` 指定位置。把鼠标停在绿色高亮词上，或使用 Tab 键聚焦，即可看到 Concept name、Hover Summary、Category 和 Related concepts。卡片不会展示完整 Concept、公式、来源或决策记录。
+默认输出到操作系统临时目录中的 `personal-research-os-hover-demo.html`，命令会打印绝对路径。若浏览器无法自动打开，可手工打开该文件；也可通过 `--output <path>` 指定位置。把鼠标停在绿色高亮词上，或使用 Tab 键聚焦，即可看到概念名称、悬浮摘要、分类和相关概念。卡片不会展示完整 Concept、公式、来源或决策记录。
+
+### 中文与 aliases 约定
+
+- `id`、英文 canonical name、Concept 文件名和索引键保持稳定。
+- `Hover Summary` 等 Schema 标题继续使用英文，作为校验器依赖的稳定结构；标题下的知识内容以中文为主。
+- 中文术语、英文缩写和历史名称通过 `aliases` 多对一映射到 canonical name；扫描器继续禁止不同 Concept 共用同一 alias。
+- 中文笔记既可写 canonical name，也可直接写中文 alias。卡片优先显示“中文 alias（英文 canonical name）”；没有中文 alias 时回退到 canonical name。
+- `category` 在索引中继续使用稳定英文值，HTML 只在展示层转换为中文标签，不回写 Concept 数据。
+- 避免使用“场”“模”等过短中文 alias，以减少无词边界文本中的子串误命中。
+- 页面声明为 `zh-CN`，使用中文系统字体，并从笔记首个 H1 提取中文页面标题。
 
 可用于人工比较的真实阅读样例位于 `ResearchOS/00_Inbox/notes/`：
 
-- `HOM impedance reading note.md`
-- `CST wakefield solver note.md`
-- `Q0 measurement note.md`
-- `PSO impedance fitting note.md`
+- `HOM impedance reading note.md`（高次模阻抗阅读笔记）
+- `CST wakefield solver note.md`（CST 尾场求解器设置笔记）
+- `Q0 measurement note.md`（Q0 测量笔记）
+- `PSO impedance fitting note.md`（PSO 阻抗拟合笔记）
 
 逐个替换上述命令中的输入文件即可检查不同概念密度和 alias 命中。自动验证运行：
 

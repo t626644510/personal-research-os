@@ -15,14 +15,14 @@ origin:
   - textbook
   - measurement
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Loaded Q
 
 ## Hover Summary
 
-Loaded Q 是谐振器同时计入内部损耗和所有外部耦合通道后的有效品质因数，决定实际共振带宽、场衰减时间和阻抗峰宽。
+加载 Q 值是谐振器同时计入内部损耗和所有外部耦合通道后的有效品质因数，决定实际共振带宽、场衰减时间和阻抗峰宽。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Gaussian bunch
 
 ## Hover Summary
 
-Gaussian bunch 用高斯函数近似束团纵向电荷分布；其 rms 长度直接控制频谱宽度，因此是 wakefield 仿真和 loss/kick factor 比较的常用基准输入。
+高斯束团用高斯函数近似纵向电荷分布；其均方根（rms）长度直接控制频谱宽度，因此是尾场仿真及损耗因子、踢因子比较的常用基准输入。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

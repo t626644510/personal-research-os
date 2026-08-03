@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import re
 import sys
 import tempfile
 import webbrowser
@@ -21,6 +22,23 @@ from hover_resolver import (
 DEFAULT_OUTPUT_PATH = (
     Path(tempfile.gettempdir()) / "personal-research-os-hover-demo.html"
 )
+H1_PATTERN = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
+CJK_PATTERN = re.compile(r"[\u3400-\u9fff]")
+CATEGORY_LABELS = {
+    "accelerator hardware": "加速器硬件",
+    "accelerator physics": "加速器物理",
+    "beam modeling": "束流建模",
+    "cavity physics": "腔体物理",
+    "collective effects": "集体效应",
+    "electromagnetics": "电磁学",
+    "microwave engineering": "微波工程",
+    "network analysis": "网络分析",
+    "resonator physics": "谐振器物理",
+    "RF engineering": "射频工程",
+    "signal analysis": "信号分析",
+    "simulation tool": "仿真工具",
+    "waveguide theory": "波导理论",
+}
 
 STYLES = """
 :root {
@@ -41,8 +59,8 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC",
+    "Source Han Sans SC", Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 .viewer-header {
@@ -76,7 +94,7 @@ body {
 
 .markdown-source {
   margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-family: inherit;
   font-size: 0.98rem;
   line-height: 1.75;
   overflow-wrap: anywhere;
@@ -115,8 +133,7 @@ body {
   background: #fbfff7;
   box-shadow: var(--shadow);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  font-family: inherit;
   font-size: 0.88rem;
   line-height: 1.45;
   opacity: 0;
@@ -176,20 +193,67 @@ def _text(value: Any) -> str:
     return html.escape(str(value), quote=True)
 
 
+def _display_concept_name(
+    canonical_name: str, concept_index: Mapping[str, Mapping[str, Any]]
+) -> str:
+    entry = concept_index.get(canonical_name, {})
+    aliases = entry.get("aliases", [])
+    chinese_alias = next(
+        (
+            alias
+            for alias in aliases
+            if isinstance(alias, str) and CJK_PATTERN.search(alias)
+        ),
+        None,
+    )
+    if chinese_alias and chinese_alias != canonical_name:
+        return f"{chinese_alias}（{canonical_name}）"
+    return canonical_name
+
+
+def _localized_matches(
+    matches: Sequence[Mapping[str, Any]],
+    concept_index: Mapping[str, Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    localized: list[dict[str, Any]] = []
+    for match in matches:
+        item = dict(match)
+        item["display_name"] = _display_concept_name(
+            str(match["concept"]), concept_index
+        )
+        item["display_categories"] = [
+            CATEGORY_LABELS.get(str(category), str(category))
+            for category in match.get("category", [])
+        ]
+        item["display_related_concepts"] = [
+            _display_concept_name(str(name), concept_index)
+            for name in match.get("related_concepts", [])
+        ]
+        localized.append(item)
+    return localized
+
+
+def _document_title(markdown_text: str, fallback: str) -> str:
+    match = H1_PATTERN.search(markdown_text)
+    return match.group(1).strip() if match else fallback
+
+
 def _hover_card(match: Mapping[str, Any], card_number: int) -> str:
-    categories = match.get("category", [])
-    related = match.get("related_concepts", [])
+    categories = match.get("display_categories", match.get("category", []))
+    related = match.get(
+        "display_related_concepts", match.get("related_concepts", [])
+    )
     metadata: list[str] = []
     if categories:
         metadata.append(
-            '<span class="card-meta"><span class="card-label">Category:</span> '
-            + ", ".join(_text(item) for item in categories)
+            '<span class="card-meta"><span class="card-label">分类：</span>'
+            + "、".join(_text(item) for item in categories)
             + "</span>"
         )
     if related:
         metadata.append(
-            '<span class="card-meta"><span class="card-label">Related:</span> '
-            + ", ".join(_text(item) for item in related)
+            '<span class="card-meta"><span class="card-label">相关概念：</span>'
+            + "、".join(_text(item) for item in related)
             + "</span>"
         )
 
@@ -198,7 +262,7 @@ def _hover_card(match: Mapping[str, Any], card_number: int) -> str:
         f'<span class="concept-hit" tabindex="0" aria-describedby="{card_id}">'
         f'<span class="concept-text">{_text(match["matched_text"])}</span>'
         f'<span class="hover-card" id="{card_id}" role="tooltip">'
-        f'<span class="card-title">{_text(match["concept"])}</span>'
+        f'<span class="card-title">{_text(match.get("display_name", match["concept"]))}</span>'
         f'<span class="card-summary">{_text(match["hover_summary"])}</span>'
         + "".join(metadata)
         + "</span></span>"
@@ -220,7 +284,7 @@ def _annotate_source(
             or end <= start
             or end > len(markdown_text)
         ):
-            raise ValueError("hover matches must contain ordered, non-overlapping offsets")
+            raise ValueError("概念命中必须包含有序且不重叠的文本位置")
         fragments.append(html.escape(markdown_text[cursor:start], quote=False))
         fragments.append(_hover_card(match, card_number))
         cursor = end
@@ -232,19 +296,19 @@ def render_hover_html(
     markdown_text: str,
     matches: Sequence[Mapping[str, Any]],
     *,
-    title: str = "Hover Encyclopedia Demo",
+    title: str = "悬浮概念百科演示",
 ) -> str:
     """Render resolved matches into a self-contained, dependency-free page."""
 
     annotated_source = _annotate_source(markdown_text, matches)
     unique_concepts = len({str(match["concept"]) for match in matches})
-    status = f"{len(matches)} mentions · {unique_concepts} concepts · local index only"
+    status = f"{len(matches)} 处命中 · {unique_concepts} 个概念 · 仅使用本地索引"
     return (
         "<!doctype html>\n"
-        '<html lang="en">\n<head>\n'
+        '<html lang="zh-CN">\n<head>\n'
         '<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-        f"<title>{_text(title)} · Hover Encyclopedia</title>\n"
+        f"<title>{_text(title)} · 离线概念百科</title>\n"
         f"<style>\n{STYLES}\n</style>\n"
         "</head>\n<body>\n"
         '<header class="viewer-header">'
@@ -252,7 +316,7 @@ def render_hover_html(
         f'<p class="viewer-meta">{_text(status)}</p>'
         "</header>\n"
         '<main class="note-shell">'
-        f'<article class="markdown-source" aria-label="Markdown note">{annotated_source}</article>'
+        f'<article class="markdown-source" aria-label="Markdown 笔记">{annotated_source}</article>'
         "</main>\n"
         "</body>\n</html>\n"
     )
@@ -271,7 +335,12 @@ def generate_hover_demo(
     markdown_text = source_path.read_text(encoding="utf-8-sig")
     concept_index = load_concept_index(index_path)
     matches = resolve_mentions(markdown_text, concept_index)
-    rendered = render_hover_html(markdown_text, matches, title=source_path.stem)
+    display_matches = _localized_matches(matches, concept_index)
+    rendered = render_hover_html(
+        markdown_text,
+        display_matches,
+        title=_document_title(markdown_text, source_path.stem),
+    )
 
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("w", encoding="utf-8", newline="\n") as handle:
@@ -281,13 +350,29 @@ def generate_hover_demo(
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Generate a self-contained offline Concept hover demo."
+        description="为 Markdown 笔记生成自包含的离线概念悬浮演示页。",
+        add_help=False,
     )
-    parser.add_argument("markdown_file", type=Path, help="UTF-8 Markdown note")
-    parser.add_argument("--index", type=Path, default=DEFAULT_INDEX_PATH)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
+    parser._positionals.title = "位置参数"
+    parser._optionals.title = "选项"
     parser.add_argument(
-        "--open", action="store_true", help="open the generated file in a browser"
+        "-h", "--help", action="help", help="显示此帮助信息并退出"
+    )
+    parser.add_argument("markdown_file", type=Path, help="UTF-8 Markdown 笔记")
+    parser.add_argument(
+        "--index",
+        type=Path,
+        default=DEFAULT_INDEX_PATH,
+        help="概念索引路径",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=DEFAULT_OUTPUT_PATH,
+        help="HTML 输出路径",
+    )
+    parser.add_argument(
+        "--open", action="store_true", help="生成后在默认浏览器中打开"
     )
     return parser
 
@@ -303,10 +388,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
     resolved_output = output_path.resolve()
-    print(f"Wrote {len(matches)} hover matches to {resolved_output}")
+    print(f"已将 {len(matches)} 处概念命中写入 {resolved_output}")
     if args.open and not webbrowser.open(resolved_output.as_uri()):
         print(
-            "The browser could not be opened automatically; open the HTML file manually.",
+            "无法自动打开浏览器，请手动打开生成的 HTML 文件。",
             file=sys.stderr,
         )
     return 0

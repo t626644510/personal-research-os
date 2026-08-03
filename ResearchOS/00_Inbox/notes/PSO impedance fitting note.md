@@ -1,17 +1,17 @@
-# PSO impedance fitting note
+# PSO 阻抗拟合笔记
 
-## Fit objective
+## 拟合目标
 
-Particle swarm optimization is being tested as a numerical optimizer for a multi-resonator model of the measured longitudinal impedance. The optimizer itself is not a Concept in the current database; this note is about whether the fitted RF parameters remain physically interpretable.
+当前测试使用粒子群优化拟合实测纵向阻抗的多谐振器模型。优化算法本身尚未作为 Concept 收录；这篇笔记关注的是拟合得到的射频参数是否仍具有清晰的物理解释。
 
-Each resonator contributes a center frequency, amplitude, and quality factor. Bounds are seeded from visible HOM peaks, but the fit should also reproduce the broadband baseline of the beam impedance. A low residual alone is insufficient if two resonators collapse onto the same line or if the fitted damping is outside the measured range.
+每个谐振器包含中心频率、幅度和品质因数。参数边界由可见高次模峰提供初值，但模型还应重现实测束流耦合阻抗的宽带基线。如果两个谐振器收敛到同一条谱线，或拟合阻尼超出实测范围，那么残差再低也不能单独证明结果可信。
 
-## Weighting and validation
+## 权重与验证
 
-The objective is weighted over the bunch frequency spectrum rather than uniformly over every frequency bin. This keeps the fit sensitive to impedance that the beam can actually sample while preserving a separate diagnostic for narrow peaks.
+目标函数按照束团频谱加权，而不是对所有频率点赋予相同权重。这样既能保持对束流实际采样阻抗的敏感度，也能为窄带谱峰保留独立诊断量。
 
-After fitting, I will reconstruct the wake field and compare it with the original time-domain trace. The resulting HOM impedance table must be stable against reasonable changes in frequency window, particle count, and initial swarm seed before it is used in a coupled-bunch estimate.
+拟合完成后重建尾场，并与原始时域曲线比较。得到的高次模阻抗表必须对合理的频率窗口、粒子数量和初始群体随机种子变化保持稳定，之后才能用于耦合束团不稳定性估算。
 
-## Decision rule
+## 判定规则
 
-Accept a candidate only when the residual, parameter bounds, reconstructed wake, and repeatability checks all pass. Otherwise retain the raw coupling impedance data and mark the resonator decomposition as model-dependent.
+只有残差、参数边界、重建尾场和重复性检查全部通过时，才接受候选解；否则保留原始束流耦合阻抗数据，并把谐振器分解标记为依赖模型的结果。

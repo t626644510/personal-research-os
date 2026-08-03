@@ -1,19 +1,19 @@
-# HOM impedance reading note
+# 高次模阻抗阅读笔记
 
-## Reading context
+## 阅读背景
 
-The cavity review reports several narrow HOM impedance peaks above the operating mode. The strongest line is not automatically the most dangerous one: its overlap with the bunch spectrum and the fill pattern matters as much as the peak amplitude.
+这次腔体评审在工作模以上发现了多个窄带高次模阻抗峰。幅度最高的谱线不一定最危险；它与束团频谱及填充图样的重叠程度，和峰值本身同样重要。
 
-The paper quotes R/Q from an eigenmode calculation and uses Qext from the damping model. I need to confirm whether the plotted impedance uses the loaded quality factor after the HOM coupler is attached, because using the undamped value would overstate the steady-state voltage.
+论文引用了本征模求解器得到的 R/Q，并采用阻尼模型中的 Qext。需要确认图中的阻抗是否使用安装高次模耦合器之后的加载Q值；若误用未阻尼结果，会高估稳态感应电压。
 
-## Working interpretation
+## 当前理解
 
-The time-domain wake field decays slowly when a higher order mode has a high quality factor. In the frequency domain this becomes a narrow longitudinal impedance peak. A peak close to a beam harmonic deserves a coupled-bunch instability check even when its integrated loss is modest.
+当高次模具有较高品质因数时，时域尾场会缓慢衰减，并在频域中表现为狭窄的纵向阻抗峰。即使积分损耗不大，只要峰值靠近束流谐波，也应检查耦合束团不稳定性。
 
-For comparison across geometry revisions, I will keep the coupling impedance convention, bunch length, frequency resolution, and port loading fixed. The next pass should tabulate resonant frequency, R/Q, Qext, and the resulting peak impedance rather than compare screenshots.
+比较不同几何版本时，应固定束流耦合阻抗定义、束团长度、频率分辨率和端口负载。下一轮分析需要列出谐振频率、R/Q、Qext 及相应峰值阻抗，而不是只比较截图。
 
-## Follow-up
+## 后续检查
 
-- Recalculate the bunch spectrum for the proposed train pattern.
-- Check whether the dangerous mode propagates through the beam pipe or remains trapped.
-- Review the HOM coupler load model before accepting the damping margin.
+- 按拟议束团列重新计算束团频谱。
+- 检查危险模式能否沿束管传播，或是否被局域俘获。
+- 在接受阻尼裕量前复核高次模耦合器的负载模型。

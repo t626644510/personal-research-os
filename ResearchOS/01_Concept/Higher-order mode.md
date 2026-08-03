@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Higher-order mode
 
 ## Hover Summary
 
-Higher-order mode 是加速结构中除目标工作模之外的本征电磁模；束流可激励这些 mode，导致附加能散、发热、emittance 增长或多束团不稳定性。
+高次模是加速结构中除目标工作模之外的本征电磁模；束流可激励这些模，导致附加能量损失、发热、发射度增长或多束团不稳定性。
 
 ## Definition
 
@@ -68,3 +68,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

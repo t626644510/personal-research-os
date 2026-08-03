@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Loss factor
 
 ## Hover Summary
 
-Loss factor 把给定束团形状经过结构时的纵向能量损失归一化到束团电荷平方；它同时依赖结构阻抗和束团频谱，不是结构单独的常数。
+损耗因子把给定束团形状经过结构时的纵向能量损失归一化到束团电荷平方；它同时依赖结构阻抗和束团频谱，不是只由结构决定的常数。
 
 ## Definition
 
@@ -68,3 +68,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

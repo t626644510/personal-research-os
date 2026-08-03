@@ -15,14 +15,14 @@ origin:
   - software documentation
   - simulation
 created: 2026-08-01
-updated: 2026-08-01
+updated: 2026-08-03
 ---
 
 # CST wakefield solver
 
 ## Hover Summary
 
-CST Wakefield Solver 用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向 wake、损耗因子及阻抗谱。
+CST 尾场求解器用线电流表示粒子束，计算束流经过结构不连续处产生的尾场；结果可用于分析纵向或横向尾场、损耗因子及阻抗谱。
 
 ## Definition
 
@@ -68,3 +68,4 @@ $$
 ## History
 
 - 2026-08-01 — 按 Concept Schema v0.1 创建验证样例。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

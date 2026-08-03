@@ -1,15 +1,15 @@
-# CST wakefield solver setup note
+# CST 尾场求解器设置笔记
 
-## Purpose
+## 目的
 
-This run uses the CST Wakefield Solver to compare two bellows transitions under the same beam definition. The first quantity of interest is the longitudinal wake near the bunch; the second is the late-time ringing that may indicate a weakly damped cavity mode.
+本轮仿真使用 CST尾场求解器，在相同束流定义下比较两种波纹管过渡结构。首先关注束团附近的纵向尾势，其次检查长时间振铃，因为后者可能对应阻尼不足的腔模。
 
-## Setup choices
+## 设置选择
 
-The source is a Gaussian bunch with a 3 mm rms length. Both models use identical mesh refinement, open boundaries, wake length, and symmetry settings. The transverse wake is evaluated with the same source offset so that the kick factor remains comparable.
+激励源采用 rms 长度为 3 mm 的高斯束团。两个模型使用相同的网格加密、开放边界、wake length 和对称设置。横向尾势采用相同的源束团偏移，以保证踢因子可直接比较。
 
-I will record the loss factor from the time-domain result and transform the wake only after checking that the tail has decayed sufficiently. A short wake length can broaden or hide a narrow peak, while an abrupt numerical tail can contaminate the impedance spectrum.
+时域结果中先记录损耗因子，确认尾部充分衰减后再进行频域变换。过短的 wake length 可能展宽或掩盖窄带峰，而突然截断的数值尾部会污染阻抗谱。
 
-## Cross-checks
+## 交叉检查
 
-An eigenmode analysis will be run for the largest peaks to separate physical resonances from numerical artifacts. Port definitions will also be checked with an S-parameter run. Agreement in frequency is useful, but the boundary conditions and excitation in the two solvers are not identical, so amplitudes should not be compared without a normalization review.
+对幅度最大的谱峰使用本征模求解器复核，以区分真实谐振和数值伪影；端口定义则通过散射参数仿真检查。频率一致是有用证据，但两类求解器的边界条件和激励并不相同，因此在复核归一化之前不能直接比较幅度。

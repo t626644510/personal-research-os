@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Transverse impedance
 
 ## Hover Summary
 
-横向阻抗描述偏轴束流激励的电磁场如何对后续粒子施加横向踢力，常以 Ω/m 表示，是横向相干频移、emittance 增长和不稳定性分析的核心量。
+横向阻抗描述偏轴束流激励的电磁场如何对后续粒子施加横向踢力，常以 Ω/m 表示，是横向相干频移、发射度增长和不稳定性分析的核心量。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $W_{\perp}$ 的源偏移归一化及整体符号必须与使用的束流动力�
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

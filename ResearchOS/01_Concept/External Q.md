@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # External Q
 
 ## Hover Summary
 
-External Q 衡量 cavity mode 通过某个外部端口或 coupler 泄出能量的速度；数值越低表示耦合越强、外部阻尼越快。
+外部 Q 值衡量腔模通过某个外部端口或耦合器泄出能量的速度；数值越低表示耦合越强、外部阻尼越快。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

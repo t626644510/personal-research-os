@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Beam pipe cutoff frequency
 
 ## Hover Summary
 
-Beam pipe cutoff frequency 是给定波导 mode 从倏逝变为可传播的最低频率；它决定 cavity HOM 能否沿束管逃逸到外部 absorber 或被局域困住。
+束管截止频率是给定波导模由倏逝转为传播的最低频率；它决定腔体高次模能否沿束管传到外部吸收器，或被局域俘获。
 
 ## Definition
 
@@ -71,3 +71,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

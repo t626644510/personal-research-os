@@ -15,14 +15,14 @@ origin:
   - textbook
   - paper
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Beam coupling impedance
 
 ## Hover Summary
 
-束流耦合阻抗是加速器环境对束流电流扰动的频域响应，连接结构产生的 wake 与束流能量变化、横向踢力、发热和集体不稳定性。
+束流耦合阻抗是加速器环境对束流电流扰动的频域响应，连接结构产生的尾场与束流能量变化、横向踢力、发热和集体不稳定性。
 
 ## Definition
 
@@ -70,3 +70,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

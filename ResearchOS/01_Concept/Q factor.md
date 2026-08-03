@@ -15,14 +15,14 @@ origin:
   - textbook
   - measurement
 created: 2026-08-01
-updated: 2026-08-01
+updated: 2026-08-03
 ---
 
 # Q factor
 
 ## Hover Summary
 
-Q factor 是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是 unloaded、external 还是 loaded Q。
+品质因数（Q）是谐振器储能相对损耗的无量纲指标；Q 越高，衰减越慢、共振越窄。工程上必须明确讨论的是无载 Q、外部 Q 还是加载 Q。
 
 ## Definition
 
@@ -74,3 +74,4 @@ $$
 ## History
 
 - 2026-08-01 — 按 Concept Schema v0.1 创建验证样例。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

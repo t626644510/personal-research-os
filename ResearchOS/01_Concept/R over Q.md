@@ -15,14 +15,14 @@ origin:
   - textbook
   - simulation
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # R over Q
 
 ## Hover Summary
 
-R over Q 是仅由 cavity mode 场分布和几何决定的耦合指标，衡量单位储能能产生多少有效加速电压；它不依赖壁面电导率造成的 Q 损耗。
+R/Q 是仅由腔模场分布和几何决定的耦合指标，衡量单位储能能够产生多少有效加速电压；它不依赖由壁面电导率决定的损耗 Q 值。
 
 ## Definition
 
@@ -69,3 +69,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。

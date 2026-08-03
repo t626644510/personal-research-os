@@ -15,14 +15,14 @@ origin:
   - textbook
   - measurement
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Shunt impedance
 
 ## Hover Summary
 
-Shunt impedance 衡量 RF cavity 用给定耗散功率建立加速电压的效率；它同时包含几何耦合能力 R/Q 与损耗水平 Q，比较时必须注明定义约定。
+分路阻抗衡量射频腔用给定耗散功率建立加速电压的效率；它同时包含几何耦合能力 R/Q 与损耗水平 Q，比较时必须注明定义约定。
 
 ## Definition
 
@@ -68,3 +68,4 @@ $$
 ## History
 
 - 2026-08-02 — 按 Concept Schema v0.1 创建。
+- 2026-08-03 — 将 Hover Summary 调整为中文主语言；稳定 ID、canonical name 和 aliases 不变。
