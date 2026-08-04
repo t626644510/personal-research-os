@@ -140,6 +140,74 @@ python -m unittest discover -s tests -v
 
 演示页有意保留经过 HTML 转义的 Markdown 源文本及其换行，而不实现完整 Markdown 渲染；P01.5 只验证 Hover 交互是否帮助阅读。修改 Concept 或索引后应重新执行 `scan` 并再次生成页面，因为 HTML 是当时本地索引的静态快照。人工评估问题与已知限制记录在 [P01.5 UI Validation](ResearchOS/99_Meta/P01.5_UI_Validation.md)。
 
+## Reading Workspace UI Prototype
+
+RW-01 与 RW-01.1 session-layout 增量已由人工接受并完成（2026-08-04）。可配置的
+34/42/50rem session-panel 修正已获得最终视觉确认；25 Concepts 通过验证，Focused
+Reading UI suite 通过 16 项测试，Full suite 通过 33 项测试。RW-02、RW-03 与
+KA-01 仍未授权且未启动。这个原型是 `concept_index.json` 的第二个本地确定性消费者，
+不替换 P01/P01.5：
+`reading_ui.py` 读取一篇 UTF-8 Markdown 技术资料，复用
+`hover_resolver.resolve_mentions()`，再把维护用的 `reading_ui.css` 与
+`reading_ui.js` 内联为一个自包含 HTML 阅读工作区。页面不需要服务器、Node/npm、
+网络资源、模型 API 或新增 Python 依赖。
+
+在仓库根目录生成并打开工作区：
+
+```powershell
+py -3.9 ResearchOS/99_Meta/tools/reading_ui.py `
+  "ResearchOS/00_Inbox/notes/HOM impedance reading note.md" --open
+```
+
+默认输出是系统临时目录中的
+`personal-research-os-reading-workspace.html`。可用 `--index` 指定只读本地索引，
+用 `--output` 指定另一个仓库外 HTML 路径。生成页只保存文件名或 Vault 相对来源标签，
+不会把绝对工作站路径写入会话导出。
+
+使用流程：
+
+1. 在正确渲染的标题、段落、列表、链接与代码中阅读资料；概念卡片支持鼠标悬浮和
+   键盘聚焦。
+2. 使用工具栏切换全部出现、每段首次或每节首次高亮，也可关闭高亮、静音某个
+   canonical Concept 或仅静音当前匹配词，并随时恢复。
+3. 选择正文文本，创建来源摘录、个人笔记或人类问题。`author_type` 由
+   `entry_type` 决定并只读；只有 `confidence` 与 `verification` 是可编辑元数据。
+4. 对人类问题打开“问题包”，由人复制到外部 LLM；再把回答手动粘贴回来，选择对应
+   问题并可填写模型标签。页面不会发送问题、调用模型或自动获取回答。
+5. 每次会话变更都会尝试写入该来源专属的浏览器本地恢复数据，并显示已保存、未保存、
+   可恢复或保存失败状态。重新加载或重新打开同一生成页时会显式提供恢复选择；清除
+   恢复数据必须由人确认。
+6. “导出会话 Markdown”生成一个 UTF-8、可读且可 Git 审阅的
+   `rw-session-v0.1` 文件，其中的 fenced JSON 是无损权威载荷。再次导入前会校验
+   字段类型、枚举、唯一 ID、`author_type` 不变量和问题链接；无效导入不会替换当前
+   会话，覆盖非空工作也必须确认。
+
+RW-01.1 只改变 session panel 的派生视图：摘录、笔记、问答和全部。摘录与笔记按
+类型过滤；问答按 `human_question.entry_id` 与每个 `llm_answer.question_entry_id`
+配对，支持一个问题的多个回答并明确显示尚无回答的问题。桌面端问题与回答并排，窄屏
+堆叠。标签切换不会改变或重排 canonical `state.entries`；`rw-session-v0.1` 仍导出
+同一份扁平、有序 entries 列表，旧版 session Markdown 可继续导入。
+
+初步人工评估先发现固定 `28rem` 太窄，随后固定 `34rem` 仍不足，因此工具栏现在提供
+紧凑（34rem）、平衡（42rem，默认）和宽屏（50rem）三种会话栏宽度。桌面布局通过
+CSS custom property 立即应用选择，并在约 `52vw` 处封顶；现有 `68rem` 以下布局和
+问答纵向堆叠不变。宽度使用独立的浏览器本地 key 保存，是 presentation-only 偏好；
+它不进入 session preferences、恢复数据、`sessionPayload()` 或
+`rw-session-v0.1`。浏览器存储失败只会阻止跨页面保存，不会撤销当前页面的宽度选择。
+
+未来 RW-03 若被单独授权，必须由人精确选择一个原始资料 `SOURCE_PATH` 和一个
+`reading_session.md` 的 `SESSION_PATH`。人工触发的 LLM synthesis 只读取这两个
+文件并且只输出 `reading_note.draft.md`。`reading_session.md` 默认不嵌入完整原文，
+RW-03 不新增 SHA。这个双文件 synthesis 输入不改变 KA-01：KA-01 仍只读取人类
+选择并审阅的一份 `reading_note.md`，并只计算现有的一次 Markdown SHA-256。
+
+RW-01 不生成 `reading_note.draft.md` 或最终 `reading_note.md`，不处理 PDF 文本层、
+OCR 或坐标覆盖。内置 Markdown 渲染器仅支持标题、段落、扁平有序/无序列表、链接、
+行内代码和围栏代码块；嵌套列表、表格、图片、强调、脚注、任务列表等完整 Markdown
+语法尚未实现，原始 HTML 始终作为转义文本显示。RW-02、RW-03 与 KA-01 仍未授权
+且未启动。实现与审计步骤记录在
+[RW-01 UI Validation](ResearchOS/99_Meta/RW01_UI_Validation.md)。
+
 ## 日常工作流
 
 ```text

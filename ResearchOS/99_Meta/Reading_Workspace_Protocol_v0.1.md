@@ -1,7 +1,7 @@
 # Reading Workspace Protocol v0.1
 
 Version: v0.1\
-Status: RW-00 governance human accepted on 2026-08-04; RW-01 eligibility gate open, not authorized or started\
+Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 human accepted and complete (2026-08-04); configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02, RW-03, and KA-01 remain not authorized and not started\
 Applies to: reading and source preparation upstream of KA-01
 
 This protocol defines the smallest implementation-neutral contract for a local
@@ -50,7 +50,7 @@ Responsibilities:
 | Artifact | Responsibility |
 | --- | --- |
 | `source_record.md` | Human-visible source identity, bibliographic details when available, and local source locators |
-| `reading_session.md` | Complete, portable export of session entries and their metadata |
+| `reading_session.md` | Complete, portable export of session entries and their metadata; does not embed the full source by default |
 | `reading_note.draft.md` | Optional LLM-produced or implementation-assisted synthesis draft |
 | `reading_note.md` | The one reading note explicitly reviewed and selected by a human |
 | `_local/source.pdf` | Proposed local-only PDF location for visual cross-checking |
@@ -175,14 +175,21 @@ An `llm_answer` also allows:
 - `question_entry_id`: required link to one `human_question` entry in the
   same session.
 
+Multiple `llm_answer` entries may link to the same `human_question` through
+that field. The serialized session remains flat; any question-answer grouping
+is a derived presentation and must not nest, mutate, or reorder canonical
+entries.
+
 No API identifier, provider-specific metadata, token count, cost field, model
 request id, or nested provenance graph is required. Entry ids and the
 question-answer link are sufficient for the first prototype.
 
-Import and export must preserve every entry, field value, entry id, and
-question link without silent normalization or loss. The source-text embedding
-or local-file reassociation strategy may be selected during RW-01, but
-re-importing `reading_session.md` must not lose or rewrite session entries.
+Import and export must preserve every entry, field value, entry id, entry
+order, and question link without silent normalization or loss. The complete
+source is not embedded in `reading_session.md` by default. Re-importing the
+session must not lose or rewrite entries, and future synthesis must use an
+exact human-selected source path rather than treating excerpts as the entire
+source.
 
 Before final Markdown export, RW-01 must make every session mutation
 recoverable in an offline local draft. The UI must show a clear saved, unsaved,
@@ -229,7 +236,24 @@ again. The previous reviewed version may be retained as `superseded`, but a
 superseded note is not eligible for a new handoff unless a human reviews and
 selects the intended version again.
 
-## 6. KA-01 bridge
+## 6. RW-03 synthesis handoff
+
+RW-03 remains a separately authorized future step. A valid synthesis trial
+requires the human to select both:
+
+- one exact `SOURCE_PATH` for the original technical source; and
+- one exact `SESSION_PATH` for the exported `reading_session.md`.
+
+The manually triggered LLM synthesis step reads both selected files and may
+output only `reading_note.draft.md`. It may not overwrite the source or
+session, create a reviewed note, or claim human review. This handoff does not
+require the full source to be embedded in the session and does not add a
+source hash, session hash, second provenance SHA, or any other fingerprint.
+
+The two-file RW-03 synthesis input is upstream preparation only. It does not
+change the KA-01 one-file handoff described below.
+
+## 7. KA-01 bridge
 
 The Reading Workspace preserves the existing KA-01 one-file boundary:
 
@@ -253,7 +277,7 @@ Intent to run KA-01 later is not execution authority. A valid run still
 requires a separate human instruction providing the exact eligible
 `SOURCE_PATH` and approving the execution prompt version used at that time.
 
-## 7. Non-blocking risk register
+## 8. Non-blocking risk register
 
 | Risk | Design note |
 | --- | --- |
@@ -271,9 +295,14 @@ These are design and operational notes. They must remain visible during
 evaluation, but they do not block RW-01 or require provenance graphs, extra
 hashes, a PDF pipeline, or an integrated AI runtime in the first prototype.
 
-## 8. RW-00 stop condition
+## 9. RW-00 stop condition
 
-RW-00 ends with this governance protocol and the separate UI specification.
-It creates no reading artifacts, source files, sessions, PDFs, scientific
-content, proposal artifacts, UI implementation, or KA-01 run. Human audit and
-explicit acceptance are required before RW-01 implementation is authorized.
+RW-00 ended with this governance protocol and the separate UI specification.
+It created no reading artifacts, source files, sessions, PDFs, scientific
+content, proposal artifacts, UI implementation, or KA-01 run. RW-01 was
+subsequently human accepted and completed on 2026-08-04. RW-01.1 was also
+human accepted and completed on 2026-08-04; the configurable 34/42/50rem
+session-panel correction received final visual confirmation. The validation
+record shows 25 Concepts passed, the focused Reading UI suite with 16 tests
+passed, and the full suite with 33 tests passed. RW-02, RW-03, and KA-01
+remain not authorized and not started.

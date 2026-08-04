@@ -101,12 +101,16 @@ Commit:
 
 状态：Accepted and complete (2026-08-04).
 
-RW-00 governance and the P0 UI contract are human accepted. RW-01 eligibility
-is open, but RW-01 is not authorized or started.
+RW-00 governance and the P0 UI contract are human accepted. RW-01 and the
+RW-01.1 source-handoff/session-layout increment were human accepted and complete
+on 2026-08-04. The configurable 34/42/50rem session-panel correction received
+final visual confirmation. 25 Concepts passed validation; focused Reading UI
+suite: 16 tests passed; full suite: 33 tests passed. RW-02, RW-03, and KA-01
+remain not authorized and not started.
 
-RW-00 只定义 Reading Workspace 的治理、数据边界和最小 UI 契约。本阶段
-没有创建 Reading Workspace 实现、reading session、RW source file、
-reading-note artifact 或 proposal artifact，也没有启动 KA-01。
+RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
+创建 Reading Workspace 实现、reading session、RW source file、reading-note
+artifact 或 proposal artifact，也没有启动 KA-01。
 
 ------------------------------------------------------------------------
 
@@ -240,7 +244,7 @@ KA-01 bridge 和离线 UI P0 契约。RW-00 不实现 UI，也不创建任何阅
 
 ## RW-01 Offline Reading UI Prototype
 
-状态：Eligibility gate open; not authorized and not started.
+状态：Human accepted and complete (2026-08-04).
 
 目标：实现可用的离线 Markdown 阅读界面，读取当前本地
 `concept_index.json`，复用现有确定性 alias/longest-term 匹配与紧凑
@@ -249,9 +253,19 @@ packet 与外部 LLM answer 粘贴及链接回 session 的 capture primitives，
 提供最小的高亮密度控制、可恢复的本地 session draft 和 Markdown session
 import/export。
 
+## RW-01.1 Source Handoff and Session Layout
+
+状态：Human accepted and complete (2026-08-04).
+
+目标：保持 `rw-session-v0.1` 及其扁平、有序 entries contract 不变，只为 session
+panel 提供摘录、笔记、按 `question_entry_id` 分组的问答和 chronological all
+派生视图。问答视图支持一个问题的多个回答和显式 unanswered 状态；tab 切换不修改
+或重排 canonical session entries。本增量同时明确未来 RW-03 的双路径 synthesis
+handoff，但不启动 synthesis。
+
 ## RW-02 Realistic Human UX Validation
 
-状态：Not started.
+状态：Not authorized and not started.
 
 目标：使用一篇人工选择的真实 technical paper，对 RW-01 已实现的 human-owned
 annotation、human question、question packet 和外部 LLM answer capture
@@ -261,10 +275,13 @@ primitives 进行 realistic human UX validation。外部 LLM workflow 仍为人�
 
 ## RW-03 Reading Note Synthesis Trial
 
-状态：Not started.
+状态：Not authorized and not started.
 
-目标：使用人工触发的 LLM 从结构化 session 准备
-`reading_note.draft.md`。LLM 只能生成 draft，不能声明人工审阅完成。
+目标：由人精确选择一个原始资料 `SOURCE_PATH` 和一个
+`reading_session.md` 的 `SESSION_PATH`。人工触发的 LLM synthesis 同时读取这
+两个文件，只输出 `reading_note.draft.md`，不能声明人工审阅完成。
+`reading_session.md` 默认不嵌入完整原文；RW-03 不增加 source/session hash 或
+第二个 provenance SHA，也不改变 KA-01 的一文件输入边界。
 
 ## RW-04 Human Review and Freeze
 
@@ -288,6 +305,8 @@ PDF、其他论文或 LLM transcript。
 -   人已表达在存在合格、经过审阅的来源后运行 KA-01 的意图；该意图不构成
     执行授权。protocol-valid run 仍要求一个精确的 `SOURCE_PATH`，并要求
     人在执行时批准所用 prompt version。
+-   未来 RW-03 synthesis 的 `SOURCE_PATH` 加 `SESSION_PATH` 是人工选择的上游
+    双文件输入，不是 KA-01 输入，也不为两个文件增加 SHA。
 -   只有 KA-01 真正开始时，才按现有协议对最终选定的
     `reading_note.md` 计算一次 SHA-256；RW 不要求 PDF hash、session hash
     或第二个 provenance hash。

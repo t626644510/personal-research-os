@@ -1,8 +1,8 @@
 # Reading Workspace UI Spec v0.1
 
 Version: v0.1\
-Status: RW-00 P0 specification human accepted on 2026-08-04; RW-01 not authorized or started\
-Target phase: RW-01 Offline Reading UI Prototype
+Status: RW-00 P0 specification human accepted on 2026-08-04; RW-01 and RW-01.1 human accepted and complete (2026-08-04); configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02, RW-03, and KA-01 remain not authorized and not started\
+Target phase: RW-01 Offline Reading UI Prototype and RW-01.1 session-layout increment
 
 This specification defines the smallest usable offline Reading Workspace UI.
 It describes behavior and data boundaries, not a framework, package choice, or
@@ -147,6 +147,31 @@ The side panel lists entries in a stable, readable order and shows at least:
 - creation time; and
 - for an LLM answer, its linked question and optional model label.
 
+RW-01.1 presents the same canonical flat entries through these derived tabs:
+
+- Excerpts for `source_excerpt`;
+- Notes for `human_note`;
+- Q&A grouped by each `human_question.entry_id` and linked
+  `llm_answer.question_entry_id`; and
+- All as the chronological audit view.
+
+Filtering and grouping must not mutate or reorder the canonical entries array
+and must not change `rw-session-v0.1`. In Q&A, the question and its linked
+answers appear side by side at ordinary desktop widths and stack on narrow
+screens. Questions without answers are explicit. Multiple answers may remain
+linked to one question, and every displayed question or answer retains its
+origin badge, confidence, verification, and applicable edit/delete controls.
+
+Session-panel width is a presentation-only control with Compact (`34rem`),
+Balanced (`42rem`, default), and Wide (`50rem`) presets. The desktop grid keeps
+the reading pane flexible, applies the preset through a CSS custom property,
+and caps the panel near half the viewport; the existing narrow-screen Q&A
+stacking behavior remains authoritative. The selected preset may use a
+dedicated browser-local key, but it must not enter session preferences,
+recovery data, session IDs, canonical entries, `sessionPayload()`, or
+`rw-session-v0.1`. Missing or invalid stored values fall back to Balanced, and
+storage failure must not prevent the current-page width change.
+
 The panel supports reviewing and editing human-owned session content without
 silently rewriting it. Deleting or replacing an entry, if RW-01 includes that
 action, must be explicit; no cleanup or synthesis step may silently collapse
@@ -175,10 +200,11 @@ in RW-01, but it must be:
 - parseable by the same prototype; and
 - lossless for every entry and question-answer relationship.
 
-No sidecar file may be required to preserve session entries. RW-01 may either
-embed the reading source in the export or ask the human to reselect the local
-source on import; that choice must be explicit in the UI. In either case,
-re-importing the session must preserve all entries exactly.
+No sidecar file may be required to preserve session entries. The session
+export does not embed the complete reading source by default; it preserves the
+source label, excerpts, locators, and flat session entries. Re-importing the
+session must preserve all entries exactly. A later synthesis step obtains the
+complete source from an exact path selected separately by the human.
 
 ## 6. Manual LLM workflow
 
@@ -234,6 +260,13 @@ Any later LLM synthesis may produce only a `draft`. Only a human may review,
 freeze, and select one `reading_note.md` for a separately authorized KA-01
 handoff.
 
+If RW-03 is separately authorized, the human must select one exact original
+source `SOURCE_PATH` and one exact exported-session `SESSION_PATH`. The
+manually triggered LLM synthesis reads both and writes only
+`reading_note.draft.md`. It does not require the complete source to be embedded
+in `reading_session.md`, does not add another SHA, and does not change KA-01:
+KA-01 still reads only one human-reviewed, human-selected `reading_note.md`.
+
 ## 9. RW-01 P0 acceptance criteria
 
 RW-01 is usable when a human can:
@@ -285,9 +318,12 @@ primitives; it does not build a second capture implementation. They are not
 reasons to expand RW-01 with an integrated AI runtime, automatic acquisition,
 or a PDF reconstruction pipeline.
 
-## 11. RW-01 authorization boundary
+## 11. RW-01/RW-01.1 authorization boundary
 
-RW-00 defines this specification only. It does not authorize implementation.
-RW-01 requires a separate human-approved implementation request after RW-00
-audit and acceptance. No KA-01 execution is implied by implementing or
-accepting the Reading Workspace UI.
+RW-00 defined this specification only and did not itself authorize
+implementation. RW-01 and RW-01.1 were human accepted and completed on
+2026-08-04. The configurable 34/42/50rem session-panel correction received
+final visual confirmation; 25 Concepts passed validation, the focused Reading
+UI suite had 16 tests passed, and the full suite had 33 tests passed. RW-02,
+RW-03, and KA-01 remain not authorized and not started. No KA-01 execution is
+implied by implementing or accepting the Reading Workspace UI.
