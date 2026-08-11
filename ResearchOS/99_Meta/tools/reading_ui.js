@@ -15,11 +15,253 @@ const ReadingWorkspaceModel = (() => {
     wide: "50rem",
   });
   const DEFAULT_SESSION_PANEL_WIDTH = "balanced";
+  const SELECTED_TEXT_ORIGINS = Object.freeze({
+    authoritative: "authoritative_source",
+    translation: "reference_translation",
+  });
+  const OPTIONAL_SELECTION_FIELDS = Object.freeze([
+    "selected_text_origin",
+    "selected_block_id",
+  ]);
+  const ANNOTATABLE_ENTRY_TYPES = new Set([
+    "source_excerpt",
+    "human_note",
+    "human_question",
+  ]);
+  const DEFAULT_PRESENTATION_LAYOUT = Object.freeze({
+    language_ratio: 0.5,
+    figures_width_rem: 28,
+    session_width_rem: 42,
+    session_width_preset: DEFAULT_SESSION_PANEL_WIDTH,
+  });
+  const PRESENTATION_LIMITS = Object.freeze({
+    language_min_px: 240,
+    body_min_px: 544,
+    figures_min_px: 288,
+    session_min_px: 384,
+    separator_width_px: 8,
+  });
 
   function normalizeSessionPanelWidth(value) {
     return Object.prototype.hasOwnProperty.call(SESSION_PANEL_WIDTHS, value)
       ? value
       : DEFAULT_SESSION_PANEL_WIDTH;
+  }
+
+  function selectedTextOrigin(entry) {
+    return Object.prototype.hasOwnProperty.call(entry, "selected_text_origin")
+      ? entry.selected_text_origin
+      : SELECTED_TEXT_ORIGINS.authoritative;
+  }
+
+  function selectionFieldSnapshot(entry) {
+    const snapshot = {};
+    OPTIONAL_SELECTION_FIELDS.forEach((field) => {
+      if (Object.prototype.hasOwnProperty.call(entry, field)) {
+        snapshot[field] = entry[field];
+      }
+    });
+    return snapshot;
+  }
+
+  function validateSelectionFields(entry, linkedQuestion = null) {
+    const hasOrigin = Object.prototype.hasOwnProperty.call(entry, "selected_text_origin");
+    const hasBlockId = Object.prototype.hasOwnProperty.call(entry, "selected_block_id");
+    if (hasOrigin && !Object.values(SELECTED_TEXT_ORIGINS).includes(entry.selected_text_origin)) {
+      throw new Error(`selected_text_origin 无效：${entry.entry_id || "(未知条目)"}`);
+    }
+    if (
+      hasBlockId &&
+      (typeof entry.selected_block_id !== "string" || !entry.selected_block_id.trim())
+    ) {
+      throw new Error(`selected_block_id 必须是非空字符串：${entry.entry_id || "(未知条目)"}`);
+    }
+
+    const origin = selectedTextOrigin(entry);
+    if (
+      origin === SELECTED_TEXT_ORIGINS.translation &&
+      !["human_note", "human_question", "llm_answer"].includes(entry.entry_type)
+    ) {
+      throw new Error(`中文参考译文不能创建 ${entry.entry_type}：${entry.entry_id || "(未知条目)"}`);
+    }
+    if (entry.entry_type === "source_excerpt" && origin !== SELECTED_TEXT_ORIGINS.authoritative) {
+      throw new Error(`中文参考译文不能创建 source_excerpt：${entry.entry_id || "(未知条目)"}`);
+    }
+    if (entry.entry_type === "llm_answer" && linkedQuestion) {
+      const questionOrigin = selectedTextOrigin(linkedQuestion);
+      if (origin !== questionOrigin) {
+        throw new Error(`LLM 回答必须继承问题的选区来源：${entry.entry_id || "(未知条目)"}`);
+      }
+    }
+    return origin;
+  }
+
+  function normalizeAnnotationText(value) {
+    return String(value || "").normalize("NFC").replace(/\s+/g, " ").trim();
+  }
+
+  function resolveBlockAnnotations(entries, blocks) {
+    const blockCounts = {};
+    let unlocatedCount = 0;
+    entries.forEach((entry) => {
+      if (!ANNOTATABLE_ENTRY_TYPES.has(entry.entry_type)) return;
+      const origin = selectedTextOrigin(entry);
+      const originBlocks = blocks.filter((block) => block.source_origin === origin);
+      const selectedText = normalizeAnnotationText(entry.selected_text);
+      const matchesEntry = (block) =>
+        Boolean(selectedText) &&
+        block.source_locator === entry.source_locator &&
+        normalizeAnnotationText(block.visible_text).includes(selectedText);
+      let matches;
+      if (Object.prototype.hasOwnProperty.call(entry, "selected_block_id")) {
+        const verifiedIdMatches = originBlocks.filter(
+          (block) => block.block_id === entry.selected_block_id && matchesEntry(block),
+        );
+        matches =
+          verifiedIdMatches.length === 1
+            ? verifiedIdMatches
+            : originBlocks.filter(matchesEntry);
+      } else {
+        matches = originBlocks.filter(matchesEntry);
+      }
+      if (matches.length !== 1) {
+        unlocatedCount += 1;
+        return;
+      }
+      const blockKey = String(matches[0].block_key ?? matches[0].block_id);
+      blockCounts[blockKey] = (blockCounts[blockKey] || 0) + 1;
+    });
+    return { blockCounts, unlocatedCount };
+  }
+
+  function finiteNumber(value, fallback) {
+    return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+  }
+
+  function normalizePresentationLayout(value) {
+    const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const preset = ["compact", "balanced", "wide", "custom"].includes(
+      source.session_width_preset,
+    )
+      ? source.session_width_preset
+      : DEFAULT_PRESENTATION_LAYOUT.session_width_preset;
+    const presetWidth = SESSION_PANEL_WIDTHS[preset]
+      ? Number.parseFloat(SESSION_PANEL_WIDTHS[preset])
+      : null;
+    const normalized = {
+      language_ratio: Math.min(
+        0.95,
+        Math.max(0.05, finiteNumber(source.language_ratio, DEFAULT_PRESENTATION_LAYOUT.language_ratio)),
+      ),
+      figures_width_rem: Math.min(
+        120,
+        Math.max(8, finiteNumber(source.figures_width_rem, DEFAULT_PRESENTATION_LAYOUT.figures_width_rem)),
+      ),
+      session_width_rem: Math.min(
+        120,
+        Math.max(8, finiteNumber(source.session_width_rem, DEFAULT_PRESENTATION_LAYOUT.session_width_rem)),
+      ),
+      session_width_preset: preset,
+    };
+    if (presetWidth !== null) normalized.session_width_rem = presetWidth;
+    return normalized;
+  }
+
+  function clampPresentationLayout(value, metrics = {}) {
+    const layout = normalizePresentationLayout(value);
+    const rootFontPx = Math.max(1, finiteNumber(metrics.rootFontPx, 16));
+    const workspaceWidthPx = finiteNumber(metrics.workspaceWidthPx, 0);
+    const bodyWidthPx = finiteNumber(metrics.bodyWidthPx, 0);
+    const separatorWidthPx = Math.max(
+      0,
+      finiteNumber(metrics.separatorWidthPx, PRESENTATION_LIMITS.separator_width_px),
+    );
+    if (workspaceWidthPx > 800) {
+      const usableWidth = workspaceWidthPx - separatorWidthPx * 2;
+      const maximumSession = Math.max(
+        PRESENTATION_LIMITS.session_min_px,
+        usableWidth - PRESENTATION_LIMITS.body_min_px - PRESENTATION_LIMITS.figures_min_px,
+      );
+      let sessionWidthPx = Math.min(
+        maximumSession,
+        Math.max(PRESENTATION_LIMITS.session_min_px, layout.session_width_rem * rootFontPx),
+      );
+      const maximumFigures = Math.max(
+        PRESENTATION_LIMITS.figures_min_px,
+        usableWidth - PRESENTATION_LIMITS.body_min_px - sessionWidthPx,
+      );
+      let figuresWidthPx = Math.min(
+        maximumFigures,
+        Math.max(PRESENTATION_LIMITS.figures_min_px, layout.figures_width_rem * rootFontPx),
+      );
+      if (figuresWidthPx + sessionWidthPx + PRESENTATION_LIMITS.body_min_px > usableWidth) {
+        sessionWidthPx = Math.max(
+          PRESENTATION_LIMITS.session_min_px,
+          usableWidth - PRESENTATION_LIMITS.body_min_px - figuresWidthPx,
+        );
+      }
+      layout.figures_width_rem = Number((figuresWidthPx / rootFontPx).toFixed(3));
+      layout.session_width_rem = Number((sessionWidthPx / rootFontPx).toFixed(3));
+    }
+    if (bodyWidthPx > 0) {
+      const languageWidth = Math.max(1, bodyWidthPx - separatorWidthPx);
+      const minimumRatio = Math.min(0.5, PRESENTATION_LIMITS.language_min_px / languageWidth);
+      layout.language_ratio = Math.min(
+        1 - minimumRatio,
+        Math.max(minimumRatio, layout.language_ratio),
+      );
+    }
+    return layout;
+  }
+
+  function resizePresentationLayout(value, handle, deltaPx, metrics = {}) {
+    const layout = clampPresentationLayout(value, metrics);
+    const rootFontPx = Math.max(1, finiteNumber(metrics.rootFontPx, 16));
+    const deltaRem = finiteNumber(deltaPx, 0) / rootFontPx;
+    if (handle === "language") {
+      const bodyWidthPx = Math.max(1, finiteNumber(metrics.bodyWidthPx, 1));
+      const separatorWidthPx = Math.max(
+        0,
+        finiteNumber(metrics.separatorWidthPx, PRESENTATION_LIMITS.separator_width_px),
+      );
+      const usableWidth = Math.max(1, bodyWidthPx - separatorWidthPx);
+      layout.language_ratio = (layout.language_ratio * usableWidth + deltaPx) / usableWidth;
+    } else if (handle === "figures") {
+      layout.figures_width_rem -= deltaRem;
+    } else if (handle === "session") {
+      const totalRailWidth = layout.figures_width_rem + layout.session_width_rem;
+      const minimumFiguresRem = PRESENTATION_LIMITS.figures_min_px / rootFontPx;
+      const minimumSessionRem = PRESENTATION_LIMITS.session_min_px / rootFontPx;
+      const workspaceWidthPx = finiteNumber(metrics.workspaceWidthPx, 0);
+      const separatorWidthPx = Math.max(
+        0,
+        finiteNumber(metrics.separatorWidthPx, PRESENTATION_LIMITS.separator_width_px),
+      );
+      const maximumRailWidth = workspaceWidthPx > 800
+        ? (workspaceWidthPx - separatorWidthPx * 2 - PRESENTATION_LIMITS.body_min_px) / rootFontPx
+        : totalRailWidth;
+      const clampedRailWidth = Math.max(
+        minimumFiguresRem + minimumSessionRem,
+        Math.min(totalRailWidth, maximumRailWidth),
+      );
+      layout.session_width_rem = Math.min(
+        clampedRailWidth - minimumFiguresRem,
+        Math.max(minimumSessionRem, layout.session_width_rem - deltaRem),
+      );
+      layout.figures_width_rem = clampedRailWidth - layout.session_width_rem;
+      layout.session_width_preset = "custom";
+    } else {
+      throw new Error(`Unknown presentation resizer: ${handle}`);
+    }
+    return clampPresentationLayout(layout, metrics);
+  }
+
+  function presentationLayoutForPreset(value, preset) {
+    const normalizedPreset = normalizeSessionPanelWidth(preset);
+    const layout = normalizePresentationLayout(value);
+    layout.session_width_preset = normalizedPreset;
+    layout.session_width_rem = Number.parseFloat(SESSION_PANEL_WIDTHS[normalizedPreset]);
+    return layout;
   }
 
   function entriesForTab(entries, tabName) {
@@ -82,6 +324,18 @@ const ReadingWorkspaceModel = (() => {
     sessionPanelWidths: SESSION_PANEL_WIDTHS,
     defaultSessionPanelWidth: DEFAULT_SESSION_PANEL_WIDTH,
     normalizeSessionPanelWidth,
+    selectedTextOrigins: SELECTED_TEXT_ORIGINS,
+    defaultPresentationLayout: DEFAULT_PRESENTATION_LAYOUT,
+    presentationLimits: PRESENTATION_LIMITS,
+    selectedTextOrigin,
+    selectionFieldSnapshot,
+    validateSelectionFields,
+    normalizeAnnotationText,
+    resolveBlockAnnotations,
+    normalizePresentationLayout,
+    clampPresentationLayout,
+    resizePresentationLayout,
+    presentationLayoutForPreset,
     entriesForTab,
     groupQuestionAnswers,
     buildSessionMarkdownEnvelope,
@@ -112,8 +366,11 @@ if (typeof document !== "undefined") {
   ]);
   const DENSITY_VALUES = new Set(["all", "paragraph", "section"]);
   const STORAGE_KEY = `personal-research-os:${BOOTSTRAP.session_id}`;
-  const SESSION_PANEL_WIDTH_STORAGE_KEY =
-    "personal-research-os:reading-workspace:presentation:session-panel-width";
+  const PRESENTATION_STORAGE_KEY =
+    "personal-research-os:reading-workspace:presentation:v1";
+  const SELECTED_TEXT_ORIGINS = ReadingWorkspaceModel.selectedTextOrigins;
+  const TRANSLATION_PROVENANCE =
+    "中文参考译文 / 机器或 LLM 辅助 / 未核验";
   const ENTRY_TYPE_LABELS = Object.freeze({
     source_excerpt: "来源摘录",
     human_note: "个人笔记",
@@ -137,7 +394,20 @@ if (typeof document !== "undefined") {
     messageSurface: document.getElementById("message-surface"),
     selectionTools: document.getElementById("selection-tools"),
     selectionPreview: document.getElementById("selection-preview"),
-    readingSurface: document.getElementById("reading-surface"),
+    selectionOriginNote: document.getElementById("selection-origin-note"),
+    selectionSourceExcerpt: document.getElementById("selection-source-excerpt"),
+    annotationLocationStatus: document.getElementById("annotation-location-status"),
+    referenceMode: document.getElementById("reference-mode"),
+    referenceSurfaces: document.querySelector("[data-reference-surfaces]"),
+    referencePanes: [...document.querySelectorAll("[data-reference-pane]")],
+    figuresPanel: document.getElementById("figures-panel"),
+    figuresSurface: document.getElementById("figures-surface"),
+    workspaceShell: document.querySelector(".workspace-shell"),
+    readerPane: document.querySelector(".reader-pane"),
+    resetLayout: document.getElementById("reset-layout"),
+    languageResizer: document.getElementById("language-resizer"),
+    contentFiguresResizer: document.getElementById("content-figures-resizer"),
+    figuresSessionResizer: document.getElementById("figures-session-resizer"),
     mutedSummary: document.getElementById("muted-summary"),
     sessionTabs: [...document.querySelectorAll("[data-session-tab]")],
     sessionList: document.getElementById("session-list"),
@@ -160,6 +430,15 @@ if (typeof document !== "undefined") {
     packetContent: document.getElementById("packet-content"),
     copyPacket: document.getElementById("copy-packet"),
   };
+  const selectionRoots = [
+    elements.referenceSurfaces,
+    elements.figuresSurface,
+  ].filter(Boolean);
+  const resizers = [
+    elements.languageResizer,
+    elements.contentFiguresResizer,
+    elements.figuresSessionResizer,
+  ].filter(Boolean);
 
   let state = {
     entries: [],
@@ -169,9 +448,40 @@ if (typeof document !== "undefined") {
   let currentSelection = null;
   let editingEntryId = null;
   let activeSessionTab = "all";
+  let presentationLayout = clone(ReadingWorkspaceModel.defaultPresentationLayout);
+  const REFERENCE_MODES = new Set(["english", "bilingual", "translation"]);
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
+  }
+
+  function applyReferenceMode(value) {
+    if (!elements.referenceMode) return "english";
+    const normalized = REFERENCE_MODES.has(value) ? value : "bilingual";
+    const showEnglish = normalized !== "translation";
+    const showTranslation = normalized !== "english";
+    elements.referenceMode.value = normalized;
+    if (elements.referenceSurfaces) {
+      elements.referenceSurfaces.dataset.referenceMode = normalized;
+      elements.referenceSurfaces.classList.remove(
+        "reference-mode-english",
+        "reference-mode-bilingual",
+        "reference-mode-translation",
+      );
+      elements.referenceSurfaces.classList.add(`reference-mode-${normalized}`);
+    }
+    elements.referencePanes.forEach((pane) => {
+      const visible = pane.dataset.referencePane === "english" ? showEnglish : showTranslation;
+      pane.hidden = !visible;
+      pane.setAttribute("aria-hidden", String(!visible));
+    });
+    if (elements.languageResizer) {
+      const visible = normalized === "bilingual";
+      elements.languageResizer.hidden = !visible;
+      elements.languageResizer.setAttribute("aria-hidden", String(!visible));
+      elements.languageResizer.tabIndex = visible ? 0 : -1;
+    }
+    return normalized;
   }
 
   function createElement(tagName, className, text) {
@@ -191,39 +501,168 @@ if (typeof document !== "undefined") {
     elements.saveState.textContent = label;
   }
 
-  function applySessionPanelWidth(value) {
-    const normalized = ReadingWorkspaceModel.normalizeSessionPanelWidth(value);
-    elements.sessionPanelWidth.value = normalized;
+  function presentationMetrics() {
+    const rootFontPx = Number.parseFloat(
+      window.getComputedStyle(document.documentElement).fontSize,
+    ) || 16;
+    const workspaceWidthPx = elements.workspaceShell
+      ? elements.workspaceShell.getBoundingClientRect().width
+      : window.innerWidth;
+    const bodyWidthPx = elements.readerPane
+      ? elements.readerPane.getBoundingClientRect().width
+      : workspaceWidthPx;
+    const separatorWidthPx = elements.contentFiguresResizer
+      ? elements.contentFiguresResizer.getBoundingClientRect().width || 8
+      : 8;
+    return { rootFontPx, workspaceWidthPx, bodyWidthPx, separatorWidthPx };
+  }
+
+  function ensureCustomWidthOption() {
+    if (!elements.sessionPanelWidth) return;
+    if (elements.sessionPanelWidth.querySelector('option[value="custom"]')) return;
+    const option = document.createElement("option");
+    option.value = "custom";
+    option.textContent = "自定义";
+    elements.sessionPanelWidth.append(option);
+  }
+
+  function updateResizerAccessibility(layout, metrics) {
+    const rootFontPx = metrics.rootFontPx || 16;
+    const workspaceRem = metrics.workspaceWidthPx / rootFontPx;
+    const bodyWidth = Math.max(1, metrics.bodyWidthPx - metrics.separatorWidthPx);
+    const minimumLanguageRatio = Math.min(
+      0.5,
+      ReadingWorkspaceModel.presentationLimits.language_min_px / bodyWidth,
+    );
+    if (elements.languageResizer) {
+      elements.languageResizer.setAttribute("aria-valuemin", String(Math.round(minimumLanguageRatio * 100)));
+      elements.languageResizer.setAttribute("aria-valuemax", String(Math.round((1 - minimumLanguageRatio) * 100)));
+      elements.languageResizer.setAttribute("aria-valuenow", String(Math.round(layout.language_ratio * 100)));
+      elements.languageResizer.setAttribute("aria-valuetext", `英文栏 ${Math.round(layout.language_ratio * 100)}%`);
+    }
+    if (elements.contentFiguresResizer) {
+      elements.contentFiguresResizer.setAttribute("aria-valuemin", "18");
+      elements.contentFiguresResizer.setAttribute(
+        "aria-valuemax",
+        String(Math.max(18, Math.round(workspaceRem - layout.session_width_rem - 34))),
+      );
+      elements.contentFiguresResizer.setAttribute("aria-valuenow", String(Math.round(layout.figures_width_rem)));
+      elements.contentFiguresResizer.setAttribute("aria-valuetext", `图表栏 ${layout.figures_width_rem.toFixed(1)}rem`);
+    }
+    if (elements.figuresSessionResizer) {
+      elements.figuresSessionResizer.setAttribute("aria-valuemin", "24");
+      elements.figuresSessionResizer.setAttribute(
+        "aria-valuemax",
+        String(Math.max(24, Math.round(workspaceRem - layout.figures_width_rem - 34))),
+      );
+      elements.figuresSessionResizer.setAttribute("aria-valuenow", String(Math.round(layout.session_width_rem)));
+      elements.figuresSessionResizer.setAttribute("aria-valuetext", `会话栏 ${layout.session_width_rem.toFixed(1)}rem`);
+    }
+  }
+
+  function applyPresentationLayout(value) {
+    ensureCustomWidthOption();
+    let metrics = presentationMetrics();
+    presentationLayout = ReadingWorkspaceModel.clampPresentationLayout(value, metrics);
+    document.documentElement.style.setProperty(
+      "--language-column-position",
+      `${(presentationLayout.language_ratio * 100).toFixed(3)}%`,
+    );
+    document.documentElement.style.setProperty(
+      "--figures-panel-width",
+      `${presentationLayout.figures_width_rem}rem`,
+    );
     document.documentElement.style.setProperty(
       "--session-panel-width",
-      ReadingWorkspaceModel.sessionPanelWidths[normalized],
+      `${presentationLayout.session_width_rem}rem`,
     );
-    return normalized;
+    metrics = presentationMetrics();
+    presentationLayout = ReadingWorkspaceModel.clampPresentationLayout(
+      presentationLayout,
+      metrics,
+    );
+    document.documentElement.style.setProperty(
+      "--language-column-position",
+      `${(presentationLayout.language_ratio * 100).toFixed(3)}%`,
+    );
+    document.documentElement.style.setProperty(
+      "--figures-panel-width",
+      `${presentationLayout.figures_width_rem}rem`,
+    );
+    document.documentElement.style.setProperty(
+      "--session-panel-width",
+      `${presentationLayout.session_width_rem}rem`,
+    );
+    if (elements.sessionPanelWidth) {
+      const customOption = elements.sessionPanelWidth.querySelector('option[value="custom"]');
+      if (customOption) {
+        customOption.disabled = presentationLayout.session_width_preset !== "custom";
+      }
+      elements.sessionPanelWidth.value = presentationLayout.session_width_preset;
+      const selectedOption = elements.sessionPanelWidth.querySelector(
+        `option[value="${presentationLayout.session_width_preset}"]`,
+      );
+      if (selectedOption) selectedOption.selected = true;
+    }
+    updateResizerAccessibility(presentationLayout, metrics);
+    return presentationLayout;
   }
 
-  function restoreSessionPanelWidth() {
+  function persistPresentationLayout(successMessage = "阅读布局已保存。") {
+    try {
+      localStorage.setItem(PRESENTATION_STORAGE_KEY, JSON.stringify(presentationLayout));
+      setMessage(successMessage, "success");
+      return true;
+    } catch (error) {
+      setMessage(`布局已在当前页面应用，但无法跨页面保存：${error.message}`, "error");
+      return false;
+    }
+  }
+
+  function setPresentationLayout(value, successMessage) {
+    applyPresentationLayout(value);
+    persistPresentationLayout(successMessage);
+  }
+
+  function restorePresentationLayout() {
     let storedValue = null;
     try {
-      storedValue = localStorage.getItem(SESSION_PANEL_WIDTH_STORAGE_KEY);
+      storedValue = localStorage.getItem(PRESENTATION_STORAGE_KEY);
     } catch (error) {
-      applySessionPanelWidth(ReadingWorkspaceModel.defaultSessionPanelWidth);
-      setMessage(`无法读取会话栏宽度偏好；当前使用平衡宽度。${error.message}`, "error");
+      applyPresentationLayout(ReadingWorkspaceModel.defaultPresentationLayout);
+      setMessage(`无法读取布局偏好；当前使用默认布局。${error.message}`, "error");
       return;
     }
-    const normalized = applySessionPanelWidth(storedValue);
-    if (storedValue !== null && normalized !== storedValue) {
-      setMessage("已忽略无效的会话栏宽度偏好；当前使用平衡宽度。", "info");
+    if (storedValue === null) {
+      applyPresentationLayout(ReadingWorkspaceModel.defaultPresentationLayout);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(storedValue);
+      applyPresentationLayout(parsed);
+    } catch (error) {
+      applyPresentationLayout(ReadingWorkspaceModel.defaultPresentationLayout);
+      setMessage(`已忽略无效布局偏好；当前使用默认布局。${error.message}`, "info");
     }
   }
 
-  function saveSessionPanelWidth() {
-    const normalized = applySessionPanelWidth(elements.sessionPanelWidth.value);
-    try {
-      localStorage.setItem(SESSION_PANEL_WIDTH_STORAGE_KEY, normalized);
-      setMessage(`会话栏宽度已设为 ${elements.sessionPanelWidth.selectedOptions[0].textContent}。`, "success");
-    } catch (error) {
-      setMessage(`会话栏宽度已应用，但无法保存浏览器偏好：${error.message}`, "error");
-    }
+  function applySessionPanelPreset() {
+    if (!elements.sessionPanelWidth || elements.sessionPanelWidth.value === "custom") return;
+    const next = ReadingWorkspaceModel.presentationLayoutForPreset(
+      presentationLayout,
+      elements.sessionPanelWidth.value,
+    );
+    setPresentationLayout(
+      next,
+      `会话栏宽度已设为 ${elements.sessionPanelWidth.selectedOptions[0].textContent}。`,
+    );
+  }
+
+  function resetPresentationLayout() {
+    setPresentationLayout(
+      ReadingWorkspaceModel.defaultPresentationLayout,
+      "阅读布局已恢复：中英 50/50、图表栏 28rem、会话栏 Balanced 42rem。",
+    );
   }
 
   function preferenceSnapshot() {
@@ -247,9 +686,12 @@ if (typeof document !== "undefined") {
       confidence: entry.confidence,
       verification: entry.verification,
     };
+    Object.assign(snapshot, ReadingWorkspaceModel.selectionFieldSnapshot(entry));
     if (entry.entry_type === "llm_answer") {
       snapshot.question_entry_id = entry.question_entry_id;
-      if (entry.model_label) snapshot.model_label = entry.model_label;
+      if (Object.prototype.hasOwnProperty.call(entry, "model_label")) {
+        snapshot.model_label = entry.model_label;
+      }
     }
     return snapshot;
   }
@@ -324,6 +766,8 @@ if (typeof document !== "undefined") {
         "content",
         "confidence",
         "verification",
+        "selected_text_origin",
+        "selected_block_id",
         "question_entry_id",
         "model_label",
       ]),
@@ -347,6 +791,7 @@ if (typeof document !== "undefined") {
     if (!ENTRY_TYPES.has(entry.entry_type)) {
       throw new Error(`不支持的 entry_type：${entry.entry_type}`);
     }
+    ReadingWorkspaceModel.validateSelectionFields(entry);
     if (entry.author_type !== AUTHOR_BY_ENTRY_TYPE[entry.entry_type]) {
       throw new Error(
         `author_type 与 entry_type 不匹配：${entry.entry_id}；导入已停止，未进行来源重分配。`,
@@ -415,6 +860,7 @@ if (typeof document !== "undefined") {
       if (question.entry_type !== "human_question") {
         throw new Error(`LLM 回答必须链接 human_question：${entry.entry_id}`);
       }
+      ReadingWorkspaceModel.validateSelectionFields(entry, question);
     });
     if (Object.prototype.hasOwnProperty.call(payload, "exported_at")) {
       assertString(payload.exported_at, "exported_at");
@@ -597,7 +1043,14 @@ if (typeof document !== "undefined") {
     identity.append(createElement("p", "entry-id", entry.entry_id));
     identity.append(createElement("h3", "", ENTRY_TYPE_LABELS[entry.entry_type]));
     header.append(identity);
-    header.append(createElement("span", "origin-badge", entry.author_type));
+    const badges = createElement("div", "entry-badges");
+    badges.append(createElement("span", "origin-badge", entry.author_type));
+    if (ReadingWorkspaceModel.selectedTextOrigin(entry) === SELECTED_TEXT_ORIGINS.translation) {
+      badges.append(
+        createElement("span", "translation-origin-badge", TRANSLATION_PROVENANCE),
+      );
+    }
+    header.append(badges);
     card.append(header);
 
     addField(card, "来源定位", entry.source_locator);
@@ -666,6 +1119,12 @@ if (typeof document !== "undefined") {
     groups.forEach(({ question, answers }) => {
       const group = createElement("section", "qa-group");
       group.dataset.questionEntryId = question.entry_id;
+      group.dataset.selectedTextOrigin = ReadingWorkspaceModel.selectedTextOrigin(question);
+      if (group.dataset.selectedTextOrigin === SELECTED_TEXT_ORIGINS.translation) {
+        group.append(
+          createElement("p", "qa-origin-boundary", TRANSLATION_PROVENANCE),
+        );
+      }
       const questionColumn = createElement("div", "qa-question-column");
       questionColumn.append(createElement("p", "qa-column-label", "问题"));
       questionColumn.append(renderEntryCard(question, entryById));
@@ -709,42 +1168,182 @@ if (typeof document !== "undefined") {
     });
   }
 
+  function sourceBlockOrigin(block) {
+    if (Object.values(SELECTED_TEXT_ORIGINS).includes(block.dataset.sourceOrigin)) {
+      return block.dataset.sourceOrigin;
+    }
+    return block.dataset.blockId && block.dataset.blockId.startsWith("translation-")
+      ? SELECTED_TEXT_ORIGINS.translation
+      : SELECTED_TEXT_ORIGINS.authoritative;
+  }
+
+  function visibleBlockText(block) {
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (parent && parent.closest(".hover-card, [role='tooltip'], .annotation-badge")) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const fragments = [];
+    while (walker.nextNode()) fragments.push(walker.currentNode.nodeValue || "");
+    return fragments.join(" ");
+  }
+
+  function updateAnnotations() {
+    const blocks = [...document.querySelectorAll("[data-source-block][data-block-id]")];
+    blocks.forEach((block) => {
+      block.classList.remove("is-annotated");
+      delete block.dataset.annotationCount;
+      block.querySelectorAll(":scope > .annotation-badge").forEach((badge) => badge.remove());
+    });
+    const descriptors = blocks.map((block, index) => ({
+      block_key: String(index),
+      block_id: block.dataset.blockId,
+      source_origin: sourceBlockOrigin(block),
+      source_locator: block.dataset.locator || "not_available",
+      visible_text: visibleBlockText(block),
+    }));
+    const result = ReadingWorkspaceModel.resolveBlockAnnotations(
+      state.entries,
+      descriptors,
+    );
+    Object.entries(result.blockCounts).forEach(([blockKey, count]) => {
+      const block = blocks[Number(blockKey)];
+      if (!block) return;
+      block.classList.add("is-annotated");
+      block.dataset.annotationCount = String(count);
+      const badge = createElement("span", "annotation-badge", `批注 ${count}`);
+      badge.setAttribute("aria-label", `${count} 条阅读批注`);
+      badge.title = `${count} 条阅读批注`;
+      block.append(badge);
+    });
+    if (elements.annotationLocationStatus) {
+      elements.annotationLocationStatus.hidden = result.unlocatedCount === 0;
+      elements.annotationLocationStatus.textContent = `未定位批注：${result.unlocatedCount}`;
+    }
+  }
+
   function renderAll() {
     elements.density.value = state.preferences.density;
     elements.highlightToggle.checked = state.preferences.highlights_enabled;
+    applyReferenceMode(elements.referenceMode ? elements.referenceMode.value : "english");
     renderEntries();
     updateHighlights();
+    updateAnnotations();
+  }
+
+  function handleConceptAction(event) {
+    const action = event.target.closest("button[data-action]");
+    if (!action) return;
+    const hit = action.closest(".concept-hit");
+    if (!hit) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (action.dataset.action === "mute-concept") {
+      mutate(() => {
+        if (!state.preferences.muted_concepts.includes(hit.dataset.concept)) {
+          state.preferences.muted_concepts.push(hit.dataset.concept);
+        }
+      }, `已在本会话静音概念：${hit.dataset.concept}`);
+    } else if (action.dataset.action === "mute-term") {
+      mutate(() => {
+        if (!state.preferences.muted_terms.includes(hit.dataset.termKey)) {
+          state.preferences.muted_terms.push(hit.dataset.termKey);
+        }
+      }, `已在本会话静音匹配词：${hit.dataset.termLabel}`);
+    }
+  }
+
+  function clearCurrentSelection() {
+    currentSelection = null;
+    elements.selectionTools.hidden = true;
+    elements.selectionPreview.textContent = "";
+    if (elements.selectionOriginNote) elements.selectionOriginNote.hidden = true;
+    const excerptButton = elements.selectionSourceExcerpt || document.querySelector(
+      '[data-create-entry="source_excerpt"]',
+    );
+    if (excerptButton) {
+      excerptButton.hidden = false;
+      excerptButton.disabled = false;
+      excerptButton.removeAttribute("aria-disabled");
+    }
+    delete elements.selectionTools.dataset.sourceOrigin;
+  }
+
+  function selectionBlockForNode(node) {
+    if (!node) return null;
+    const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+    return element ? element.closest("[data-source-block][data-block-id]") : null;
+  }
+
+  function selectedVisibleText(range) {
+    const fragment = range.cloneContents();
+    fragment.querySelectorAll(".hover-card, [role='tooltip'], .annotation-badge").forEach(
+      (node) => node.remove(),
+    );
+    return fragment.textContent || "";
+  }
+
+  function showSelectionTools(origin, selectedText) {
+    const isTranslation = origin === SELECTED_TEXT_ORIGINS.translation;
+    elements.selectionPreview.textContent = selectedText.replace(/\s+/g, " ").slice(0, 180);
+    elements.selectionTools.dataset.sourceOrigin = origin;
+    if (elements.selectionOriginNote) {
+      elements.selectionOriginNote.hidden = !isTranslation;
+      elements.selectionOriginNote.textContent = isTranslation ? TRANSLATION_PROVENANCE : "";
+    }
+    const excerptButton = elements.selectionSourceExcerpt || document.querySelector(
+      '[data-create-entry="source_excerpt"]',
+    );
+    if (excerptButton) {
+      excerptButton.hidden = isTranslation;
+      excerptButton.disabled = isTranslation;
+      if (isTranslation) excerptButton.setAttribute("aria-disabled", "true");
+      else excerptButton.removeAttribute("aria-disabled");
+    }
+    elements.selectionTools.hidden = false;
   }
 
   function captureSelection() {
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) {
-      elements.selectionTools.hidden = true;
-      return;
-    }
-    if (
-      !elements.readingSurface.contains(selection.anchorNode) ||
-      !elements.readingSurface.contains(selection.focusNode)
-    ) {
-      elements.selectionTools.hidden = true;
-      return;
-    }
-    const selectedText = selection.toString();
-    if (!selectedText.trim()) {
-      elements.selectionTools.hidden = true;
+      clearCurrentSelection();
       return;
     }
     const range = selection.getRangeAt(0);
-    const startNode = range.startContainer.nodeType === Node.ELEMENT_NODE
-      ? range.startContainer
-      : range.startContainer.parentElement;
-    const block = startNode.closest("[data-source-block]");
+    const startBlock = selectionBlockForNode(range.startContainer);
+    const endBlock = selectionBlockForNode(range.endContainer);
+    const selectionRoot = selectionRoots.find(
+      (root) => startBlock && endBlock && root.contains(startBlock) && root.contains(endBlock),
+    );
+    if (!selectionRoot || startBlock !== endBlock) {
+      clearCurrentSelection();
+      if (startBlock || endBlock) {
+        setMessage("一次选区必须位于同一个正文或图表块内。", "error");
+      }
+      return;
+    }
+    const selectedText = selectedVisibleText(range);
+    if (!selectedText.trim()) {
+      clearCurrentSelection();
+      return;
+    }
+    const origin = sourceBlockOrigin(startBlock);
+    if (!Object.values(SELECTED_TEXT_ORIGINS).includes(origin)) {
+      clearCurrentSelection();
+      setMessage("无法确定选区来源；未创建条目。", "error");
+      return;
+    }
     currentSelection = {
       selected_text: selectedText,
-      source_locator: block ? block.dataset.locator : "not_available",
+      source_locator: startBlock.dataset.locator || "not_available",
+      selected_text_origin: origin,
+      selected_block_id: startBlock.dataset.blockId,
     };
-    elements.selectionPreview.textContent = selectedText.replace(/\s+/g, " ").slice(0, 180);
-    elements.selectionTools.hidden = false;
+    showSelectionTools(origin, selectedText);
   }
 
   function openEntryDialog(entryType, entry = null) {
@@ -752,11 +1351,24 @@ if (typeof document !== "undefined") {
       setMessage("请先在阅读正文中选择文本。", "error");
       return;
     }
+    if (
+      !entry &&
+      entryType === "source_excerpt" &&
+      currentSelection.selected_text_origin === SELECTED_TEXT_ORIGINS.translation
+    ) {
+      setMessage("中文参考译文仅可创建个人笔记或问题，不能保存来源摘录。", "error");
+      return;
+    }
     editingEntryId = entry ? entry.entry_id : null;
     elements.entryForm.dataset.entryType = entryType;
     elements.entryDialogType.textContent = ENTRY_TYPE_LABELS[entryType];
     elements.entryDialogTitle.textContent = entry ? "编辑条目" : "创建条目";
-    elements.entryOrigin.textContent = AUTHOR_BY_ENTRY_TYPE[entryType];
+    const selectionOrigin = entry
+      ? ReadingWorkspaceModel.selectedTextOrigin(entry)
+      : currentSelection.selected_text_origin;
+    elements.entryOrigin.textContent = selectionOrigin === SELECTED_TEXT_ORIGINS.translation
+      ? `${AUTHOR_BY_ENTRY_TYPE[entryType]} · ${TRANSLATION_PROVENANCE}`
+      : `${AUTHOR_BY_ENTRY_TYPE[entryType]} · 英文权威来源`;
     elements.entryLocator.value = entry ? entry.source_locator : currentSelection.source_locator;
     elements.entrySelectedText.value = entry ? entry.selected_text : currentSelection.selected_text;
     elements.entryContent.readOnly = entryType === "source_excerpt";
@@ -788,6 +1400,10 @@ if (typeof document !== "undefined") {
         }
       }, "条目已显式更新并保存到本地恢复数据。");
     } else {
+      if (!currentSelection) {
+        setMessage("选区已失效，请重新选择文本。", "error");
+        return;
+      }
       const defaults = ENTRY_DEFAULTS[entryType];
       const entry = {
         entry_id: nextEntryId(),
@@ -799,13 +1415,21 @@ if (typeof document !== "undefined") {
         content,
         confidence: defaults.confidence,
         verification: defaults.verification,
+        selected_text_origin: currentSelection.selected_text_origin,
+        selected_block_id: currentSelection.selected_block_id,
       };
+      try {
+        ReadingWorkspaceModel.validateSelectionFields(entry);
+      } catch (error) {
+        setMessage(error.message, "error");
+        return;
+      }
       mutate(() => state.entries.push(entry), "条目已创建并保存到本地恢复数据。");
     }
     elements.entryDialog.close();
     editingEntryId = null;
     window.getSelection().removeAllRanges();
-    elements.selectionTools.hidden = true;
+    clearCurrentSelection();
   }
 
   function deleteEntry(entryId) {
@@ -832,7 +1456,10 @@ if (typeof document !== "undefined") {
     questions.forEach((question) => {
       const option = document.createElement("option");
       option.value = question.entry_id;
-      option.textContent = `${question.entry_id} · ${question.content}`;
+      const originLabel = ReadingWorkspaceModel.selectedTextOrigin(question) === SELECTED_TEXT_ORIGINS.translation
+        ? " · 中文参考"
+        : "";
+      option.textContent = `${question.entry_id}${originLabel} · ${question.content}`;
       elements.answerQuestion.append(option);
     });
     elements.answerModelLabel.value = "";
@@ -866,9 +1493,19 @@ if (typeof document !== "undefined") {
       confidence: defaults.confidence,
       verification: defaults.verification,
       question_entry_id: question.entry_id,
+      selected_text_origin: ReadingWorkspaceModel.selectedTextOrigin(question),
     };
+    if (Object.prototype.hasOwnProperty.call(question, "selected_block_id")) {
+      answer.selected_block_id = question.selected_block_id;
+    }
     const modelLabel = elements.answerModelLabel.value.trim();
     if (modelLabel) answer.model_label = modelLabel;
+    try {
+      ReadingWorkspaceModel.validateSelectionFields(answer, question);
+    } catch (error) {
+      setMessage(error.message, "error");
+      return;
+    }
     mutate(() => state.entries.push(answer), "LLM 回答已粘贴、链接并保存到本地恢复数据。");
     elements.answerDialog.close();
   }
@@ -879,6 +1516,7 @@ if (typeof document !== "undefined") {
       "",
       `来源：${BOOTSTRAP.source_label}`,
       `来源定位：${question.source_locator}`,
+      `选区来源：${ReadingWorkspaceModel.selectedTextOrigin(question) === SELECTED_TEXT_ORIGINS.translation ? TRANSLATION_PROVENANCE : "英文权威来源"}`,
       "",
       "## 选中文本",
       "",
@@ -996,6 +1634,65 @@ if (typeof document !== "undefined") {
     reader.readAsText(file, "UTF-8");
   }
 
+  function bindPresentationResizer(resizer) {
+    const handle = resizer.dataset.resizer;
+    let drag = null;
+
+    function finishDrag(event) {
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      if (resizer.hasPointerCapture(event.pointerId)) {
+        resizer.releasePointerCapture(event.pointerId);
+      }
+      drag = null;
+      resizer.classList.remove("is-dragging");
+      document.body.classList.remove("is-resizing-layout");
+      persistPresentationLayout("阅读栏宽已保存。若需默认值，可双击分隔条或使用重置布局。");
+    }
+
+    resizer.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || resizer.hidden) return;
+      event.preventDefault();
+      drag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        initialLayout: clone(presentationLayout),
+        metrics: presentationMetrics(),
+      };
+      resizer.setPointerCapture(event.pointerId);
+      resizer.classList.add("is-dragging");
+      document.body.classList.add("is-resizing-layout");
+    });
+    resizer.addEventListener("pointermove", (event) => {
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const next = ReadingWorkspaceModel.resizePresentationLayout(
+        drag.initialLayout,
+        handle,
+        event.clientX - drag.startX,
+        drag.metrics,
+      );
+      applyPresentationLayout(next);
+    });
+    resizer.addEventListener("pointerup", finishDrag);
+    resizer.addEventListener("pointercancel", finishDrag);
+    resizer.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      event.preventDefault();
+      const step = event.shiftKey ? 48 : 16;
+      const delta = event.key === "ArrowLeft" ? -step : step;
+      const next = ReadingWorkspaceModel.resizePresentationLayout(
+        presentationLayout,
+        handle,
+        delta,
+        presentationMetrics(),
+      );
+      setPresentationLayout(next, "阅读栏宽已通过键盘调整并保存。");
+    });
+    resizer.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      resetPresentationLayout();
+    });
+  }
+
   elements.density.addEventListener("change", () => {
     mutate(() => {
       state.preferences.density = elements.density.value;
@@ -1006,35 +1703,26 @@ if (typeof document !== "undefined") {
       state.preferences.highlights_enabled = elements.highlightToggle.checked;
     }, "概念高亮显示状态已更新。");
   });
-  elements.sessionPanelWidth.addEventListener("change", saveSessionPanelWidth);
+  elements.sessionPanelWidth.addEventListener("change", applySessionPanelPreset);
+  if (elements.referenceMode) {
+    elements.referenceMode.addEventListener("change", () => {
+      applyReferenceMode(elements.referenceMode.value);
+      clearCurrentSelection();
+      applyPresentationLayout(presentationLayout);
+    });
+  }
+  if (elements.resetLayout) elements.resetLayout.addEventListener("click", resetPresentationLayout);
+  resizers.forEach(bindPresentationResizer);
   elements.restoreMuted.addEventListener("click", () => {
     mutate(() => {
       state.preferences.muted_concepts = [];
       state.preferences.muted_terms = [];
     }, "已恢复所有静音概念和匹配词。");
   });
-  elements.readingSurface.addEventListener("mouseup", () => window.setTimeout(captureSelection, 0));
-  elements.readingSurface.addEventListener("keyup", captureSelection);
-  elements.readingSurface.addEventListener("click", (event) => {
-    const action = event.target.closest("button[data-action]");
-    if (!action) return;
-    const hit = action.closest(".concept-hit");
-    if (!hit) return;
-    event.preventDefault();
-    event.stopPropagation();
-    if (action.dataset.action === "mute-concept") {
-      mutate(() => {
-        if (!state.preferences.muted_concepts.includes(hit.dataset.concept)) {
-          state.preferences.muted_concepts.push(hit.dataset.concept);
-        }
-      }, `已在本会话静音概念：${hit.dataset.concept}`);
-    } else if (action.dataset.action === "mute-term") {
-      mutate(() => {
-        if (!state.preferences.muted_terms.includes(hit.dataset.termKey)) {
-          state.preferences.muted_terms.push(hit.dataset.termKey);
-        }
-      }, `已在本会话静音匹配词：${hit.dataset.termLabel}`);
-    }
+  selectionRoots.forEach((surface) => {
+    surface.addEventListener("mouseup", () => window.setTimeout(captureSelection, 0));
+    surface.addEventListener("keyup", captureSelection);
+    surface.addEventListener("click", handleConceptAction);
   });
   document.querySelectorAll("[data-create-entry]").forEach((button) => {
     button.addEventListener("click", () => openEntryDialog(button.dataset.createEntry));
@@ -1088,7 +1776,16 @@ if (typeof document !== "undefined") {
     snapshot: () => clone(sessionPayload()),
   });
 
-  restoreSessionPanelWidth();
+  let resizeFrame = null;
+  window.addEventListener("resize", () => {
+    if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame);
+    resizeFrame = window.requestAnimationFrame(() => {
+      resizeFrame = null;
+      applyPresentationLayout(presentationLayout);
+    });
+  });
+
+  restorePresentationLayout();
   renderAll();
   offerRecovery();
 })();

@@ -1,8 +1,10 @@
 # Personal Research OS Project Context
 
 Status: KA-00 governance accepted; RW-00 governance accepted and complete on 2026-08-04;\
-RW-01 eligibility gate open; RW-01 not authorized and not started;\
-KA-01 eligibility gate open; KA-01 not authorized and not started\
+RW-01 and RW-01.1 accepted and complete at commit `8afa9aa`;\
+RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete;\
+HTML prototype frozen; the commit containing this status record is the published RW-02 baseline;\
+RW-03 and KA-01 remain unauthorized and not started\
 Pre-KA-00 implementation baseline: `d622b92c78d3fcaf327db93e599e6a77fe112f1c`\
 Current governance version: identified by this document's Git history\
 Future KA-01 run baseline: `git rev-parse HEAD` at run start\
@@ -81,9 +83,12 @@ explicitly approved:
 - The human evaluation questions in `P01.5_UI_Validation.md`, including
   highlight density, summary length, Concept granularity, reading efficiency,
   alias matching, and keyboard behavior, are unresolved.
-- RW-01 must evaluate reading readability, annotation friction, confidence
-  controls, question/answer traceability, and whether the workflow is useful
-  enough to justify later PDF overlays or an Obsidian plugin.
+- Realistic human reading on 2026-08-11 identified five RW-02.2 usability
+  corrections: section-level bilingual alignment, Chinese note/question
+  capture, visible annotated-block markers, an independent figure/table rail,
+  and draggable widths for a full-width 4K layout. The repository owner
+  accepted the resulting RW-02.2 UI on 2026-08-11 with the overall conclusion
+  “通过，未报告其他问题”.
 - A one-source trial must test proposal classification, duplicate control,
   provenance quality, uncertainty handling, and human review cost.
 - The project has not decided whether any later extraction automation or
@@ -92,13 +97,53 @@ explicitly approved:
 ## Active stage and next gate
 
 RW-00 governance and the P0 UI contract were human accepted and completed on
-2026-08-04. The RW-01 eligibility gate is open, but RW-01 is not authorized
-and not started. The next executable action requires a separate explicit
-human-approved RW-01 implementation prompt. Acceptance of RW-00 does not
-authorize RW-01, RW-02, reading artifacts, model calls, or KA-01. Integrated
-AI runtime, automatic acquisition, and a full Obsidian plugin remain outside
-the first prototype. Stage 02 Information Acquisition remains a separate
-future concern.
+2026-08-04. RW-01 and RW-01.1 were human accepted and completed at commit
+`8afa9aa`. RW-02.2 human UI was accepted on 2026-08-11.
+Current automated verification passed 25 Concept checks, 32 focused Reading UI
+tests, and 49 full-suite tests. The 974,523-byte offline HTML contains 18
+bilingual section pairs, 7 images, 2 rendered tables, 3 accessible resizers,
+and 131 unique annotatable source blocks. RW-02 is accepted and complete; the
+HTML prototype is frozen; the commit containing this status record is the published RW-02 baseline.
+RW-03 and
+KA-01 remain unauthorized and not started. This accepted local prototype does
+not permit model calls, synthesis, or a KA-01 run. Integrated
+AI runtime and automatic acquisition remain outside this prototype. Stage 02
+Information Acquisition remains a separate future concern.
+
+RW-02.1 remains a historical narrow presentation correction, not an
+architecture redesign.
+The English `source.reading.md` transcription remains the only authoritative
+reading source and the local PDF remains the visual authority. Figures 1–7 are
+local raster crops embedded into the offline page; the optional Chinese
+`source.zh-CN.reading.md` is machine/LLM-assisted, unverified, derived display
+aid only. It does not duplicate figures or become a second source authority.
+RW-02.1 originally allowed entry creation only from English; that historical
+fact is preserved. RW-02.2 supersedes only that usability boundary: English
+selection permits `source_excerpt`, `human_note`, and `human_question`, while
+Chinese reference selection permits `human_note` and `human_question` only,
+never `source_excerpt`. New entries may record `selected_text_origin` and
+`selected_block_id`; legacy entries remain byte-for-byte compatible when
+those optional fields are absent.
+
+RW-02.2 pairs the real source's 18 ordered H1/H2/H3 boundaries into bilingual
+section rows, derives block-level annotation markers from canonical entries,
+moves Figures 1–7 and Tables 1–2 into one independently scrolling authoritative
+English rail, and provides three accessible resizers for the full-width desktop
+layout. These presentation values remain outside session payloads, recovery,
+session ids, entries, preferences, and Markdown export.
+
+The ignored `_local/reading_session.md` is a byte-identical copy of the real
+active session with two human questions and three human notes. The separately
+copied `_local/external_llm_conversation_summary.md` remains external LLM
+material, unverified, session-external, not paper-source authority, and not
+`human_reviewed`; it has not entered the session.
+
+The HTML prototype is frozen following human acceptance;
+the commit containing this status record is the published RW-02 baseline. Only a separately
+authorized future stage may begin RW-03
+reading-note closure, Obsidian Home, or the 1500 MHz TM020 Harmonic Cavity
+project page. None of those Obsidian artifacts was created or started by
+RW-02.2.
 
 No Reading Workspace implementation and no KA-01 execution have occurred
 during RW-00. No reading session, source, reading-note, run-assessment, or

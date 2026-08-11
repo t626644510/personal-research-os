@@ -1,12 +1,20 @@
 # Reading Workspace Protocol v0.1
 
 Version: v0.1\
-Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 human accepted and complete (2026-08-04); configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02, RW-03, and KA-01 remain not authorized and not started\
+Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; the commit containing this status record is the published RW-02 baseline; RW-03 and KA-01 remain unauthorized and not started\
 Applies to: reading and source preparation upstream of KA-01
 
 This protocol defines the smallest implementation-neutral contract for a local
 Reading Workspace. It governs ownership, session entries, reading-note review,
 and the one-file bridge into KA-01. It does not implement the workspace.
+
+Realistic human reading on 2026-08-11 identified five RW-02.2 usability
+corrections. The repository owner accepted the RW-02.2 human UI on 2026-08-11
+with the overall conclusion “通过，未报告其他问题”. RW-02 is accepted and
+complete; the HTML prototype is frozen;
+the commit containing this status record is the published RW-02 baseline.
+RW-02.1 remains a historical narrow presentation correction, not an
+architecture redesign. RW-03 and KA-01 remain unauthorized and not started.
 
 ## 1. Purpose and boundaries
 
@@ -42,7 +50,10 @@ ResearchOS/00_Inbox/reading/<paper_id>/
 ├── reading_note.draft.md
 ├── reading_note.md
 └── _local/
-    └── source.pdf
+    ├── source.pdf
+    ├── assets/figures/figure-01.png … figure-07.png
+    ├── source.zh-CN.reading.md
+    └── reading-workspace.html
 ```
 
 Responsibilities:
@@ -64,10 +75,90 @@ documented.
 `.gitignore`; the human remains responsible for checking Git status before
 any future commit.
 
+### 2.1 RW-02.1 presentation boundary
+
+For the RW-02 realistic source, `source.reading.md` is the only authoritative
+reading transcription and `_local/source.pdf` remains the visual authority.
+Figures 1–7 may be prepared as local PNG crops and safely embedded as data
+URIs in the offline HTML. Only relative local PNG/JPEG/WebP targets are
+eligible; remote, absolute, traversal, symlink-escaping, SVG, missing, and
+unsupported targets must remain safe visible placeholders. No remote image,
+script, stylesheet, font, API, or other resource is permitted.
+
+An optional `source.zh-CN.reading.md` is a machine/LLM-assisted, unverified
+derived display aid. It may translate the complete body and captions while
+preserving the English page markers, equations, numerics, units, proper names,
+modes, and original bibliography, but it is never a second authority and does
+not duplicate figures. `英文原文`, `中英并列`, and `中文参考` are presentation-only
+modes. Concept resolution may appear in both panes with namespaced block and
+section metadata; panes do not synchronize selection or overlays. RW-02.1
+originally allowed only English selection to populate `selected_text` or
+create a session entry. That historical fact is retained; section 2.2 defines
+the superseding RW-02.2 rule. Translation mode, translation path, derived
+assets, and pane state must not enter `rw-session-v0.1`, `session_id`, recovery
+data, or canonical entries.
+
+These corrections historically supported human evaluation of figure
+legibility, bilingual usefulness and trust, pane width, and the English-only
+selection safeguard. They did not claim that any human checklist item was
+complete. The derived translation, figure crops, HTML, PDF, and human export
+remain ignored `_local/` artifacts.
+
 Making the repository private later does not erase material already published
 in Git history, and repository privacy does not itself grant a right to
 redistribute a publisher PDF. This is a non-blocking operational warning, not
 an RW-01 acceptance blocker.
+
+### 2.2 RW-02.2 usability correction boundary
+
+The 2026-08-11 realistic reading found five usability problems: bilingual
+sections did not remain horizontally aligned, Chinese reference text could not
+receive human notes or questions, annotated source blocks were not visible,
+figures and tables competed with the body scroll, and fixed columns underused
+a 4K display. RW-02.2 addresses only those findings.
+
+- English and Chinese Markdown are split at every ordered H1/H2/H3 boundary.
+  Paired sections share one row and one body scroll. A count mismatch preserves
+  all unpaired content and displays a warning rather than silently mispairing.
+- English authoritative selections may create `source_excerpt`, `human_note`,
+  or `human_question`. Chinese reference selections may create only
+  `human_note` or `human_question`; a Chinese `source_excerpt` is invalid.
+- New source-associated entries may carry the optional fields
+  `selected_text_origin` and `selected_block_id` defined in section 4. Chinese
+  entries use the paired English section's canonical `source_locator` and show
+  `中文参考译文 / 机器或 LLM 辅助 / 未核验`.
+- Block markers are derived only from canonical `source_excerpt`,
+  `human_note`, and `human_question` entries. They are never serialized into a
+  session, recovery payload, or Markdown export. Ambiguous or absent matches
+  remain visibly unresolved rather than being guessed.
+- Figures 1–7 and Tables 1–2 are extracted once, in English source order, into
+  an independently scrolling authoritative figure/table rail. Source positions
+  retain lightweight links. Table cells are escaped before the minimal GFM
+  pipe-table renderer handles them; all existing local-image safety rules stay
+  in force.
+- The full-width desktop layout exposes English, Chinese, figure/table, and
+  session columns with three accessible separators. Pointer and keyboard
+  resizing, clamps, custom state, and reset are presentation-only. Layout
+  storage must remain outside `rw-session-v0.1`, `session_id`, canonical
+  recovery, entries, preferences, and Markdown export; narrow screens hide the
+  separators and restore a non-overflowing stack.
+
+The ignored `_local/reading_session.md` is a byte-identical legacy
+`rw-session-v0.1` export with two human questions and three human notes. The
+separate `_local/external_llm_conversation_summary.md` remains external LLM
+material, unverified, session-external, non-authoritative, and not
+`human_reviewed`; it is not part of that session.
+
+Current RW-02.2 automated verification passed 25 Concept checks, 32 focused
+Reading UI tests, and 49 full-suite tests. The 974,523-byte offline HTML has 18
+bilingual section pairs, 7 images, 2 rendered tables, 3 accessible resizers,
+and 131 unique annotatable source blocks. These engineering metrics remain
+separate from the repository owner's human acceptance record. RW-02 is
+accepted and complete; the HTML prototype is frozen;
+the commit containing this status record is the published RW-02 baseline. Only separately authorized
+future work may begin RW-03
+reading-note closure, Obsidian Home, or the 1500 MHz TM020 Harmonic Cavity
+project page. RW-03 and KA-01 remain unauthorized and not started.
 
 ## 3. Content ownership and review metadata
 
@@ -138,6 +229,8 @@ A reading session uses a flat list of entries. Each entry contains:
 | `author_type` | `source`, `human`, or `llm`, derived from and required to match `entry_type`; not independently editable |
 | `source_locator` | Page, heading, section, paragraph, table, figure, or a clear `not_available` / `not_applicable` value |
 | `selected_text` | Exact selected source text when present; otherwise an explicit empty or not-applicable value |
+| `selected_text_origin` | Optional source association: `authoritative_source` or `reference_translation` |
+| `selected_block_id` | Optional id of the actual selected body, caption, figure, or table block |
 | `content` | The entry body shown and exported by the UI |
 | `confidence` | `not_assessed`, `low`, `medium`, or `high` |
 | `verification` | `not_applicable`, `unverified`, `human_checked`, or `rejected` |
@@ -163,6 +256,28 @@ The invariant applies on creation, persistence, import, export, and display.
 Mismatched imported data is invalid; import must stop and visibly report the
 mismatch rather than silently normalize it or offer origin reassignment.
 
+The optional source-association fields obey these compatibility rules:
+
+- new English entries use `selected_text_origin: authoritative_source`;
+- new Chinese `human_note` and `human_question` entries use
+  `selected_text_origin: reference_translation`;
+- `source_excerpt` is legal only with `authoritative_source`;
+- `reference_translation` is legal only for `human_note`, `human_question`,
+  and an `llm_answer` linked to a reference-translation question;
+- a new `llm_answer` inherits the linked question's origin, whether
+  `authoritative_source` or `reference_translation`;
+- a reference-translation note or question uses the paired English section's
+  canonical locator while `selected_block_id` identifies the selected Chinese
+  block; and
+- a legacy entry without `selected_text_origin` is interpreted semantically as
+  authoritative source material, but import and re-export must preserve the
+  field's absence rather than adding it. A missing legacy `selected_block_id`
+  likewise remains absent.
+
+These optional fields do not change `rw-session-v0.1`, `session_id`,
+`source_label`, preferences, or the `entry_type` to `author_type` invariant.
+Invalid field/type/link combinations must be rejected, not normalized.
+
 `selected_text` preserves reading context for an excerpt, note, or question
 created from a selection. For a `source_excerpt`, `content` may repeat the
 selected passage so the entry remains independently readable. For an entry
@@ -184,8 +299,9 @@ No API identifier, provider-specific metadata, token count, cost field, model
 request id, or nested provenance graph is required. Entry ids and the
 question-answer link are sufficient for the first prototype.
 
-Import and export must preserve every entry, field value, entry id, entry
-order, and question link without silent normalization or loss. The complete
+Import and export must preserve every entry, field value, absent optional
+field, entry id, entry order, and question link without silent normalization
+or loss. The complete
 source is not embedded in `reading_session.md` by default. Re-importing the
 session must not lose or rewrite entries, and future synthesis must use an
 exact human-selected source path rather than treating excerpts as the entire
@@ -300,9 +416,14 @@ hashes, a PDF pipeline, or an integrated AI runtime in the first prototype.
 RW-00 ended with this governance protocol and the separate UI specification.
 It created no reading artifacts, source files, sessions, PDFs, scientific
 content, proposal artifacts, UI implementation, or KA-01 run. RW-01 was
-subsequently human accepted and completed on 2026-08-04. RW-01.1 was also
-human accepted and completed on 2026-08-04; the configurable 34/42/50rem
+subsequently human accepted and completed at commit 8afa9aa. RW-01.1 was also
+human accepted and completed at that commit; the configurable 34/42/50rem
 session-panel correction received final visual confirmation. The validation
 record shows 25 Concepts passed, the focused Reading UI suite with 16 tests
-passed, and the full suite with 33 tests passed. RW-02, RW-03, and KA-01
-remain not authorized and not started.
+passed, and the full suite with 33 tests passed. RW-02 source preparation
+and RW-02.1 presentation history remain recorded above. RW-02.2 human UI was
+accepted on 2026-08-11. Current RW-02.2 automated verification passed 25
+Concept checks, 32 focused Reading UI tests, and 49 full-suite tests; the
+generated HTML metrics are recorded above. RW-02 is accepted and complete; the
+HTML prototype is frozen;
+the commit containing this status record is the published RW-02 baseline. RW-03 and KA-01 remain unauthorized and not started.

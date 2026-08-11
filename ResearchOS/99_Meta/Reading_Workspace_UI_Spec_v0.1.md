@@ -1,8 +1,8 @@
 # Reading Workspace UI Spec v0.1
 
 Version: v0.1\
-Status: RW-00 P0 specification human accepted on 2026-08-04; RW-01 and RW-01.1 human accepted and complete (2026-08-04); configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02, RW-03, and KA-01 remain not authorized and not started\
-Target phase: RW-01 Offline Reading UI Prototype and RW-01.1 session-layout increment
+Status: RW-00 P0 specification human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.1 presentation history retained; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; the commit containing this status record is the published RW-02 baseline; RW-03 and KA-01 remain unauthorized and not started\
+Target phase: RW-01/RW-01.1 prototype plus RW-02.2 usability correction
 
 This specification defines the smallest usable offline Reading Workspace UI.
 It describes behavior and data boundaries, not a framework, package choice, or
@@ -95,6 +95,15 @@ their human-made changes are preserved in the export. The UI must not offer
 origin correction or reassignment, and confidence must never hide or replace
 origin.
 
+RW-02.2 adds optional source-association fields without changing that invariant.
+New English selections use `selected_text_origin: authoritative_source`; new
+Chinese reference selections may create only `human_note` or
+`human_question` with `selected_text_origin: reference_translation`. A Chinese
+`source_excerpt` is invalid. `selected_block_id` records the actual selected
+body or figure/table block. Chinese entries use the paired English section's
+canonical locator. Legacy entries missing either optional field remain absent
+on import and re-export.
+
 ## 4. Concept highlighting and hover behavior
 
 Highlighting reuses the current index identities and P01/P01.5 behavior:
@@ -162,15 +171,21 @@ screens. Questions without answers are explicit. Multiple answers may remain
 linked to one question, and every displayed question or answer retains its
 origin badge, confidence, verification, and applicable edit/delete controls.
 
-Session-panel width is a presentation-only control with Compact (`34rem`),
-Balanced (`42rem`, default), and Wide (`50rem`) presets. The desktop grid keeps
-the reading pane flexible, applies the preset through a CSS custom property,
-and caps the panel near half the viewport; the existing narrow-screen Q&A
-stacking behavior remains authoritative. The selected preset may use a
-dedicated browser-local key, but it must not enter session preferences,
-recovery data, session IDs, canonical entries, `sessionPayload()`, or
-`rw-session-v0.1`. Missing or invalid stored values fall back to Balanced, and
-storage failure must not prevent the current-page width change.
+RW-01.1 historically introduced the Compact (`34rem`), Balanced (`42rem`,
+default), and Wide (`50rem`) session-panel presets. RW-02.2 keeps those presets,
+removes the workspace `100rem` desktop cap, and adds three accessible
+`role="separator"` controls for English/Chinese, body/figure-table, and
+figure-table/session boundaries. Pointer drag, arrow-key adjustment, sensible
+minimum-width clamps, and double-click reset are required. Dragging the session
+boundary selects Custom; resetting restores Balanced. A single-language mode
+hides the meaningless English/Chinese separator.
+
+All layout values use a fault-tolerant presentation-only browser key and must
+not enter session preferences, canonical recovery data, session IDs, entries,
+`sessionPayload()`, or `rw-session-v0.1`. Missing or invalid values fall back
+to defaults. Storage failure must not undo the current-page adjustment. Below
+the established narrow breakpoint, resizers hide, Q&A stacks, and the entire
+workspace must avoid page-level horizontal overflow.
 
 The panel supports reviewing and editing human-owned session content without
 silently rewriting it. Deleting or replacing an entry, if RW-01 includes that
@@ -228,6 +243,12 @@ is:
 - linked by `question_entry_id`; and
 - `verification: unverified` by default.
 
+For a new answer, `selected_text_origin` inherits the linked question's origin.
+An answer linked to a reference-translation question therefore carries
+`reference_translation`; one linked to an authoritative question carries
+`authoritative_source`. A legacy answer/question pair with no optional origin
+field remains unchanged.
+
 Only a human action may later change the answer's confidence or verification.
 Changing verification does not turn the answer into source material.
 
@@ -244,6 +265,85 @@ RW-01 does not require PDF text-layer reconstruction, OCR, automatic
 PDF-to-Markdown conversion, coordinate synchronization, an Obsidian plugin, or
 a PDF hash. A separately displayed local PDF must not be uploaded or fetched
 over the network.
+
+## 7.1 RW-02.1 presentation correction boundary
+
+RW-02.1 is a narrow presentation correction, not an architecture redesign.
+The English `source.reading.md` transcription remains the only authoritative
+reading source and the local PDF remains the visual authority. Ordinary
+relative Markdown image references may use only local PNG/JPEG/WebP raster
+assets; accepted assets are embedded as data URIs, while remote, absolute,
+traversal, symlink-escaping, SVG, missing, or unsupported targets show safe
+visible placeholders. The page remains self-contained and makes no remote
+resource request.
+
+When supplied through the optional `--reference-translation` input, the UI
+offers `英文原文`, `中英并列`, and `中文参考` modes, defaulting to bilingual.
+The Chinese pane is labeled `派生参考译文 / 非权威来源` and is a
+machine/LLM-assisted, unverified derived display aid. It preserves the source
+English page markers, equations, numerics, units, proper names, modes, and
+original bibliography; it does not duplicate figures. Concept resolution,
+hover cards, highlights, density controls, muting, and restore behavior apply
+to both panes through namespaced block/section metadata. The panes do not
+synchronize selection or overlays. RW-02.1 originally allowed only the English
+pane to populate `selected_text` or create a session entry. That historical
+boundary is retained here; section 7.2 defines the superseding RW-02.2 rule.
+Translation path, view mode, translation content, and pane state do not enter
+`rw-session-v0.1`, `session_id`, recovery data, or canonical entries.
+
+Figures, translation, generated HTML, source PDF, and human export are ignored
+`_local/` artifacts. As a historical/pre-acceptance fact, RW-02.1's
+preparation record did not claim acceptance and RW-02 was then incomplete and
+unaccepted.
+
+## 7.2 RW-02.2 usability correction boundary
+
+A realistic human reading on 2026-08-11 found five concrete UI problems:
+section drift between languages, no Chinese annotation capture, no visible
+annotated-block state, figures/tables sharing the body flow, and fixed widths
+that wasted a 4K display. The repository owner accepted the RW-02.2 human UI
+on 2026-08-11 with the overall conclusion “通过，未报告其他问题”.
+
+The English and Chinese Markdown inputs are split at every H1/H2/H3 boundary.
+Each ordered pair renders in one horizontal row, and the next row begins below
+the taller side. Bilingual body content shares one vertical scroll; monolingual
+modes use the full body width. If counts differ, all unpaired sections remain
+visible and a lightweight alignment warning appears. No paragraph-level scroll
+listener, synchronized selection, or text overlay is introduced.
+
+English selections support all three source-linked entry types. Chinese
+reference selections support only human notes and questions and show
+`中文参考译文 / 机器或 LLM 辅助 / 未核验`; excerpt creation is unavailable. New
+entries use the optional origin and block fields defined above, while strict
+validation rejects illegal combinations and losslessly preserves legacy
+absence.
+
+Annotated body, caption, and table blocks receive a derived background,
+left-border marker, and annotation count for `source_excerpt`, `human_note`,
+and `human_question`; `llm_answer` does not add another source marker. Matching
+prefers `selected_block_id`, then uses origin, canonical locator, and normalized
+selected text for legacy entries. Hover tooltip text is excluded. Ambiguous or
+missing matches are reported as unresolved, never guessed, and markers are
+recomputed after mutation, import, recovery, and draft recovery.
+
+Figures 1–7 and Tables 1–2 are extracted once from the English authority in
+source order, with authoritative English captions/titles, and render in a
+separately scrolling rail in every language mode. Body locations retain only a
+lightweight jump link. Caption and table text remains selectable and eligible
+for Concept Hover. The minimal GFM pipe-table renderer escapes every cell and
+does not relax the local raster allowlist, data-URI, traversal, symlink, remote
+URL, or SVG protections.
+
+The ignored `_local/reading_session.md` is the byte-identical five-entry legacy
+session. `_local/external_llm_conversation_summary.md` remains external LLM
+material, unverified, session-external, non-authoritative, and not
+`human_reviewed`; it is not a session answer. Current automated verification
+metrics are recorded in Section 10 and remain separate from the human
+acceptance record. RW-02 is accepted and complete; the HTML prototype is frozen;
+the commit containing this status record is the published RW-02 baseline.
+RW-03 and KA-01 remain unauthorized and not started. RW-03
+reading-note closure, Obsidian Home, and the 1500 MHz
+TM020 Harmonic Cavity project page require separate future authorization.
 
 ## 8. Reading-note boundary
 
@@ -296,34 +396,51 @@ Acceptance evidence should use local files and a network-observation method
 appropriate to the chosen implementation. It does not require CST, a model
 call, PDF OCR, a Concept scan, or a KA-01 run.
 
-## 10. RW-02 human UX validation questions
+## 10. RW-02 human UX validation record
 
-After RW-01 implements the capture primitives, RW-02 should use one
-human-selected realistic technical paper to record:
+The 2026-08-11 realistic reading exercised the RW-01/RW-02.1 surface and
+produced the five RW-02.2 findings recorded in section 7.2. That was the
+historical/pre-acceptance evidence. The repository owner subsequently accepted
+the RW-02.2 human UI on 2026-08-11. The acceptance scope covered:
 
-1. Is highlight density acceptable in realistic accelerator/RF reading?
-2. Are headings, paragraphs, lists, links, and code readable enough for
-   sustained use?
-3. How much friction does selecting text and creating an entry add?
-4. Are confidence controls useful, or do they create false precision and UI
-   burden?
-5. Is the question-to-answer link clear enough to trace external LLM material?
-6. Do per-paragraph/per-section highlighting and session-local mute controls
-   adequately reduce noise?
-7. Is the Markdown-first workflow useful enough before building PDF overlays
-   or a full Obsidian plugin?
+1. whether all 18 real English/Chinese section pairs remain aligned and
+   readable through sustained scrolling;
+2. whether Chinese notes/questions, origin badges, canonical locators, and
+   answer-origin inheritance are clear without implying translation authority;
+3. whether the five legacy English entries mark exactly five source blocks and
+   unresolved matches are visible without false positives;
+4. whether Figures 1–7 and Tables 1–2 appear once, in order, remain selectable,
+   and are useful in the independent rail;
+5. whether all three resizers work by pointer and keyboard, clamp safely,
+   support Custom and reset, and use the 3840×2160 and 1920×1080 viewports well;
+6. whether the 760px stack hides resizers and avoids page-level horizontal
+   overflow; and
+7. whether session import/export, recovery, presentation storage failure, and
+   complete offline operation preserve all provenance and payload boundaries.
 
-These questions are RW-02 human evaluation gates. RW-02 validates the RW-01
-primitives; it does not build a second capture implementation. They are not
-reasons to expand RW-01 with an integrated AI runtime, automatic acquisition,
-or a PDF reconstruction pipeline.
+Automated verification passed 25 Concept checks, 32 focused Reading UI tests,
+and 49 full-suite tests. The generated offline HTML is 974,523 bytes and has 18
+bilingual section pairs, 7 images, 2 rendered tables, 3 accessible resizers,
+and 131 unique annotatable source blocks. The final human conclusion was
+“通过，未报告其他问题”. The 50–60rem intermediate viewport was not separately
+documented in detailed manual testing; this is a non-blocking limitation and
+does not reopen CSS or UI work. RW-02 is accepted and complete; the HTML prototype is frozen;
+the commit containing this status record is the published RW-02 baseline.
+This acceptance does not
+authorize an integrated AI runtime, automatic acquisition, PDF reconstruction,
+RW-03, Obsidian artifacts, or KA-01.
 
 ## 11. RW-01/RW-01.1 authorization boundary
 
 RW-00 defined this specification only and did not itself authorize
 implementation. RW-01 and RW-01.1 were human accepted and completed on
-2026-08-04. The configurable 34/42/50rem session-panel correction received
-final visual confirmation; 25 Concepts passed validation, the focused Reading
-UI suite had 16 tests passed, and the full suite had 33 tests passed. RW-02,
-RW-03, and KA-01 remain not authorized and not started. No KA-01 execution is
-implied by implementing or accepting the Reading Workspace UI.
+2026-08-04 at commit 8afa9aa. The configurable 34/42/50rem session-panel
+correction received final visual confirmation; 25 Concepts passed validation,
+the focused Reading UI suite had 16 tests passed, and the full suite had 33
+tests passed. The prior RW-02 source preparation and RW-02.1 presentation
+history remain recorded above. RW-02.2 human UI was accepted on 2026-08-11;
+current automated metrics are recorded above as separate engineering evidence.
+RW-02 is accepted and complete; the HTML prototype is frozen;
+the commit containing this status record is the published RW-02 baseline.
+RW-03 and KA-01 remain unauthorized and not started.
+No KA-01 execution is implied by accepting the Reading Workspace UI.

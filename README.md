@@ -142,10 +142,36 @@ python -m unittest discover -s tests -v
 
 ## Reading Workspace UI Prototype
 
-RW-01 与 RW-01.1 session-layout 增量已由人工接受并完成（2026-08-04）。可配置的
-34/42/50rem session-panel 修正已获得最终视觉确认；25 Concepts 通过验证，Focused
-Reading UI suite 通过 16 项测试，Full suite 通过 33 项测试。RW-02、RW-03 与
-KA-01 仍未授权且未启动。这个原型是 `concept_index.json` 的第二个本地确定性消费者，
+RW-01 与 RW-01.1 session-layout 增量已在 commit 8afa9aa 由人工接受并完成（2026-08-04）。
+可配置的 34/42/50rem session-panel 修正已获得最终视觉确认；25 Concepts 通过验证，
+Focused Reading UI suite 通过 16 项测试，Full suite 通过 33 项测试。
+
+RW-02.1 是一次窄范围的 presentation correction，不是架构重设计：英文
+`source.reading.md` 仍是唯一权威阅读源，PDF 仍是图形视觉权威；Figure 1–7 使用
+本地 PNG 裁剪并以内联 data URI 显示。可选的 `source.zh-CN.reading.md` 是机器/LLM
+辅助、未验证的派生参考译文，不重复图形、不进入 `rw-session-v0.1`。RW-02.1 当时
+只有英文面板的选择可以创建 session entry；中英面板不做同步选区或 overlay；远程
+图片资源始终禁止。这些是历史事实，RW-02.2 只修正后续真实阅读发现的可用性边界。
+
+2026-08-11 的真实人工阅读发现五项问题：中英文需要按小节横向对应，中文参考译文
+需要支持个人笔记和问题，已批注正文块需要明显标记，图和表需要独立成栏并独立滚动，
+以及 4K 屏幕需要可拖动栏宽。RW-02.2 status: **Human UI accepted on
+2026-08-11**。当前实现按 18 个同序 H1/H2/H3 边界形成小节行；中文参考选区只允许
+`human_note` 和 `human_question`，禁止 `source_excerpt`；正文标记由 canonical
+entries 派生；Figure 1–7 与 Table 1–2 只从英文权威来源提取到独立图表栏；桌面布局
+提供三个可访问 resizer。`_local/reading_session.md` 是五条旧英文条目的原样本地
+副本；`_local/external_llm_conversation_summary.md` 仍是 unverified、
+session-external 的外部 LLM 辅助材料，没有进入 session。
+
+RW-02.2 当前自动验证：25 个 Concepts 通过校验，Reading UI 聚焦套件 32 项、完整
+套件 49 项均通过；离线 HTML 为 974,523 bytes，含 18 组双语小节、7 张图、2 张
+渲染表、3 个可访问 resizer 和 131 个唯一可标注源块。这些工程验证指标独立于人工
+验收记录，不得用 RW-02.1 的历史指标替代。Repository owner 于 2026-08-11 给出的
+总体人工 UI 结论为“通过，未报告其他问题”。RW-02 已接受并完成，HTML 原型已冻结；
+the commit containing this status record is the published RW-02 baseline. RW-03
+and KA-01 remain unauthorized and not started；
+Obsidian Home 和 1500 MHz TM020 Harmonic Cavity 项目页均未创建或启动。
+这个原型是 `concept_index.json` 的第二个本地确定性消费者，
 不替换 P01/P01.5：
 `reading_ui.py` 读取一篇 UTF-8 Markdown 技术资料，复用
 `hover_resolver.resolve_mentions()`，再把维护用的 `reading_ui.css` 与
@@ -170,8 +196,11 @@ py -3.9 ResearchOS/99_Meta/tools/reading_ui.py `
    键盘聚焦。
 2. 使用工具栏切换全部出现、每段首次或每节首次高亮，也可关闭高亮、静音某个
    canonical Concept 或仅静音当前匹配词，并随时恢复。
-3. 选择正文文本，创建来源摘录、个人笔记或人类问题。`author_type` 由
-   `entry_type` 决定并只读；只有 `confidence` 与 `verification` 是可编辑元数据。
+3. 选择英文正文或图表文本，可创建来源摘录、个人笔记或人类问题；选择中文参考译文
+   只能创建个人笔记或人类问题，不能保存来源摘录。新条目以可选的
+   `selected_text_origin` 区分 `authoritative_source` 与
+   `reference_translation`，并可记录 `selected_block_id`；旧条目缺少这两个字段时
+   保持原样。`author_type` 仍由 `entry_type` 决定并只读。
 4. 对人类问题打开“问题包”，由人复制到外部 LLM；再把回答手动粘贴回来，选择对应
    问题并可填写模型标签。页面不会发送问题、调用模型或自动获取回答。
 5. 每次会话变更都会尝试写入该来源专属的浏览器本地恢复数据，并显示已保存、未保存、
@@ -188,12 +217,13 @@ RW-01.1 只改变 session panel 的派生视图：摘录、笔记、问答和全
 堆叠。标签切换不会改变或重排 canonical `state.entries`；`rw-session-v0.1` 仍导出
 同一份扁平、有序 entries 列表，旧版 session Markdown 可继续导入。
 
-初步人工评估先发现固定 `28rem` 太窄，随后固定 `34rem` 仍不足，因此工具栏现在提供
-紧凑（34rem）、平衡（42rem，默认）和宽屏（50rem）三种会话栏宽度。桌面布局通过
-CSS custom property 立即应用选择，并在约 `52vw` 处封顶；现有 `68rem` 以下布局和
-问答纵向堆叠不变。宽度使用独立的浏览器本地 key 保存，是 presentation-only 偏好；
-它不进入 session preferences、恢复数据、`sessionPayload()` 或
-`rw-session-v0.1`。浏览器存储失败只会阻止跨页面保存，不会撤销当前页面的宽度选择。
+RW-01.1 的历史修正保留紧凑（34rem）、平衡（42rem，默认）和宽屏（50rem）三种
+会话栏预设。RW-02.2 移除桌面工作区的 `100rem` 最大宽度，并在双语桌面布局中提供
+英文/中文、正文/图表、图表/会话三个 resizer；它们支持 Pointer Events、键盘方向键、
+最小宽度 clamp 和双击重置。拖动会话栏后预设显示“自定义”，重置后恢复 Balanced。
+布局只写入容错的 presentation localStorage；不进入 session preferences、canonical
+recovery、`sessionPayload()`、session id、entries 或 Markdown export。窄屏隐藏
+resizer 并恢复无页面级横向滚动的堆叠布局。
 
 未来 RW-03 若被单独授权，必须由人精确选择一个原始资料 `SOURCE_PATH` 和一个
 `reading_session.md` 的 `SESSION_PATH`。人工触发的 LLM synthesis 只读取这两个
@@ -202,11 +232,17 @@ RW-03 不新增 SHA。这个双文件 synthesis 输入不改变 KA-01：KA-01 �
 选择并审阅的一份 `reading_note.md`，并只计算现有的一次 Markdown SHA-256。
 
 RW-01 不生成 `reading_note.draft.md` 或最终 `reading_note.md`，不处理 PDF 文本层、
-OCR 或坐标覆盖。内置 Markdown 渲染器仅支持标题、段落、扁平有序/无序列表、链接、
-行内代码和围栏代码块；嵌套列表、表格、图片、强调、脚注、任务列表等完整 Markdown
-语法尚未实现，原始 HTML 始终作为转义文本显示。RW-02、RW-03 与 KA-01 仍未授权
-且未启动。实现与审计步骤记录在
-[RW-01 UI Validation](ResearchOS/99_Meta/RW01_UI_Validation.md)。
+OCR 或坐标覆盖。内置 Markdown 渲染器支持标题、段落、扁平有序/无序列表、链接、
+行内代码、围栏代码块、相对路径本地 PNG/JPEG/WebP 图片，以及项目所需的最小安全
+GFM pipe table；表格单元格和原始 HTML 均先转义。Figure 1–7 和 Table 1–2 在图表栏
+各出现一次，正文原位只保留跳转占位。远程、绝对路径、越界、符号链接逃逸、缺失和
+不支持格式仍显示安全占位符。嵌套列表、强调、脚注、任务列表等完整 Markdown 语法
+仍未实现。提供 `--reference-translation` 时才启用英文原文、中英并列、中文参考三种
+presentation mode；中文参考仍是未验证、非权威派生显示。RW-02.2 human UI was
+accepted on 2026-08-11; RW-02 is accepted and complete; the HTML prototype is
+frozen; the commit containing this status record is the published RW-02 baseline.
+RW-03 and KA-01 remain unauthorized and not started. 实现与验收记录在
+[RW-02 UI Validation](ResearchOS/99_Meta/RW02_UI_Validation.md)。
 
 ## 日常工作流
 

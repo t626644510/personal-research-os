@@ -103,10 +103,18 @@ Commit:
 
 RW-00 governance and the P0 UI contract are human accepted. RW-01 and the
 RW-01.1 source-handoff/session-layout increment were human accepted and complete
-on 2026-08-04. The configurable 34/42/50rem session-panel correction received
-final visual confirmation. 25 Concepts passed validation; focused Reading UI
-suite: 16 tests passed; full suite: 33 tests passed. RW-02, RW-03, and KA-01
-remain not authorized and not started.
+at commit 8afa9aa. The configurable 34/42/50rem session-panel correction
+received final visual confirmation. 25 Concepts passed validation; focused
+Reading UI suite: 16 tests passed; full suite: 33 tests passed. A realistic
+human reading on 2026-08-11 identified five RW-02.2 usability corrections.
+RW-02.2 human UI was accepted by the repository owner on 2026-08-11. Current
+automated verification passed 25 Concept checks, 32 focused Reading UI tests,
+and 49 full-suite tests. The 974,523-byte offline HTML contains 18 bilingual
+section pairs, 7 images, 2 rendered tables, 3 accessible resizers, and 131
+unique annotatable source blocks. The owner recorded the overall conclusion as
+“通过，未报告其他问题”. RW-02 is accepted and complete; the HTML prototype
+is frozen; the commit containing this status record is the published RW-02 baseline.
+RW-03 and KA-01 remain unauthorized and not started.
 
 RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
 创建 Reading Workspace 实现、reading session、RW source file、reading-note
@@ -265,13 +273,47 @@ handoff，但不启动 synthesis。
 
 ## RW-02 Realistic Human UX Validation
 
-状态：Not authorized and not started.
+状态：RW-02.2 human UI accepted on 2026-08-11. RW-02 is accepted and
+complete; the HTML prototype is frozen; the commit containing this status record is the published RW-02 baseline.
+RW-03 and KA-01 remain unauthorized and not started.
 
 目标：使用一篇人工选择的真实 technical paper，对 RW-01 已实现的 human-owned
 annotation、human question、question packet 和外部 LLM answer capture
 primitives 进行 realistic human UX validation。外部 LLM workflow 仍为人工
 复制/粘贴；RW-02 不构建第二套 capture implementation，也不嵌入模型 API
 或仓库托管的 AI runtime。
+
+RW-02.1 presentation correction 是该准备阶段的历史窄范围显示修正，不是架构重设计：
+英文 `source.reading.md` 仍是唯一权威阅读源，官方 PDF 仍是图形视觉权威；Figure
+1–7 由本地 PNG 裁剪并以内联 data URI 显示。可选的
+`source.zh-CN.reading.md` 是机器/LLM 辅助、未验证的派生参考译文，只用于显示，
+不重复图形、不进入 `rw-session-v0.1`，也不改变 `session_id`。中英面板不做同步
+选区或 overlay；RW-02.1 当时只有英文面板的选择可以创建 session entry。该历史
+事实不被改写，RW-02.2 仅明确后续替代规则。
+
+2026-08-11 的真实人工阅读发现五项问题：18 对同序标题边界需要形成小节级横向
+对齐；中文参考译文需要允许 `human_note` 和 `human_question` 但继续禁止
+`source_excerpt`；已有批注需要形成 canonical-entry 派生的块级标记；Figure 1–7
+与 Table 1–2 需要进入独立滚动的图表栏；桌面四栏需要三个可访问 resizer 以利用
+4K 宽度。新来源关联可选字段为 `selected_text_origin` 和 `selected_block_id`，旧
+`rw-session-v0.1` 缺少字段时无损保留。中文条目使用配对英文小节的 canonical
+locator，并显示机器/LLM 辅助、未核验的参考来源标记。
+
+真实 session 的原样副本位于被忽略的 `_local/reading_session.md`，仍只含两个
+`human_question` 和三个 `human_note`。外部 LLM 总结的修正版副本位于
+`_local/external_llm_conversation_summary.md`；它仍是 unverified、
+session-external、非论文权威材料，没有进入 session，也不代表
+`human_reviewed`。RW-02.2 当前自动验证为 25 个 Concept、32 项聚焦 Reading UI
+测试和 49 项完整测试全部通过；974,523-byte 离线 HTML 含 18 组双语小节、7 张图、
+2 张渲染表、3 个可访问 resizer 和 131 个唯一可标注源块。Repository owner 于
+2026-08-11 给出的总体人工 UI 结论为“通过，未报告其他问题”。
+
+RW-02 已接受并完成，HTML 原型已冻结；the commit containing this status record is the published RW-02 baseline。
+RW-03 阅读笔记
+闭环、Obsidian Home 和 1500 MHz TM020 Harmonic Cavity 项目页只有在另行授权后
+才可进入；本阶段未创建或启动这些 Obsidian 成果。
+
+RW-03 和 KA-01 remain unauthorized and not started.
 
 ## RW-03 Reading Note Synthesis Trial
 

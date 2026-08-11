@@ -5,3 +5,6 @@ __pycache__/
 # Obsidian machine-local UI state.
 ResearchOS/.obsidian/workspace*.json
 ResearchOS/.obsidian/cache/
+
+# Reading Workspace local source material and generated workspace.
+ResearchOS/00_Inbox/reading/**/_local/

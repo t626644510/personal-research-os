@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import base64
 import io
 import json
 import re
@@ -7,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
+from html.parser import HTMLParser
 from pathlib import Path
 from unittest.mock import patch
 
@@ -15,6 +19,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 TOOLS_DIR = REPO_ROOT / "ResearchOS" / "99_Meta" / "tools"
 NOTES_DIR = REPO_ROOT / "ResearchOS" / "00_Inbox" / "notes"
 READING_JAVASCRIPT_PATH = TOOLS_DIR / "reading_ui.js"
+REAL_READING_ROOT = (
+    REPO_ROOT / "ResearchOS" / "00_Inbox" / "reading" / "ipac2019-weprb066"
+)
+REAL_SOURCE_PATH = REAL_READING_ROOT / "_local" / "source.reading.md"
+REAL_TRANSLATION_PATH = REAL_READING_ROOT / "_local" / "source.zh-CN.reading.md"
+REAL_SESSION_PATH = REAL_READING_ROOT / "_local" / "reading_session.md"
 NODE_EXECUTABLE = shutil.which("node")
 sys.path.insert(0, str(TOOLS_DIR))
 
@@ -40,6 +50,60 @@ SYNTHETIC_INDEX = {
         "related_concepts": [],
     },
 }
+
+ONE_PIXEL_PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+)
+
+
+class SourceBlockCollector(HTMLParser):
+    """Collect visible source-block text without tooltip-only descendants."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.blocks: list[dict[str, str]] = []
+        self.current: dict[str, object] | None = None
+        self.root_tag = ""
+        self.hidden_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = {key: value or "" for key, value in attrs}
+        if self.current is None and attributes.get("data-source-block") == "true":
+            self.current = {
+                "block_id": attributes.get("data-block-id", ""),
+                "source_origin": attributes.get("data-source-origin", ""),
+                "source_locator": attributes.get("data-locator", ""),
+                "text": [],
+            }
+            self.root_tag = tag
+            return
+        if self.current is None:
+            return
+        classes = set(attributes.get("class", "").split())
+        if self.hidden_depth:
+            self.hidden_depth += 1
+        elif attributes.get("role") == "tooltip" or "hover-card" in classes or "annotation-badge" in classes:
+            self.hidden_depth = 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if self.current is None:
+            return
+        if self.hidden_depth:
+            self.hidden_depth -= 1
+            return
+        if tag != self.root_tag:
+            return
+        text = "".join(self.current.pop("text"))
+        block = {key: str(value) for key, value in self.current.items()}
+        block["visible_text"] = text
+        block["block_key"] = str(len(self.blocks))
+        self.blocks.append(block)
+        self.current = None
+        self.root_tag = ""
+
+    def handle_data(self, data: str) -> None:
+        if self.current is not None and not self.hidden_depth:
+            self.current["text"].append(data)
 
 
 def write_index(path: Path) -> None:
@@ -109,6 +173,54 @@ class ReadingUITests(unittest.TestCase):
         )
         return generated.read_text(encoding="utf-8"), source_path, output_path
 
+    def generate_with_translation(
+        self,
+        markdown: str,
+        translation: str,
+    ) -> tuple[str, Path, Path, Path]:
+        temporary_directory = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary_directory.cleanup)
+        root = Path(temporary_directory.name)
+        source_path = root / "technical source.md"
+        translation_path = root / "source.zh-CN.reading.md"
+        index_path = root / "concept_index.json"
+        output_path = root / "workspace.html"
+        source_path.write_text(markdown, encoding="utf-8")
+        translation_path.write_text(translation, encoding="utf-8")
+        write_index(index_path)
+        generated = generate_reading_workspace(
+            source_path,
+            output_path,
+            index_path=index_path,
+            reference_translation=translation_path,
+        )
+        return generated.read_text(encoding="utf-8"), source_path, translation_path, output_path
+
+    def generate_real_pair(self) -> str:
+        if not REAL_SOURCE_PATH.is_file() or not REAL_TRANSLATION_PATH.is_file():
+            self.skipTest("RW-02 local real-source pair is unavailable")
+        temporary_directory = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary_directory.cleanup)
+        output_path = Path(temporary_directory.name) / "real-workspace.html"
+        generate_reading_workspace(
+            REAL_SOURCE_PATH,
+            output_path,
+            reference_translation=REAL_TRANSLATION_PATH,
+        )
+        return output_path.read_text(encoding="utf-8")
+
+    def real_session_payload(self) -> dict[str, object]:
+        if not REAL_SESSION_PATH.is_file():
+            self.skipTest("RW-02 local real session is unavailable")
+        markdown = REAL_SESSION_PATH.read_text(encoding="utf-8")
+        match = re.search(
+            r"<!--[ \t]*rw-session-v0\.1[ \t]*-->[ \t]*\r?\n"
+            r"[ \t]*```json[ \t]*\r?\n([\s\S]*?)\r?\n[ \t]*```",
+            markdown,
+        )
+        self.assertIsNotNone(match)
+        return json.loads(match.group(1))
+
     def test_cli_generates_and_opens_one_local_self_contained_page(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
@@ -152,6 +264,569 @@ class ReadingUITests(unittest.TestCase):
         self.assertNotIn("sendBeacon", page)
         self.assertNotIn("WebSocket", page)
         self.assertNotIn(str(source_path.parent), page)
+        self.assertNotIn('id="reference-mode"', page)
+        self.assertNotIn('id="translation-reading-surface"', page)
+
+    def test_local_images_embed_raster_data_uris_and_block_unsafe_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source_directory = root / "source"
+            assets_directory = source_directory / "assets"
+            source_directory.mkdir()
+            assets_directory.mkdir()
+            (assets_directory / "safe.png").write_bytes(ONE_PIXEL_PNG)
+            (assets_directory / "vector.svg").write_text(
+                '<svg><script>alert("svg")</script></svg>',
+                encoding="utf-8",
+            )
+            source_path = source_directory / "source.md"
+            index_path = root / "concept_index.json"
+            output_path = root / "workspace.html"
+            source_path.write_text(
+                "# Images\n\n"
+                '![HOM impedance](assets/safe.png "Caption & <title>")\n\n'
+                "![Remote](https://example.test/remote.png)\n\n"
+                "![Absolute](C:/outside.png)\n\n"
+                "![Traversal](../outside.png)\n\n"
+                "![Missing](assets/missing.png)\n\n"
+                "![SVG](assets/vector.svg)\n\n"
+                '<script>alert("raw")</script>\n',
+                encoding="utf-8",
+            )
+            write_index(index_path)
+            generate_reading_workspace(source_path, output_path, index_path=index_path)
+            page = output_path.read_text(encoding="utf-8")
+
+        self.assertEqual(page.count('<figure class="source-figure'), 6)
+        self.assertEqual(page.count("图片不可用："), 5)
+        self.assertEqual(page.count('src="data:image/png;base64,'), 1)
+        self.assertIn(base64.b64encode(ONE_PIXEL_PNG).decode("ascii"), page)
+        self.assertIn('alt="HOM impedance"', page)
+        self.assertIn('title="Caption &amp; &lt;title&gt;"', page)
+        self.assertIn("图片路径不安全", page)
+        self.assertIn("图片缺失", page)
+        self.assertIn("图片格式不受支持", page)
+        self.assertNotIn(str(root), page)
+        self.assertNotIn("<svg", page)
+        self.assertNotIn('data:image/svg', page)
+        self.assertNotIn('<script>alert("raw")</script>', page)
+        self.assertIn("&lt;script&gt;alert(\"raw\")&lt;/script&gt;", page)
+        self.assertEqual(page.count('class="concept-hit"'), 0)
+
+    def test_symlink_escaping_image_is_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source_directory = root / "source"
+            assets_directory = source_directory / "assets"
+            source_directory.mkdir()
+            assets_directory.mkdir()
+            outside_path = root / "outside.png"
+            outside_path.write_bytes(ONE_PIXEL_PNG)
+            symlink_path = assets_directory / "escape.png"
+            try:
+                symlink_path.symlink_to(outside_path)
+            except (OSError, NotImplementedError) as error:
+                self.skipTest(f"symlink creation unavailable: {error}")
+            source_path = source_directory / "source.md"
+            index_path = root / "concept_index.json"
+            output_path = root / "workspace.html"
+            source_path.write_text("![Escaping](assets/escape.png)\n", encoding="utf-8")
+            write_index(index_path)
+            generate_reading_workspace(source_path, output_path, index_path=index_path)
+            page = output_path.read_text(encoding="utf-8")
+
+        self.assertIn("图片路径不安全", page)
+        self.assertNotIn("data:image/png;base64", page)
+        self.assertNotIn(str(outside_path), page)
+
+    def test_optional_translation_supports_bilingual_rows_and_limited_chinese_entries(self) -> None:
+        page, source_path, translation_path, _ = self.generate_with_translation(
+            "# English source\n\nHOM impedance is discussed.\n",
+            "# 中文参考\n\n高次模阻抗也在讨论。\n",
+        )
+
+        self.assertIn('id="reference-mode"', page)
+        self.assertIn('<option value="english">英文原文</option>', page)
+        self.assertIn('<option value="bilingual" selected>中英并列</option>', page)
+        self.assertIn('<option value="translation">中文参考</option>', page)
+        self.assertIn('id="reading-surface"', page)
+        self.assertIn('class="reference-surfaces reference-mode-bilingual"', page)
+        self.assertIn('data-reference-mode="bilingual"', page)
+        self.assertEqual(page.count('data-reference-section-row="'), 1)
+        self.assertIn('data-reference-pane="english"', page)
+        self.assertIn('data-reference-pane="translation"', page)
+        self.assertIn('data-source-origin="authoritative_source"', page)
+        self.assertIn('data-source-origin="reference_translation"', page)
+        self.assertIn('data-canonical-locator="English source"', page)
+        self.assertIn("reference-mode-${normalized}", page)
+        self.assertIn("中文参考译文 / 机器或 LLM 辅助 / 未核验", page)
+        self.assertIn("中文参考", page)
+        self.assertEqual(page.count('data-concept="HOM impedance"'), 2)
+
+        english_blocks = set(
+            re.findall(
+                r'data-source-block="true" data-block-id="(block-\d{4})"',
+                page,
+            )
+        )
+        translation_blocks = set(
+            re.findall(
+                r'data-source-block="true" data-block-id="(translation-block-\d{4})"',
+                page,
+            )
+        )
+        self.assertTrue(english_blocks)
+        self.assertTrue(translation_blocks)
+        self.assertTrue(english_blocks.isdisjoint(translation_blocks))
+        self.assertNotIn("clearTranslationSelection", page)
+        self.assertIn("selectionRoots.forEach", page)
+        self.assertIn('id="selection-source-excerpt"', page)
+        self.assertIn('id="selection-origin-note"', page)
+        self.assertIn('selected_text_origin: origin', page)
+        self.assertIn('selected_block_id: startBlock.dataset.blockId', page)
+        self.assertIn(
+            'selected_text_origin: ReadingWorkspaceModel.selectedTextOrigin(question)',
+            page,
+        )
+        self.assertIn("answer.selected_block_id = question.selected_block_id", page)
+        self.assertIn("中文参考译文仅可创建个人笔记或问题", page)
+        self.assertIn("excerptButton.hidden = isTranslation", page)
+        self.assertIn(".reference-mode-english .reference-section-row", page)
+        self.assertIn(".reference-mode-translation .reference-section-row", page)
+        self.assertIn("@media (max-width: 50rem)", page)
+        self.assertIn("overflow-x: hidden", page)
+        self.assertIn("position: fixed", page)
+        self.assertIn("max-height: calc(100vh - 1.5rem)", page)
+        self.assertIn("overflow-wrap: anywhere", page)
+        self.assertNotIn(str(translation_path), page)
+        self.assertNotIn(translation_path.name, page)
+
+        bootstrap_match = re.search(
+            r'<script id="rw-bootstrap" type="application/json">(.*?)</script>',
+            page,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(bootstrap_match)
+        bootstrap = json.loads(bootstrap_match.group(1))
+        self.assertNotIn("translation", bootstrap)
+        self.assertNotIn("reference_mode", bootstrap)
+        self.assertNotIn("presentation", bootstrap)
+        self.assertEqual(bootstrap["source_label"], source_path.name)
+
+        session_function_start = page.index("function sessionPayload")
+        session_function_end = page.index("function assertObject", session_function_start)
+        self.assertNotIn("translation", page[session_function_start:session_function_end])
+        self.assertNotIn("<script src=", page)
+        self.assertNotIn("<link rel=", page)
+        self.assertNotIn("@import", page)
+        self.assertNotIn("fetch(", page)
+        self.assertNotIn("XMLHttpRequest", page)
+        self.assertNotIn("WebSocket", page)
+        self.assertNotIn("sendBeacon", page)
+        page.encode("utf-8")
+
+    def test_cli_accepts_reference_translation_option(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source_path = root / "source.md"
+            translation_path = root / "source.zh-CN.reading.md"
+            index_path = root / "concept_index.json"
+            output_path = root / "workspace.html"
+            source_path.write_text("# English\n\nHOM impedance\n", encoding="utf-8")
+            translation_path.write_text("# 中文\n\n高次模阻抗\n", encoding="utf-8")
+            write_index(index_path)
+            with redirect_stdout(io.StringIO()):
+                exit_code = main(
+                    [
+                        str(source_path),
+                        "--index",
+                        str(index_path),
+                        "--reference-translation",
+                        str(translation_path),
+                        "--output",
+                        str(output_path),
+                    ]
+                )
+            page = output_path.read_text(encoding="utf-8")
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn('id="reference-mode"', page)
+        self.assertIn('data-reference-pane="translation"', page)
+
+    def test_real_pair_has_18_aligned_rows_and_one_authoritative_media_rail(self) -> None:
+        page = self.generate_real_pair()
+
+        self.assertEqual(page.count('data-reference-section-row="'), 18)
+        self.assertNotIn('id="reference-alignment-warning"', page)
+        self.assertEqual(page.count('<img class="source-image"'), 7)
+        self.assertEqual(page.count('<table class="source-table">'), 2)
+        self.assertEqual(page.count('data-media-placeholder="'), 18)
+        self.assertNotIn(str(REAL_READING_ROOT), page)
+        self.assertEqual(
+            re.findall(r'data-figure-item="((?:figure|table)-\d+)"', page),
+            [
+                "figure-1",
+                "table-1",
+                "figure-2",
+                "figure-3",
+                "figure-4",
+                "figure-5",
+                "table-2",
+                "figure-6",
+                "figure-7",
+            ],
+        )
+        body_before_figures = page.split('<aside class="figures-panel"', 1)[0]
+        self.assertNotIn('<img class="source-image"', body_before_figures)
+        self.assertNotIn('<table class="source-table">', body_before_figures)
+        figure_rail = page.split('<aside class="figures-panel"', 1)[1]
+        self.assertIn('data-concept="R over Q"', figure_rail)
+        source_block_ids = re.findall(
+            r'data-source-block="true" data-block-id="([^"]+)"',
+            page,
+        )
+        self.assertTrue(source_block_ids)
+        self.assertEqual(len(source_block_ids), len(set(source_block_ids)))
+        self.assertEqual(page.count('role="separator"'), 3)
+
+    def test_missing_translation_section_warns_and_preserves_all_body_text(self) -> None:
+        page, _, _, _ = self.generate_with_translation(
+            "# One\n\nFirst body.\n\n## Two\n\nSecond body.\n",
+            "# 一\n\n第一段。\n",
+        )
+
+        self.assertEqual(page.count('data-reference-section-row="'), 2)
+        self.assertIn('id="reference-alignment-warning"', page)
+        self.assertIn("未配对小节已保留", page)
+        self.assertIn("First body.", page)
+        self.assertIn("Second body.", page)
+        self.assertIn("第一段。", page)
+        self.assertIn("此英文小节没有对应的中文参考译文", page)
+
+    def test_minimal_gfm_table_is_escaped_hover_enabled_and_not_duplicated(self) -> None:
+        page, _, _, _ = self.generate_with_translation(
+            "# Source\n\n**Table 1. Safe table**\n\n"
+            "| Property | Value |\n| --- | ---: |\n"
+            "| HOM impedance | <img src=x onerror=alert(1)> |\n",
+            "# 参考\n\n**表 1（Table 1）。安全表**\n\n"
+            "| 参数 | 值 |\n| --- | --- |\n| 高次模阻抗 | 不可信 HTML |\n",
+        )
+
+        self.assertEqual(page.count('<table class="source-table">'), 1)
+        self.assertEqual(page.count('data-figure-item="table-1"'), 1)
+        self.assertEqual(page.count('data-media-placeholder="table-1"'), 2)
+        self.assertIn("&lt;img src=x onerror=alert(1)&gt;", page)
+        self.assertNotIn("<img src=x onerror=alert(1)>", page)
+        self.assertIn('data-concept="HOM impedance"', page)
+
+    def test_selection_provenance_validation_and_optional_field_snapshots(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const authoritativeExcerpt = {
+  entry_id: "e1", entry_type: "source_excerpt",
+  selected_text_origin: "authoritative_source", selected_block_id: "block-1",
+};
+const translatedNote = {
+  entry_id: "n1", entry_type: "human_note",
+  selected_text_origin: "reference_translation", selected_block_id: "translation-block-1",
+};
+const translatedQuestion = {
+  entry_id: "q1", entry_type: "human_question",
+  selected_text_origin: "reference_translation", selected_block_id: "translation-block-1",
+};
+const translatedAnswer = {
+  entry_id: "a1", entry_type: "llm_answer",
+  selected_text_origin: "reference_translation", selected_block_id: "translation-block-1",
+};
+function outcome(callback) {
+  try { return { ok: true, value: callback() }; }
+  catch (error) { return { ok: false, message: error.message }; }
+}
+process.stdout.write(JSON.stringify({
+  authoritative_excerpt: outcome(() => model.validateSelectionFields(authoritativeExcerpt)),
+  translated_note: outcome(() => model.validateSelectionFields(translatedNote)),
+  translated_question: outcome(() => model.validateSelectionFields(translatedQuestion)),
+  translated_answer: outcome(() => model.validateSelectionFields(translatedAnswer, translatedQuestion)),
+  translated_excerpt: outcome(() => model.validateSelectionFields({
+    entry_id: "bad-excerpt", entry_type: "source_excerpt",
+    selected_text_origin: "reference_translation",
+  })),
+  invalid_origin: outcome(() => model.validateSelectionFields({
+    entry_id: "bad-origin", entry_type: "human_note", selected_text_origin: "machine_guess",
+  })),
+  mismatched_answer: outcome(() => model.validateSelectionFields({
+    entry_id: "bad-answer", entry_type: "llm_answer",
+    selected_text_origin: "authoritative_source",
+  }, translatedQuestion)),
+  legacy_origin: model.selectedTextOrigin({ entry_type: "human_note" }),
+  legacy_snapshot: model.selectionFieldSnapshot({ entry_type: "human_note" }),
+  new_snapshot: model.selectionFieldSnapshot(translatedNote),
+}));
+""",
+            {},
+        )
+
+        self.assertTrue(result["authoritative_excerpt"]["ok"])
+        self.assertTrue(result["translated_note"]["ok"])
+        self.assertTrue(result["translated_question"]["ok"])
+        self.assertTrue(result["translated_answer"]["ok"])
+        self.assertFalse(result["translated_excerpt"]["ok"])
+        self.assertIn("不能创建 source_excerpt", result["translated_excerpt"]["message"])
+        self.assertFalse(result["invalid_origin"]["ok"])
+        self.assertFalse(result["mismatched_answer"]["ok"])
+        self.assertIn("必须继承问题", result["mismatched_answer"]["message"])
+        self.assertEqual(result["legacy_origin"], "authoritative_source")
+        self.assertEqual(result["legacy_snapshot"], {})
+        self.assertEqual(
+            result["new_snapshot"],
+            {
+                "selected_text_origin": "reference_translation",
+                "selected_block_id": "translation-block-1",
+            },
+        )
+
+    def test_new_selection_fields_round_trip_without_backfilling_legacy_entries(self) -> None:
+        payload = {
+            "format_version": "rw-session-v0.1",
+            "source_label": "source.md",
+            "session_id": "rw-session-v0.1:source.md",
+            "session_state": "active",
+            "entries": [
+                {
+                    "entry_id": "legacy",
+                    "entry_type": "human_note",
+                    "selected_text": "old",
+                },
+                {
+                    "entry_id": "translated",
+                    "entry_type": "human_question",
+                    "selected_text": "new",
+                    "selected_text_origin": "reference_translation",
+                    "selected_block_id": "translation-block-0002",
+                },
+            ],
+            "preferences": {},
+            "exported_at": "2026-08-11T00:00:00Z",
+        }
+        result = self.run_reading_workspace_model(
+            """
+const markdown = model.buildSessionMarkdownEnvelope(input.payload);
+const reparsed = model.parseSessionMarkdownEnvelope(markdown);
+process.stdout.write(JSON.stringify({
+  reparsed,
+  legacy_fields: model.selectionFieldSnapshot(reparsed.entries[0]),
+  new_fields: model.selectionFieldSnapshot(reparsed.entries[1]),
+}));
+""",
+            {"payload": payload},
+        )
+
+        self.assertEqual(result["reparsed"], payload)
+        self.assertEqual(result["legacy_fields"], {})
+        self.assertEqual(
+            result["new_fields"],
+            {
+                "selected_text_origin": "reference_translation",
+                "selected_block_id": "translation-block-0002",
+            },
+        )
+
+    def test_real_legacy_session_locates_all_five_annotations_without_guessing(self) -> None:
+        page = self.generate_real_pair()
+        collector = SourceBlockCollector()
+        collector.feed(page)
+        payload = self.real_session_payload()
+        self.assertEqual(len(payload["entries"]), 5)
+        self.assertTrue(
+            all(
+                "selected_text_origin" not in entry and "selected_block_id" not in entry
+                for entry in payload["entries"]
+            )
+        )
+
+        result = self.run_reading_workspace_model(
+            """
+process.stdout.write(JSON.stringify(
+  model.resolveBlockAnnotations(input.entries, input.blocks)
+));
+""",
+            {"entries": payload["entries"], "blocks": collector.blocks},
+        )
+
+        self.assertEqual(result["unlocatedCount"], 0)
+        self.assertEqual(len(result["blockCounts"]), 5)
+        self.assertEqual(sum(result["blockCounts"].values()), 5)
+
+    def test_stale_existing_block_id_falls_back_to_unique_locator_and_text(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const blocks = [
+  { block_key: "wrong", block_id: "block-stale", source_origin: "authoritative_source", source_locator: "Wrong", visible_text: "unrelated text" },
+  { block_key: "correct", block_id: "block-current", source_origin: "authoritative_source", source_locator: "Section 1", visible_text: "prefix selected passage suffix" },
+  { block_key: "translation", block_id: "translation-block-current", source_origin: "reference_translation", source_locator: "Section 1", visible_text: "prefix selected passage suffix" },
+];
+const entries = [
+  { entry_id: "note", entry_type: "human_note", source_locator: "Section 1", selected_text: "selected passage", selected_block_id: "block-stale" },
+];
+process.stdout.write(JSON.stringify(model.resolveBlockAnnotations(entries, blocks)));
+""",
+            {},
+        )
+
+        self.assertEqual(result, {"blockCounts": {"correct": 1}, "unlocatedCount": 0})
+
+    def test_stale_existing_block_id_with_ambiguous_fallback_is_unlocated(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const blocks = [
+  { block_key: "wrong", block_id: "block-stale", source_origin: "authoritative_source", source_locator: "Wrong", visible_text: "unrelated text" },
+  { block_key: "candidate-1", block_id: "block-current-1", source_origin: "authoritative_source", source_locator: "Section 1", visible_text: "prefix selected passage suffix" },
+  { block_key: "candidate-2", block_id: "block-current-2", source_origin: "authoritative_source", source_locator: "Section 1", visible_text: "another selected passage copy" },
+];
+const entries = [
+  { entry_id: "note", entry_type: "human_note", source_locator: "Section 1", selected_text: "selected passage", selected_block_id: "block-stale" },
+];
+process.stdout.write(JSON.stringify(model.resolveBlockAnnotations(entries, blocks)));
+""",
+            {},
+        )
+
+        self.assertEqual(result, {"blockCounts": {}, "unlocatedCount": 1})
+
+    def test_stale_existing_block_id_with_no_fallback_is_unlocated(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const blocks = [
+  { block_key: "wrong", block_id: "block-stale", source_origin: "authoritative_source", source_locator: "Wrong", visible_text: "unrelated text" },
+];
+const entries = [
+  { entry_id: "note", entry_type: "human_note", source_locator: "Section 1", selected_text: "selected passage", selected_block_id: "block-stale" },
+];
+process.stdout.write(JSON.stringify(model.resolveBlockAnnotations(entries, blocks)));
+""",
+            {},
+        )
+
+        self.assertEqual(result, {"blockCounts": {}, "unlocatedCount": 1})
+
+    def test_verified_block_id_wins_when_locator_and_text_also_match(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const blocks = [
+  { block_key: "correct", block_id: "block-current", source_origin: "authoritative_source", source_locator: "Section 1", visible_text: "prefix selected passage suffix" },
+  { block_key: "duplicate", block_id: "block-other", source_origin: "authoritative_source", source_locator: "Section 1", visible_text: "another selected passage copy" },
+];
+const entries = [
+  { entry_id: "note", entry_type: "human_note", source_locator: "Section 1", selected_text: "selected passage", selected_block_id: "block-current" },
+];
+process.stdout.write(JSON.stringify(model.resolveBlockAnnotations(entries, blocks)));
+""",
+            {},
+        )
+
+        self.assertEqual(result, {"blockCounts": {"correct": 1}, "unlocatedCount": 0})
+
+    def test_annotation_resolution_handles_translation_delete_ambiguity_and_bad_ids(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const blocks = [
+  { block_key: "en", block_id: "block-1", source_origin: "authoritative_source", source_locator: "One", visible_text: "same text" },
+  { block_key: "en2", block_id: "block-2", source_origin: "authoritative_source", source_locator: "One", visible_text: "same text" },
+  { block_key: "zh", block_id: "translation-block-1", source_origin: "reference_translation", source_locator: "One", visible_text: "中文选择" },
+];
+const entries = [
+  { entry_id: "zh-note", entry_type: "human_note", source_locator: "One", selected_text: "中文选择", selected_text_origin: "reference_translation", selected_block_id: "translation-block-1" },
+  { entry_id: "bad-id", entry_type: "human_note", source_locator: "One", selected_text: "same text", selected_block_id: "missing" },
+  { entry_id: "ambiguous", entry_type: "human_question", source_locator: "One", selected_text: "same text" },
+  { entry_id: "answer", entry_type: "llm_answer", source_locator: "One", selected_text: "same text" },
+];
+process.stdout.write(JSON.stringify({
+  before: model.resolveBlockAnnotations(entries, blocks),
+  after_delete: model.resolveBlockAnnotations([], blocks),
+}));
+""",
+            {},
+        )
+
+        self.assertEqual(result["before"]["blockCounts"], {"zh": 1})
+        self.assertEqual(result["before"]["unlocatedCount"], 2)
+        self.assertEqual(result["after_delete"], {"blockCounts": {}, "unlocatedCount": 0})
+
+    def test_presentation_layout_clamps_resizes_resets_and_stays_session_external(self) -> None:
+        result = self.run_reading_workspace_model(
+            """
+const metrics = {
+  rootFontPx: 16, workspaceWidthPx: 1920, bodyWidthPx: 760, separatorWidthPx: 8,
+};
+const base = model.clampPresentationLayout(model.defaultPresentationLayout, metrics);
+const wide = model.clampPresentationLayout(model.defaultPresentationLayout, {
+  rootFontPx: 16, workspaceWidthPx: 3840, bodyWidthPx: 2240, separatorWidthPx: 8,
+});
+const language = model.resizePresentationLayout(base, "language", 10000, metrics);
+const session = model.resizePresentationLayout(base, "session", -160, metrics);
+const reset = model.presentationLayoutForPreset(session, "balanced");
+const invalid = model.normalizePresentationLayout({
+  language_ratio: "bad", figures_width_rem: null, session_width_rem: Infinity,
+  session_width_preset: "giant",
+});
+process.stdout.write(JSON.stringify({ base, wide, language, session, reset, invalid }));
+""",
+            {},
+        )
+
+        self.assertEqual(result["base"]["figures_width_rem"], 28)
+        self.assertEqual(result["base"]["session_width_rem"], 42)
+        self.assertEqual(result["wide"]["figures_width_rem"], 28)
+        self.assertEqual(result["wide"]["session_width_rem"], 42)
+        self.assertLess(result["language"]["language_ratio"], 1)
+        self.assertGreater(result["language"]["language_ratio"], 0.5)
+        self.assertEqual(result["session"]["session_width_preset"], "custom")
+        self.assertEqual(result["reset"]["session_width_preset"], "balanced")
+        self.assertEqual(result["reset"]["session_width_rem"], 42)
+        self.assertEqual(result["invalid"], result["base"])
+
+        page, _, _, _ = self.generate_with_translation(
+            "# English\n\nBody.\n",
+            "# 中文\n\n正文。\n",
+        )
+        for resizer_id in (
+            "language-resizer",
+            "content-figures-resizer",
+            "figures-session-resizer",
+        ):
+            self.assertRegex(
+                page,
+                rf'id="{resizer_id}"[^>]*role="separator"[^>]*tabindex="0"[^>]*aria-orientation="vertical"',
+            )
+        self.assertIn("setPointerCapture", page)
+        self.assertIn('addEventListener("keydown"', page)
+        self.assertIn('addEventListener("dblclick"', page)
+        self.assertIn('id="reset-layout"', page)
+        self.assertIn(
+            "personal-research-os:reading-workspace:presentation:v1",
+            page,
+        )
+        layout_start = page.index("function setPresentationLayout")
+        layout_end = page.index("function restorePresentationLayout", layout_start)
+        layout_path = page[layout_start:layout_end]
+        self.assertLess(
+            layout_path.index("applyPresentationLayout(value)"),
+            layout_path.index("persistPresentationLayout"),
+        )
+        session_start = page.index("function sessionPayload")
+        session_end = page.index("function assertObject", session_start)
+        session_path = page[session_start:session_end]
+        for layout_field in (
+            "language_ratio",
+            "figures_width_rem",
+            "session_width_rem",
+            "presentationLayout",
+        ):
+            self.assertNotIn(layout_field, session_path)
+        self.assertNotIn("width: min(100%, 100rem)", page)
+        self.assertIn("grid-template-columns:", page)
+        self.assertIn("@media (max-width: 50rem)", page)
+        self.assertIn(".workspace-resizer {\n    display: none !important;", page)
 
     def test_renders_required_markdown_subset_and_escapes_raw_html(self) -> None:
         page, _, _ = self.generate(
@@ -305,10 +980,11 @@ process.stdout.write(JSON.stringify({
             options,
         )
         self.assertIn('<option value="wide">宽屏 / Wide · 50rem</option>', options)
+        self.assertIn('<option value="custom" disabled>自定义 / Custom</option>', options)
         self.assertIn("--session-panel-width: 42rem", page)
-        self.assertIn("min(var(--session-panel-width), 52vw)", page)
+        self.assertIn("minmax(24rem, var(--session-panel-width))", page)
         self.assertIn(
-            "personal-research-os:reading-workspace:presentation:session-panel-width",
+            "personal-research-os:reading-workspace:presentation:v1",
             page,
         )
 
