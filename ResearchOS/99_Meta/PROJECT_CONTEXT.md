@@ -3,8 +3,8 @@
 Status: KA-00 governance accepted; RW-00 governance accepted and complete on 2026-08-04;\
 RW-01 and RW-01.1 accepted and complete at commit `8afa9aa`;\
 RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete;\
-HTML prototype frozen; the commit containing this status record is the published RW-02 baseline;\
-RW-03 and KA-01 remain unauthorized and not started\
+HTML prototype frozen; commit `792c802` is the published RW-02 baseline;\
+RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete; `reading_note.draft.md` remains `state: draft`; no artifact is assigned `human_reviewed`; RW-04, Concept proposal, and KA-01 not started; KA-01 unauthorized\
 Pre-KA-00 implementation baseline: `d622b92c78d3fcaf327db93e599e6a77fe112f1c`\
 Current governance version: identified by this document's Git history\
 Future KA-01 run baseline: `git rev-parse HEAD` at run start\
@@ -63,6 +63,17 @@ explicitly approved:
   aid, not proof.
 - Pasted LLM answers default to unverified auxiliary material. LLM synthesis
   may prepare a reading-note draft only.
+- Every RW-03 synthesis requires one human-selected `SOURCE_PATH` and one
+  human-selected `SESSION_PATH`. One `EXTERNAL_SUMMARY_PATH` is optional only
+  when the human explicitly selects it for that run.
+- An optional external summary remains unverified, session-external,
+  non-authoritative, and not `human_reviewed`. The two answer-input channels
+  are canonical `llm_answer` entries already inside `SESSION_PATH` and the
+  separately selected external summary. The current session has no
+  `llm_answer`; it has two `human_question` and three `human_note` entries.
+  The summary is not split into canonical session entries or promoted to
+  paper, source, human, or reviewed content. Future deduplication may merge
+  repeated wording only while retaining every origin label.
 - Only a human may assign `human_reviewed` to a reading note. A changed note
   must be reviewed again before another handoff.
 - A Reading Workspace handoff may pass only one human-selected, reviewed
@@ -70,7 +81,7 @@ explicitly approved:
   data, PDFs, other papers, or LLM transcripts.
 - Only that final, selected KA source receives the existing KA-01 SHA-256
   fingerprint, computed when the run begins. RW does not require a PDF hash or
-  a second provenance hash.
+  a source, session, external-summary, or second provenance fingerprint.
 - Provenance laundering, circular LLM reuse, copyright, privacy, subjective
   confidence, noisy highlighting, and review burden are recorded risks, but
   they are not acceptance blockers for the RW-01 prototype.
@@ -103,10 +114,14 @@ Current automated verification passed 25 Concept checks, 32 focused Reading UI
 tests, and 49 full-suite tests. The 974,523-byte offline HTML contains 18
 bilingual section pairs, 7 images, 2 rendered tables, 3 accessible resizers,
 and 131 unique annotatable source blocks. RW-02 is accepted and complete; the
-HTML prototype is frozen; the commit containing this status record is the published RW-02 baseline.
-RW-03 and
-KA-01 remain unauthorized and not started. This accepted local prototype does
-not permit model calls, synthesis, or a KA-01 run. Integrated
+HTML prototype is frozen; commit `792c802` is the published RW-02 baseline.
+RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
+accepted on 2026-08-18; selected-text presentation correction applied; RW-03
+accepted and complete. `reading_note.draft.md` remains `state: draft`; no
+artifact is assigned `human_reviewed`; RW-04 Human Review and Freeze has not
+started; final `reading_note.md` does not exist; Concept proposal and KA-01
+remain unauthorized and unstarted. The frozen prototype itself still
+does not embed model calls or permit a KA-01 run. Integrated
 AI runtime and automatic acquisition remain outside this prototype. Stage 02
 Information Acquisition remains a separate future concern.
 
@@ -138,12 +153,14 @@ copied `_local/external_llm_conversation_summary.md` remains external LLM
 material, unverified, session-external, not paper-source authority, and not
 `human_reviewed`; it has not entered the session.
 
-The HTML prototype is frozen following human acceptance;
-the commit containing this status record is the published RW-02 baseline. Only a separately
-authorized future stage may begin RW-03
+The HTML prototype is frozen following human acceptance; commit `792c802` is
+the published RW-02 baseline. The following remains a historical statement
+about the RW-02.2 publication boundary: RW-02.2 did not create or start RW-03
 reading-note closure, Obsidian Home, or the 1500 MHz TM020 Harmonic Cavity
-project page. None of those Obsidian artifacts was created or started by
-RW-02.2.
+project page. RW-03 was subsequently authorized on 2026-08-11. Its synthesis
+content was human accepted on 2026-08-18 and the selected-text presentation
+correction was applied; RW-03 is accepted and complete. The draft remains
+`state: draft`, no artifact is `human_reviewed`, and RW-04 has not started.
 
 No Reading Workspace implementation and no KA-01 execution have occurred
 during RW-00. No reading session, source, reading-note, run-assessment, or

@@ -44,6 +44,7 @@ used from the repository root.
 | Generated Reading Workspace | `00_Inbox/reading/ipac2019-weprb066/_local/reading-workspace.html` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/_local/reading-workspace.html` |
 | Byte-identical real session copy (ignored) | `00_Inbox/reading/ipac2019-weprb066/_local/reading_session.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/_local/reading_session.md` |
 | Corrected external LLM summary copy (ignored) | `00_Inbox/reading/ipac2019-weprb066/_local/external_llm_conversation_summary.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/_local/external_llm_conversation_summary.md` |
+| RW-03 reading-note draft | `00_Inbox/reading/ipac2019-weprb066/reading_note.draft.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/reading_note.draft.md` |
 
 The PDF is the authoritative local source for visual verification. The
 `source.reading.md` file is a one-time, page-marked derived transcription for
@@ -64,8 +65,13 @@ justification and visual/source review.
 ## Status and provenance boundary
 
 **Status:** RW-02.2 human UI accepted on 2026-08-11. RW-02 is accepted and
-complete; the HTML prototype is frozen;
-the commit containing this status record is the published RW-02 baseline.
+complete; the HTML prototype is frozen; commit `792c802` is the published
+RW-02 baseline. RW-03 synthesis content human accepted on 2026-08-18;
+selected-text presentation correction applied; RW-03 accepted and complete.
+`reading_note.draft.md` remains `state: draft`; no artifact is assigned
+`human_reviewed`; RW-04 Human Review and Freeze has not started; final
+`reading_note.md` does not exist; Concept proposal and KA-01 remain
+unauthorized and unstarted.
 
 The local source bundle is prepared for human comparison of the Markdown
 reading view against the original PDF. RW-02.1 remains a historical narrow
@@ -93,6 +99,26 @@ unverified, session-external, not paper-source authority, not
 conversation is unavailable, so its question evolution and Candidate Personal
 Notes cannot be independently verified.
 
+For RW-03, the authoritative `source.reading.md` and byte-identical
+`reading_session.md` are the mandatory `SOURCE_PATH` and `SESSION_PATH`. The
+repository owner explicitly selected `external_llm_conversation_summary.md` as
+the optional `EXTERNAL_SUMMARY_PATH` for this run. That selection does not
+change its status: it remains unverified, session-external, non-authoritative,
+and not `human_reviewed`. Answer inputs have two separate provenance channels:
+canonical `llm_answer` entries inside the session and the optional external
+summary outside it. This session has no `llm_answer`; it has two
+`human_question` and three `human_note` entries. Paper-supported synthesis is
+grounded independently in the authoritative source. The draft does not split
+the summary into session entries or promote external content. Future
+deduplication may merge repeated phrasing only while retaining the origin
+labels.
+
+The five legacy session entries are semantically authoritative-source
+selections under the compatibility rule for absent `selected_text_origin`.
+Their exact session `selected_text` values were verified against the
+authoritative English reading source and are displayed beside the two human
+questions and three human notes in the RW-03 draft.
+
 No SHA-256, source fingerprint, session fingerprint, or second provenance
 fingerprint is recorded for RW-02. Current RW-02.2 automated verification
 passed 25 Concept checks, 32 focused Reading UI tests, and 49 full-suite tests.
@@ -100,9 +126,11 @@ The 974,523-byte offline HTML contains 18 bilingual section pairs, 7 images, 2
 rendered tables, 3 accessible resizers, and 131 unique annotatable source
 blocks. The repository owner accepted the RW-02.2 human UI on 2026-08-11 with
 the overall conclusion “通过，未报告其他问题”. RW-02 is accepted and complete;
-the HTML prototype is frozen;
-the commit containing this status record is the published RW-02 baseline.
-RW-03 and KA-01 remain unauthorized and not started.
-RW-03 reading-note closure,
-Obsidian Home, and the 1500 MHz TM020 Harmonic Cavity project page have not
-been created or started and require separate future authorization.
+the HTML prototype is frozen; commit `792c802` is the published RW-02 baseline.
+RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
+accepted on 2026-08-18; selected-text presentation correction applied; RW-03
+accepted and complete. The draft remains `state: draft`, no artifact is
+`human_reviewed`, and no source, session, or external-summary SHA/fingerprint
+was added. RW-04 Human Review and Freeze has not started; final
+`reading_note.md` does not exist; Concept proposal and KA-01 remain
+unauthorized and unstarted.

@@ -1,7 +1,7 @@
 # Reading Workspace Protocol v0.1
 
 Version: v0.1\
-Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; the commit containing this status record is the published RW-02 baseline; RW-03 and KA-01 remain unauthorized and not started\
+Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; commit 792c802 is the published RW-02 baseline; RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete; `reading_note.draft.md` remains `state: draft`; no artifact is `human_reviewed`; RW-04, Concept proposal, and KA-01 not started; KA-01 unauthorized\
 Applies to: reading and source preparation upstream of KA-01
 
 This protocol defines the smallest implementation-neutral contract for a local
@@ -12,9 +12,15 @@ Realistic human reading on 2026-08-11 identified five RW-02.2 usability
 corrections. The repository owner accepted the RW-02.2 human UI on 2026-08-11
 with the overall conclusion “通过，未报告其他问题”. RW-02 is accepted and
 complete; the HTML prototype is frozen;
-the commit containing this status record is the published RW-02 baseline.
+commit `792c802` is the published RW-02 baseline.
 RW-02.1 remains a historical narrow presentation correction, not an
-architecture redesign. RW-03 and KA-01 remain unauthorized and not started.
+architecture redesign. RW-03 was separately authorized on 2026-08-11.
+RW-03 synthesis content human accepted on 2026-08-18; selected-text
+presentation correction applied; RW-03 accepted and complete.
+`reading_note.draft.md` remains `state: draft`; no artifact is assigned
+`human_reviewed`; RW-04 Human Review and Freeze has not started; final
+`reading_note.md` does not exist; Concept proposal and KA-01 remain
+unauthorized and unstarted.
 
 ## 1. Purpose and boundaries
 
@@ -38,42 +44,44 @@ Concept names, aliases, and hover data may be consumed for deterministic local
 display, but the Reading Workspace may not edit stable Concepts, regenerate or
 hand-edit the index, create Concept proposals, or imply promotion approval.
 
-## 2. Proposed artifact layout
+## 2. Artifact layout v0.1
 
-The following layout is proposed for later RW implementation; RW-00 does not
-create it:
+The Reading Workspace currently uses this per-paper artifact layout:
 
 ```text
 ResearchOS/00_Inbox/reading/<paper_id>/
 ├── source_record.md
-├── reading_session.md
 ├── reading_note.draft.md
-├── reading_note.md
+├── reading_note.md                 # optional; only after RW-04 human review/freeze
 └── _local/
     ├── source.pdf
-    ├── assets/figures/figure-01.png … figure-07.png
+    ├── source.reading.md
     ├── source.zh-CN.reading.md
-    └── reading-workspace.html
+    ├── reading_session.md
+    ├── external_llm_conversation_summary.md
+    ├── reading-workspace.html
+    └── assets/figures/
 ```
 
 Responsibilities:
 
 | Artifact | Responsibility |
 | --- | --- |
-| `source_record.md` | Human-visible source identity, bibliographic details when available, and local source locators |
-| `reading_session.md` | Complete, portable export of session entries and their metadata; does not embed the full source by default |
-| `reading_note.draft.md` | Optional LLM-produced or implementation-assisted synthesis draft |
-| `reading_note.md` | The one reading note explicitly reviewed and selected by a human |
-| `_local/source.pdf` | Proposed local-only PDF location for visual cross-checking |
+| `source_record.md` | Git-visible source identity and provenance record |
+| `reading_note.draft.md` | RW-03 synthesis artifact; content human accepted on 2026-08-18, while the file remains `state: draft` and is not `human_reviewed` |
+| `reading_note.md` | Optional final note; may be created only after RW-04 human review and freeze, and does not currently exist |
+| `_local/source.reading.md` | Authoritative paper-text input for this workflow |
+| `_local/source.zh-CN.reading.md` | Unverified, non-authoritative reference translation |
+| `_local/reading_session.md` | Authoritative exported human session |
+| `_local/external_llm_conversation_summary.md` | Optional human-selected, unverified external input; session-external and non-authoritative |
+| `_local/source.pdf` | Visual authority |
+| `_local/reading-workspace.html` and `_local/assets/figures/` | Ignored local presentation artifacts |
 
-The `<paper_id>` naming policy and exact Markdown serialization may be chosen
-during RW-01, provided the contract in this document remains lossless and
-readable. No directory or artifact is created merely because this layout is
-documented.
-
-`_local/source.pdf` should not be committed by default. RW-00 does not edit
-`.gitignore`; the human remains responsible for checking Git status before
-any future commit.
+This is the actual v0.1 layout, not a future proposal. The current bundle's
+session is `_local/reading_session.md`; there is no paper-root
+`reading_session.md`. The entire `_local/` subtree is ignored by default and
+must not be committed. `reading_note.md` is absent until a separately authorized
+RW-04 human review and freeze creates it.
 
 ### 2.1 RW-02.1 presentation boundary
 
@@ -155,10 +163,14 @@ bilingual section pairs, 7 images, 2 rendered tables, 3 accessible resizers,
 and 131 unique annotatable source blocks. These engineering metrics remain
 separate from the repository owner's human acceptance record. RW-02 is
 accepted and complete; the HTML prototype is frozen;
-the commit containing this status record is the published RW-02 baseline. Only separately authorized
-future work may begin RW-03
-reading-note closure, Obsidian Home, or the 1500 MHz TM020 Harmonic Cavity
-project page. RW-03 and KA-01 remain unauthorized and not started.
+commit `792c802` is the published RW-02 baseline. The statement that RW-03,
+Obsidian Home, and the 1500 MHz TM020 Harmonic Cavity project page required
+separate authorization describes the historical RW-02 publication boundary.
+RW-03 was subsequently authorized on 2026-08-11. Its synthesis content was
+human accepted on 2026-08-18 and the selected-text presentation correction was
+applied; RW-03 is accepted and complete. The draft file remains `state: draft`,
+no artifact is `human_reviewed`, and RW-04, Concept proposal, and KA-01 have
+not started; KA-01 remains unauthorized.
 
 ## 3. Content ownership and review metadata
 
@@ -170,6 +182,7 @@ The Reading Workspace keeps a minimal origin distinction:
 | Human note | Human-owned interpretation or annotation; it is never silently rewritten |
 | Human question | A question authored by the human |
 | LLM answer | Auxiliary model output; unverified by default and never treated as source text |
+| External summary | Optional, explicitly human-selected RW-03 input; unverified, session-external, non-authoritative, and never `human_reviewed` |
 | Synthesis draft | LLM-produced reading-note draft; never automatically reviewed |
 | Reviewed reading note | A note explicitly reviewed and selected by a human |
 
@@ -284,6 +297,26 @@ selected passage so the entry remains independently readable. For an entry
 without a selection, the export uses one documented empty or not-applicable
 representation rather than inventing source context.
 
+RW synthesis must also preserve this selected-text presentation invariant:
+
+- every `human_question` and `human_note` with non-empty `selected_text`
+  displays that exact session field next to the human content;
+- synthesis reads the displayed selection from `selected_text`; it must never
+  reconstruct a quotation from `source_locator`, surrounding source text, or
+  an LLM paraphrase;
+- an `authoritative_source` selection may be displayed as `[paper/quote]`;
+- a `reference_translation` selection must be visibly marked
+  `中文参考译文 / 机器或 LLM 辅助 / 未核验 / 非权威` and must never receive
+  `[paper/quote]`;
+- a legacy entry without `selected_text_origin` retains the compatibility
+  semantics above and the absent field remains absent;
+- when `selected_text` is empty or absent, synthesis displays
+  `未记录框选内容` and never invents context.
+
+This is a reading-note display rule only. It does not embed the complete source
+in `reading_session.md`, add or normalize an entry field, or change
+`rw-session-v0.1`.
+
 An `llm_answer` also allows:
 
 - `model_label`: optional human-entered label for the external model;
@@ -354,20 +387,45 @@ selects the intended version again.
 
 ## 6. RW-03 synthesis handoff
 
-RW-03 remains a separately authorized future step. A valid synthesis trial
-requires the human to select both:
+RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
+accepted on 2026-08-18; selected-text presentation correction applied; RW-03
+accepted and complete. `reading_note.draft.md` remains `state: draft`; no
+artifact is assigned `human_reviewed`; RW-04 Human Review and Freeze has not
+started; final `reading_note.md` does not exist; Concept proposal and KA-01
+remain unauthorized and unstarted. A valid synthesis trial requires the human
+to select both mandatory inputs:
 
 - one exact `SOURCE_PATH` for the original technical source; and
 - one exact `SESSION_PATH` for the exported `reading_session.md`.
 
-The manually triggered LLM synthesis step reads both selected files and may
-output only `reading_note.draft.md`. It may not overwrite the source or
-session, create a reviewed note, or claim human review. This handoff does not
-require the full source to be embedded in the session and does not add a
-source hash, session hash, second provenance SHA, or any other fingerprint.
+The human may also select one exact `EXTERNAL_SUMMARY_PATH` for a specific run.
+This third input is optional and may be read only when the human explicitly
+selects it. It remains external LLM material: unverified, session-external,
+non-authoritative, and not `human_reviewed`.
 
-The two-file RW-03 synthesis input is upstream preparation only. It does not
-change the KA-01 one-file handoff described below.
+RW-03 reads answers through two distinct channels: canonical `llm_answer`
+entries already contained in `SESSION_PATH`, and the optional external summary
+outside the session. The current session contains no `llm_answer`; it contains
+two `human_question` and three `human_note` entries. Independently, the
+authoritative `SOURCE_PATH` grounds paper-supported synthesis. A channel must
+not borrow another source's provenance label, and a paragraph must not collapse
+unlike origins behind a single label. The external summary is never split into
+or imported as canonical session entries and is never promoted to paper/source
+evidence, human-authored content, reviewed content, or a stable knowledge
+artifact. Future synthesis may deduplicate repeated wording across the two
+answer channels only if it retains every origin label and does not obscure
+which channel supports each claim.
+
+The manually triggered LLM synthesis step may output only
+`reading_note.draft.md`. It may not overwrite any input, create a reviewed
+note, claim human review, create a Concept proposal, or begin KA-01. This
+handoff does not require the full source to be embedded in the session and
+does not add a source hash, session hash, external-summary hash, provenance
+SHA, or any other fingerprint.
+
+The mandatory two-file input, with the optional explicitly selected external
+summary, is upstream preparation only. It does not change the KA-01 one-file
+handoff described below. RW-04 human review and freeze has not started.
 
 ## 7. KA-01 bridge
 
@@ -382,8 +440,8 @@ The Reading Workspace preserves the existing KA-01 one-file boundary:
   uncertainty, and page/section locators needed for proposal review.
 - When the KA-01 run actually begins, the existing Knowledge Proposal Protocol
   computes one SHA-256 over the exact raw bytes of the selected Markdown file.
-- No PDF hash, session hash, source-record hash, double hash, or second
-  provenance fingerprint is required by RW.
+- No PDF hash, session hash, external-summary hash, source-record hash, double
+  hash, or second provenance fingerprint is required by RW.
 - KA-01 classification, proposal artifacts, human review, and promotion rules
   remain unchanged.
 - RW-00 does not modify
@@ -426,4 +484,9 @@ accepted on 2026-08-11. Current RW-02.2 automated verification passed 25
 Concept checks, 32 focused Reading UI tests, and 49 full-suite tests; the
 generated HTML metrics are recorded above. RW-02 is accepted and complete; the
 HTML prototype is frozen;
-the commit containing this status record is the published RW-02 baseline. RW-03 and KA-01 remain unauthorized and not started.
+commit `792c802` is the published RW-02 baseline. RW-03 was subsequently
+authorized on 2026-08-11. RW-03 synthesis content human accepted on 2026-08-18;
+selected-text presentation correction applied; RW-03 accepted and complete.
+The draft remains `state: draft`; no artifact is `human_reviewed`; RW-04 Human
+Review and Freeze has not started; final `reading_note.md` does not exist;
+Concept proposal and KA-01 remain unauthorized and unstarted.

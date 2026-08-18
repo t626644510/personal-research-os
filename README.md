@@ -1,13 +1,14 @@
 # Personal Research OS v0.1
 
-Personal Research OS 是一个以 Obsidian 为阅读界面、Git 为审计与版本层、Python 为确定性维护工具的个人科研知识库。v0.1 只建立稳定的 Concept Database 和 Hover Encyclopedia 数据基础，不包含 RAG、向量数据库、AI 实时查询、自动爬虫或定时扫描。
+Personal Research OS 是一个以 Obsidian 为阅读界面、Git 为审计与版本层、Python 为确定性维护工具的个人科研知识库。v0.1 以稳定的 Concept Database 和 Hover Encyclopedia 数据为基础，并包含最小 Obsidian Foundation 与 RW-03 人工审阅草稿入口；不包含 RAG、向量数据库、AI 实时查询、自动爬虫或定时扫描。
 
 ## 快速开始
 
 1. 在 Obsidian 中选择 `ResearchOS/` 作为 Vault。
-2. 通过 `[[Concept name]]` 建立概念链接；Obsidian 原生悬浮预览可直接查看 Concept 笔记。
-3. 新建概念时复制 `ResearchOS/99_Meta/templates/Concept.md`，按 Schema 填写后再放入 `ResearchOS/01_Concept/`。
-4. 在仓库根目录运行校验和索引生成：
+2. 从 `ResearchOS/Home.md` 进入 Vault 导航。
+3. 通过 `[[Concept name]]` 建立概念链接；Obsidian 原生悬浮预览可直接查看 Concept 笔记。
+4. 新建概念时复制 `ResearchOS/99_Meta/templates/Concept.md`，按 Schema 填写后再放入 `ResearchOS/01_Concept/`。
+5. 在仓库根目录运行校验和索引生成：
 
 ```powershell
 python ResearchOS/99_Meta/tools/concept_tools.py validate
@@ -21,24 +22,50 @@ python ResearchOS/99_Meta/tools/hover_resolver.py "HOM impedance and wake field"
 
 ```text
 ResearchOS/
+├── Home.md                  # Vault 导航入口
 ├── 00_Inbox/
+│   ├── reading/<paper_id>/  # source record、RW-03 draft 与本地阅读 bundle
+│   │   └── _local/          # ignored；论文、session、译文与展示产物不提交
 │   ├── papers/              # 待处理论文
 │   ├── html/                # 待处理网页快照
 │   └── notes/               # 临时记录
 ├── 01_Concept/              # 稳定概念节点；Hover 数据的唯一来源
-├── 02_Project/              # 项目目标、状态、决策和概念入口
+├── 02_Project/
+│   └── 1500 MHz TM020 Harmonic Cavity.md  # 当前项目页
 ├── 03_Paper/                # 论文级笔记与阅读结论
 ├── 04_Experiment/           # 实验/仿真设置、运行和结果
 ├── 05_Tool/                 # 软件与可复用操作流程
 └── 99_Meta/
     ├── Concept_Schema_v0.1.md
     ├── concept_index.json
-    ├── templates/Concept.md
+    ├── templates/
+    │   ├── Concept.md
+    │   ├── Project.md
+    │   ├── Paper.md
+    │   └── Reading_Note.md
     └── tools/
         ├── concept_tools.py
         ├── hover_resolver.py
-        └── hover_ui.py
+        ├── hover_ui.py
+        ├── reading_ui.py
+        ├── reading_ui.js
+        └── reading_ui.css
 ```
+
+## Obsidian Foundation / RW-03
+
+`ResearchOS/Home.md` 是当前 Vault 导航入口。当前 Project 是
+`ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity.md`，当前人工审阅草稿是
+`ResearchOS/00_Inbox/reading/ipac2019-weprb066/reading_note.draft.md`。
+
+`Project.md` 用于项目目标、边界、决策与行动；`Paper.md` 用于后续论文级记录；
+`Reading_Note.md` 用于 mandatory source/session 加 optional external summary 的阅读
+综合草稿。当前没有 `ResearchOS/03_Paper/IPAC2019-WEPRB066.md`、最终
+`reading_note.md` 或共享 `.obsidian/` 配置。RW-03 synthesis content human
+accepted on 2026-08-18; selected-text presentation correction applied; RW-03
+accepted and complete。`reading_note.draft.md` 仍为 `state: draft`，没有 artifact
+被赋予 `human_reviewed`；RW-04 Human Review and Freeze、Concept proposal 和
+KA-01 均未启动，KA-01 仍未获授权。
 
 每个 Concept 的稳定身份由 YAML `id` 提供，文件名和 H1 是规范显示名称，`aliases` 保存缩写、译名和历史名称。正文遵循固定的十个 H2 区块；详细约束见 [Concept Schema v0.1](ResearchOS/99_Meta/Concept_Schema_v0.1.md)。
 
@@ -168,9 +195,11 @@ RW-02.2 当前自动验证：25 个 Concepts 通过校验，Reading UI 聚焦套
 渲染表、3 个可访问 resizer 和 131 个唯一可标注源块。这些工程验证指标独立于人工
 验收记录，不得用 RW-02.1 的历史指标替代。Repository owner 于 2026-08-11 给出的
 总体人工 UI 结论为“通过，未报告其他问题”。RW-02 已接受并完成，HTML 原型已冻结；
-the commit containing this status record is the published RW-02 baseline. RW-03
-and KA-01 remain unauthorized and not started；
-Obsidian Home 和 1500 MHz TM020 Harmonic Cavity 项目页均未创建或启动。
+commit `792c802` 是已发布的 RW-02 baseline。RW-03 已于 2026-08-11 另行授权；
+RW-03 synthesis content human accepted on 2026-08-18; selected-text
+presentation correction applied; RW-03 accepted and complete。
+`reading_note.draft.md` 仍为 `state: draft`，没有 artifact 被赋予
+`human_reviewed`；RW-04、Concept proposal 和 KA-01 均未启动，KA-01 仍未获授权。
 这个原型是 `concept_index.json` 的第二个本地确定性消费者，
 不替换 P01/P01.5：
 `reading_ui.py` 读取一篇 UTF-8 Markdown 技术资料，复用
@@ -225,11 +254,18 @@ RW-01.1 的历史修正保留紧凑（34rem）、平衡（42rem，默认）和�
 recovery、`sessionPayload()`、session id、entries 或 Markdown export。窄屏隐藏
 resizer 并恢复无页面级横向滚动的堆叠布局。
 
-未来 RW-03 若被单独授权，必须由人精确选择一个原始资料 `SOURCE_PATH` 和一个
-`reading_session.md` 的 `SESSION_PATH`。人工触发的 LLM synthesis 只读取这两个
-文件并且只输出 `reading_note.draft.md`。`reading_session.md` 默认不嵌入完整原文，
-RW-03 不新增 SHA。这个双文件 synthesis 输入不改变 KA-01：KA-01 仍只读取人类
-选择并审阅的一份 `reading_note.md`，并只计算现有的一次 Markdown SHA-256。
+RW-03 必须由人精确选择一个原始资料 `SOURCE_PATH` 和一个
+`reading_session.md` 的 `SESSION_PATH`，两者是强制输入。只有人对本次运行明确选择
+`EXTERNAL_SUMMARY_PATH` 时，人工触发的 LLM synthesis 才能额外读取一份外部总结；
+该总结始终是 unverified、session-external、非论文权威且不代表
+`human_reviewed`。回答读取有两个独立 provenance channel：`SESSION_PATH` 内的
+canonical `llm_answer`，以及 session 外的人选 optional external summary；本次 session
+没有 `llm_answer`，只有 2 个 `human_question` 和 3 个 `human_note`。不得把外部总结
+拆成 session entries、提升为 paper/source/human content，或用单一来源标签混合两个
+channel。未来可合并重复措辞，但必须保留各自来源标签。RW-03 不为 source、session
+或 external summary 新增 SHA 或其他 fingerprint。这个上游 synthesis 边界不改变
+KA-01：KA-01 仍只读取人类选择并审阅的一份 `reading_note.md`，并只在 KA-01 真正
+开始时计算现有的一次 Markdown SHA-256。
 
 RW-01 不生成 `reading_note.draft.md` 或最终 `reading_note.md`，不处理 PDF 文本层、
 OCR 或坐标覆盖。内置 Markdown 渲染器支持标题、段落、扁平有序/无序列表、链接、
@@ -240,8 +276,12 @@ GFM pipe table；表格单元格和原始 HTML 均先转义。Figure 1–7 和 T
 仍未实现。提供 `--reference-translation` 时才启用英文原文、中英并列、中文参考三种
 presentation mode；中文参考仍是未验证、非权威派生显示。RW-02.2 human UI was
 accepted on 2026-08-11; RW-02 is accepted and complete; the HTML prototype is
-frozen; the commit containing this status record is the published RW-02 baseline.
-RW-03 and KA-01 remain unauthorized and not started. 实现与验收记录在
+frozen; commit `792c802` is the published RW-02 baseline. RW-03 synthesis
+content human accepted on 2026-08-18; selected-text presentation correction
+applied; RW-03 accepted and complete. `reading_note.draft.md` remains
+`state: draft`; no artifact is assigned `human_reviewed`; RW-04 Human Review
+and Freeze has not started; final `reading_note.md` does not exist; Concept
+proposal and KA-01 remain unauthorized and unstarted. 实现与验收记录在
 [RW-02 UI Validation](ResearchOS/99_Meta/RW02_UI_Validation.md)。
 
 ## 日常工作流

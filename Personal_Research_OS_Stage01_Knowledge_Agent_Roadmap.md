@@ -113,8 +113,12 @@ and 49 full-suite tests. The 974,523-byte offline HTML contains 18 bilingual
 section pairs, 7 images, 2 rendered tables, 3 accessible resizers, and 131
 unique annotatable source blocks. The owner recorded the overall conclusion as
 “通过，未报告其他问题”. RW-02 is accepted and complete; the HTML prototype
-is frozen; the commit containing this status record is the published RW-02 baseline.
-RW-03 and KA-01 remain unauthorized and not started.
+is frozen; commit `792c802` is the published RW-02 baseline. RW-03 synthesis
+content human accepted on 2026-08-18; selected-text presentation correction
+applied; RW-03 accepted and complete. `reading_note.draft.md` remains
+`state: draft`; no artifact is assigned `human_reviewed`; RW-04 Human Review
+and Freeze has not started; final `reading_note.md` does not exist; Concept
+proposal and KA-01 remain unauthorized and unstarted.
 
 RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
 创建 Reading Workspace 实现、reading session、RW source file、reading-note
@@ -274,8 +278,12 @@ handoff，但不启动 synthesis。
 ## RW-02 Realistic Human UX Validation
 
 状态：RW-02.2 human UI accepted on 2026-08-11. RW-02 is accepted and
-complete; the HTML prototype is frozen; the commit containing this status record is the published RW-02 baseline.
-RW-03 and KA-01 remain unauthorized and not started.
+complete; the HTML prototype is frozen; commit `792c802` is the published RW-02
+baseline. RW-03 was separately authorized on 2026-08-11. Its synthesis content
+was human accepted on 2026-08-18 and the selected-text presentation correction
+was applied; RW-03 is accepted and complete. Its draft remains `state: draft`
+without `human_reviewed`. RW-04 has not started, and KA-01 remains unauthorized
+and not started.
 
 目标：使用一篇人工选择的真实 technical paper，对 RW-01 已实现的 human-owned
 annotation、human question、question packet 和外部 LLM answer capture
@@ -308,26 +316,42 @@ session-external、非论文权威材料，没有进入 session，也不代表
 2 张渲染表、3 个可访问 resizer 和 131 个唯一可标注源块。Repository owner 于
 2026-08-11 给出的总体人工 UI 结论为“通过，未报告其他问题”。
 
-RW-02 已接受并完成，HTML 原型已冻结；the commit containing this status record is the published RW-02 baseline。
-RW-03 阅读笔记
-闭环、Obsidian Home 和 1500 MHz TM020 Harmonic Cavity 项目页只有在另行授权后
-才可进入；本阶段未创建或启动这些 Obsidian 成果。
-
-RW-03 和 KA-01 remain unauthorized and not started.
+RW-02 已接受并完成，HTML 原型已冻结；commit `792c802` is the published RW-02
+baseline。以下是 RW-02 发布时的 historical/pre-authorization state：RW-03
+阅读笔记闭环、Obsidian Home 和 1500 MHz TM020 Harmonic Cavity 项目页尚未创建，
+也不能由 RW-02 阶段启动。RW-03 随后于 2026-08-11 获得单独授权；KA-01 仍未获
+授权且尚未启动。
 
 ## RW-03 Reading Note Synthesis Trial
 
-状态：Not authorized and not started.
+状态：RW-03 synthesis content human accepted on 2026-08-18; selected-text
+presentation correction applied; RW-03 accepted and complete.
 
 目标：由人精确选择一个原始资料 `SOURCE_PATH` 和一个
-`reading_session.md` 的 `SESSION_PATH`。人工触发的 LLM synthesis 同时读取这
-两个文件，只输出 `reading_note.draft.md`，不能声明人工审阅完成。
-`reading_session.md` 默认不嵌入完整原文；RW-03 不增加 source/session hash 或
-第二个 provenance SHA，也不改变 KA-01 的一文件输入边界。
+`reading_session.md` 的 `SESSION_PATH`，作为每次 synthesis 的强制输入。人可以
+为一次具体运行明确选择可选的 `EXTERNAL_SUMMARY_PATH`；未被明确选择的外部材料
+不得读取。外部总结始终保持 unverified、session-external、非论文权威且不代表
+`human_reviewed`。
+
+人工触发的 LLM synthesis 只输出 `reading_note.draft.md`，不能声明人工审阅完成。
+回答读取的两个独立 provenance channel 是 `SESSION_PATH` 内的 canonical
+`llm_answer` 和 session 外的人选 optional external summary；本次 session 没有
+`llm_answer`，只有 2 个 `human_question` 和 3 个 `human_note`。外部总结不得拆分或
+导入为 canonical session entries，不得提升为 paper/source evidence、human content
+或 reviewed content。未来版本可去除两个 channel 之间的重复措辞，但必须保留各自
+origin label，不得通过合并掩盖来源。
+`reading_session.md` 默认不嵌入完整原文；RW-03 不增加 source、session、external
+summary hash 或其他 fingerprint，也不改变 KA-01 的一文件输入边界。
+
+`reading_note.draft.md` 仍为 `state: draft`，没有 artifact 被赋予
+`human_reviewed`。RW-04 Human Review and Freeze 尚未启动，最终
+`reading_note.md` 不存在；Concept proposal 与 KA-01 仍未获授权且未启动。
 
 ## RW-04 Human Review and Freeze
 
-状态：Not started.
+状态：Not started. RW-03 synthesis content is accepted and RW-03 is complete,
+but the draft remains `state: draft`, no artifact is `human_reviewed`, and no
+final `reading_note.md` exists.
 
 目标：由人审阅并只选择一份 `reading_note.md` 作为冻结的 reading note。
 内容若在审阅后改变，必须重新审阅才可再次作为未来 KA 来源。
@@ -347,11 +371,16 @@ PDF、其他论文或 LLM transcript。
 -   人已表达在存在合格、经过审阅的来源后运行 KA-01 的意图；该意图不构成
     执行授权。protocol-valid run 仍要求一个精确的 `SOURCE_PATH`，并要求
     人在执行时批准所用 prompt version。
--   未来 RW-03 synthesis 的 `SOURCE_PATH` 加 `SESSION_PATH` 是人工选择的上游
-    双文件输入，不是 KA-01 输入，也不为两个文件增加 SHA。
+-   当前 RW-03 synthesis 的 `SOURCE_PATH` 加 `SESSION_PATH` 是人工选择的强制
+    上游输入；`EXTERNAL_SUMMARY_PATH` 只有在人为该次运行明确选择时才是可选第三
+    输入。这些都不是 KA-01 输入，也不为任何输入增加 SHA 或其他 fingerprint。
+-   外部总结保持 unverified、session-external 和 non-authoritative；不得拆成
+    session entries 或提升 provenance。session `llm_answer` 与 optional external
+    summary 两个 answer channel 保持分离；未来去重也必须保留各自 origin label。
 -   只有 KA-01 真正开始时，才按现有协议对最终选定的
     `reading_note.md` 计算一次 SHA-256；RW 不要求 PDF hash、session hash
     或第二个 provenance hash。
+-   RW-04、Concept proposal 和 KA-01 均未启动；KA-01 仍未获授权。
 -   Stage 02 Information Acquisition 是独立的未来 concern，不属于 Reading
     Workspace source preparation。
 -   第一版 Reading Workspace 不包含 integrated AI runtime、automatic
