@@ -1,7 +1,7 @@
 # Reading Workspace Protocol v0.1
 
 Version: v0.1\
-Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; commit 792c802 is the published RW-02 baseline; RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit 7c5dc4f; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 freeze explicitly authorized and implemented, pending final audit and publication; RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted\
+Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; commit 792c802 is the published RW-02 baseline; RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit 7c5dc4f; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66` from `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 is not started, and KA-03, state transition, and promotion remain unauthorized\
 Applies to: reading and source preparation upstream of KA-01
 
 This protocol defines the smallest implementation-neutral contract for a local
@@ -18,9 +18,14 @@ architecture redesign. RW-03 was separately authorized on 2026-08-11.
 RW-03 synthesis content human accepted on 2026-08-18; selected-text
 presentation correction applied; RW-03 accepted and complete and published at
 commit `7c5dc4f`. `reading_note.draft.md` remains `state: draft` as RW-03
-history; final `reading_note.md` is `state: human_reviewed`. RW-04 freeze was
-explicitly authorized and implemented, pending final audit and publication;
-RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.
+history; final `reading_note.md` is `state: human_reviewed`. RW-04 was accepted
+and complete and published at commit `fb0538c`; RW-05 is accepted and
+complete; KA-01 is accepted and complete as a one-source manual proposal trial
+in run `ka01-20260818t065446z-67f9fb66` from
+`00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with
+5 create / 16 duplicate / 7 no-op. All five proposals remain `state: proposed`;
+KA-02 is not started; KA-03, state transition, and promotion remain
+unauthorized.
 
 ## 1. Purpose and boundaries
 
@@ -69,7 +74,7 @@ Responsibilities:
 | --- | --- |
 | `source_record.md` | Git-visible source identity and provenance record |
 | `reading_note.draft.md` | RW-03 synthesis artifact and retained history; content human accepted on 2026-08-18, while the file remains `state: draft` |
-| `reading_note.md` | RW-04 frozen final note; `state: human_reviewed`, pending final audit and publication |
+| `reading_note.md` | RW-04 frozen final note; `state: human_reviewed`, published at commit `fb0538c`, and selected as the sole source for accepted KA-01 run `ka01-20260818t065446z-67f9fb66` |
 | `_local/source.reading.md` | Authoritative paper-text input for this workflow |
 | `_local/source.zh-CN.reading.md` | Unverified, non-authoritative reference translation |
 | `_local/reading_session.md` | Authoritative exported human session |
@@ -81,8 +86,8 @@ This is the actual v0.1 layout, not a future proposal. The current bundle's
 session is `_local/reading_session.md`; there is no paper-root
 `reading_session.md`. The entire `_local/` subtree is ignored by default and
 must not be committed. `reading_note.md` was created by the separately
-authorized RW-04 human review and freeze; it remains pending final audit and
-publication.
+authorized RW-04 human review and freeze; it was accepted and complete and
+published at commit `fb0538c`.
 
 ### 2.1 RW-02.1 presentation boundary
 
@@ -171,9 +176,12 @@ RW-03 was subsequently authorized on 2026-08-11. Its synthesis content was
 human accepted on 2026-08-18 and the selected-text presentation correction was
 applied; RW-03 is accepted and complete and published at commit `7c5dc4f`. The
 draft file remains `state: draft` as history, and final `reading_note.md` is
-`state: human_reviewed`. RW-04 freeze was explicitly authorized and
-implemented, pending final audit and publication; RW-05, Concept proposal, and
-KA-01 remain unauthorized and unstarted.
+`state: human_reviewed`. RW-04 was accepted and complete and published at
+commit `fb0538c`; RW-05 is accepted and complete; KA-01 is accepted and
+complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`; all five proposals remain
+`state: proposed`. KA-02 is not started; KA-03, state transition, and
+promotion remain unauthorized.
 
 ## 3. Content ownership and review metadata
 
@@ -410,9 +418,12 @@ RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
 accepted on 2026-08-18; selected-text presentation correction applied; RW-03
 accepted and complete and published at commit `7c5dc4f`. `reading_note.draft.md`
 remains `state: draft` as history; final `reading_note.md` is
-`state: human_reviewed`. RW-04 freeze was explicitly authorized and
-implemented, pending final audit and publication; RW-05, Concept proposal, and
-KA-01 remain unauthorized and unstarted. A valid synthesis trial requires the human
+`state: human_reviewed`. RW-04 was accepted and complete and published at
+commit `fb0538c`; RW-05 is accepted and complete; KA-01 is accepted and
+complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`; all five proposals remain
+`state: proposed`. KA-02 is not started; KA-03, state transition, and
+promotion remain unauthorized. A valid synthesis trial requires the human
 to select both mandatory inputs:
 
 - one exact `SOURCE_PATH` for the original technical source; and
@@ -445,9 +456,9 @@ SHA, or any other fingerprint.
 
 The mandatory two-file input, with the optional explicitly selected external
 summary, is upstream preparation only. It does not change the KA-01 one-file
-handoff described below. RW-04 freeze is implemented from explicit human
-authority and remains pending final audit and publication; the final note has
-not been selected for any KA-01 run.
+handoff described below. RW-04 was accepted and complete and published at
+commit `fb0538c`; the final note was selected as the sole source for accepted
+KA-01 run `ka01-20260818t065446z-67f9fb66`.
 
 ## 7. KA-01 bridge
 
@@ -510,6 +521,9 @@ commit `792c802` is the published RW-02 baseline. RW-03 was subsequently
 authorized on 2026-08-11. RW-03 synthesis content human accepted on 2026-08-18;
 selected-text presentation correction applied; RW-03 accepted and complete and
 published at commit `7c5dc4f`. The draft remains `state: draft` as history; final
-`reading_note.md` is `state: human_reviewed`. RW-04 freeze was explicitly
-authorized and implemented, pending final audit and publication; RW-05,
-Concept proposal, and KA-01 remain unauthorized and unstarted.
+`reading_note.md` is `state: human_reviewed`. RW-04 was accepted and complete
+and published at commit `fb0538c`; RW-05 is accepted and complete; KA-01 is
+accepted and complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`; all five proposals remain `state: proposed`.
+KA-02 is not started; KA-03, state transition, and promotion remain
+unauthorized.

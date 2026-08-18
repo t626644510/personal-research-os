@@ -4,7 +4,7 @@ Status: KA-00 governance accepted; RW-00 governance accepted and complete on 202
 RW-01 and RW-01.1 accepted and complete at commit `8afa9aa`;\
 RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete;\
 HTML prototype frozen; commit `792c802` is the published RW-02 baseline;\
-RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 freeze was explicitly authorized and implemented, pending final audit and publication; RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted\
+RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66` from `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 is not started, and KA-03, state transition, and promotion remain unauthorized\
 Pre-KA-00 implementation baseline: `d622b92c78d3fcaf327db93e599e6a77fe112f1c`\
 Current governance version: identified by this document's Git history\
 Future KA-01 run baseline: `git rev-parse HEAD` at run start\
@@ -119,11 +119,15 @@ RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
 accepted on 2026-08-18; selected-text presentation correction applied; RW-03
 accepted and complete and published at commit `7c5dc4f`. The draft remains
 `state: draft` as RW-03 history, and final `reading_note.md` is
-`state: human_reviewed`. RW-04 freeze was explicitly authorized and
-implemented, pending final audit and publication. The final note is eligible
-for a future handoff but has not been selected for any KA-01 run. RW-05,
-Concept proposal, and KA-01 remain unauthorized and unstarted. The frozen prototype itself still
-does not embed model calls or permit a KA-01 run. Integrated
+`state: human_reviewed`. RW-04 was accepted and complete and published at
+commit `fb0538c`. RW-05 is accepted and complete. KA-01 is accepted and
+complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66` from
+`00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`,
+with 5 create / 16 duplicate / 7 no-op; all five proposals remain
+`state: proposed`. KA-02 is not started; KA-03, state transition, and
+promotion remain unauthorized. The frozen prototype itself still does not
+embed model calls or automatic KA-01 execution. Integrated
 AI runtime and automatic acquisition remain outside this prototype. Stage 02
 Information Acquisition remains a separate future concern.
 
@@ -163,25 +167,26 @@ project page. RW-03 was subsequently authorized on 2026-08-11. Its synthesis
 content was human accepted on 2026-08-18 and the selected-text presentation
 correction was applied; RW-03 is accepted and complete and published at commit
 `7c5dc4f`. The draft remains `state: draft` as history, and final
-`reading_note.md` is `state: human_reviewed`. RW-04 freeze is explicitly
-authorized and implemented, pending final audit and publication; RW-05,
-Concept proposal, and KA-01 remain unauthorized and unstarted.
+`reading_note.md` is `state: human_reviewed`. RW-04 was accepted and complete
+and published at commit `fb0538c`; RW-05 is accepted and complete; KA-01 is
+accepted and complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`. All five proposals remain `state: proposed`;
+KA-02 is not started; KA-03, state transition, and promotion remain
+unauthorized.
 
 No Reading Workspace implementation and no KA-01 execution have occurred
 during RW-00. No reading session, source, reading-note, run-assessment, or
 proposal artifact has been created by this phase.
 
-KA-00 governance remains accepted. KA-01's eligibility gate remains open, but
-KA-01 is not authorized and not started. The human has expressed intent to run
-KA-01 after an eligible reviewed source exists; intent alone is not execution
-authority. A protocol-valid run still requires a separate explicit human
-instruction naming exactly one eligible `SOURCE_PATH` and approving the
-prompt version used at execution time. For a Reading Workspace handoff, that
-source is the one human-selected, reviewed `reading_note.md`. The final note is
-eligible for a future handoff but has not been selected for any KA-01 run. Only the
-separately approved KA-01 conversation may create one run assessment and
-Concept proposal artifacts under `ResearchOS/00_Inbox/proposals/`, then it
-must stop for human review.
+KA-00 governance remains accepted. The repository owner explicitly authorized
+and completed the accepted one-source KA-01 trial in run
+`ka01-20260818t065446z-67f9fb66`, naming exactly one eligible `SOURCE_PATH` and
+approving prompt version `v0.1`. A protocol-valid run still requires a separate
+explicit human instruction for each execution. For this Reading Workspace
+handoff, the source was the one human-selected, reviewed `reading_note.md`.
+The final note was selected for this run, which created one run assessment and
+the five create proposal artifacts under `ResearchOS/00_Inbox/proposals/`,
+then stopped for human review. Future KA-01 runs remain separately gated.
 
 ## Explicit non-goals
 

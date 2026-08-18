@@ -71,11 +71,13 @@ RW-02 baseline. RW-03 synthesis content human accepted on 2026-08-18;
 selected-text presentation correction applied; RW-03 accepted and complete and
 published at commit `7c5dc4f`. `reading_note.draft.md` remains `state: draft` as
 RW-03 history. RW-04 freeze was explicitly authorized by the repository owner
-on 2026-08-18 and is implemented from the accepted committed draft; final
-`reading_note.md` is `state: human_reviewed` and remains pending final audit
-and publication. The final note is eligible for a future handoff but has not
-been selected for any KA-01 run. RW-05, Concept proposal, and KA-01 remain
-unauthorized and unstarted.
+on 2026-08-18 and is accepted and complete and published at commit `fb0538c`;
+final `reading_note.md` is `state: human_reviewed` and was selected as the
+sole source for accepted KA-01 run `ka01-20260818t065446z-67f9fb66`. RW-05 is
+accepted and complete; KA-01 is accepted and complete as a one-source manual
+proposal trial with 5 create / 16 duplicate / 7 no-op, while all five
+proposals remain `state: proposed`. KA-02 is not started; KA-03, state
+transition, and promotion remain unauthorized.
 
 The local source bundle is prepared for human comparison of the Markdown
 reading view against the original PDF. RW-02.1 remains a historical narrow
@@ -136,6 +138,9 @@ accepted on 2026-08-18; selected-text presentation correction applied; RW-03
 accepted and complete and published at commit `7c5dc4f`. The draft remains
 `state: draft` as history, and the final `reading_note.md` is
 `human_reviewed`. No source, session, or external-summary SHA/fingerprint was
-added; RW-04 added no SHA or fingerprint to the final note. RW-04 freeze was
-explicitly authorized and implemented, pending final audit and publication;
-RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.
+added; RW-04 added no SHA or fingerprint to the final note. RW-04 was
+accepted and complete and published at commit `fb0538c`; the accepted
+KA-01 run is `ka01-20260818t065446z-67f9fb66`, using prompt `v0.1`, with
+5 create / 16 duplicate / 7 no-op. All five proposals remain
+`state: proposed`; KA-02 is not started; KA-03, state transition, and
+promotion remain unauthorized.

@@ -117,11 +117,14 @@ is frozen; commit `792c802` is the published RW-02 baseline. RW-03 synthesis
 content human accepted on 2026-08-18; selected-text presentation correction
 applied; RW-03 accepted and complete and published at commit `7c5dc4f`.
 `reading_note.draft.md` remains `state: draft` as RW-03 history. The final
-`reading_note.md` is `state: human_reviewed`; RW-04 freeze is implemented from
-explicit human authority and remains pending final audit and publication. The
-final note is eligible for a future handoff but has not been selected for any
-KA-01 run. RW-05, Concept proposal, and KA-01 remain unauthorized and
-unstarted.
+`reading_note.md` is `state: human_reviewed`; RW-04 is accepted and complete
+and published at commit `fb0538c`. RW-05 is accepted and complete; KA-01 is
+accepted and complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66` from
+`00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with
+5 create / 16 duplicate / 7 no-op. All five proposals remain `state: proposed`;
+KA-02 is not started; KA-03, state transition, and promotion remain
+unauthorized.
 
 RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
 创建 Reading Workspace 实现、reading session、RW source file、reading-note
@@ -286,9 +289,12 @@ baseline. RW-03 was separately authorized on 2026-08-11. Its synthesis content
 was human accepted on 2026-08-18 and the selected-text presentation correction
 was applied; RW-03 is accepted and complete and published at commit `7c5dc4f`.
 Its draft remains `state: draft` as history, and final `reading_note.md` is
-`state: human_reviewed`. RW-04 freeze is implemented from explicit human
-authority and remains pending final audit and publication; RW-05, Concept
-proposal, and KA-01 remain unauthorized and unstarted.
+`state: human_reviewed`. RW-04 is accepted and complete and published at
+commit `fb0538c`; RW-05 is accepted and complete; KA-01 is accepted and
+complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`, with 5 create / 16 duplicate / 7 no-op.
+All five proposals remain `state: proposed`; KA-02 is not started; KA-03,
+state transition, and promotion remain unauthorized.
 
 目标：使用一篇人工选择的真实 technical paper，对 RW-01 已实现的 human-owned
 annotation、human question、question packet 和外部 LLM answer capture
@@ -350,27 +356,30 @@ origin label，不得通过合并掩盖来源。
 summary hash 或其他 fingerprint，也不改变 KA-01 的一文件输入边界。
 
 `reading_note.draft.md` 仍为 `state: draft` 的 RW-03 历史记录。最终
-`reading_note.md` 已冻结为 `state: human_reviewed`。RW-04 freeze implemented
-from explicit human authority and remains pending final audit and publication；
-最终笔记可作为未来 handoff 候选，但尚未被选择用于任何 KA-01 run。RW-05、
-Concept proposal 与 KA-01 仍未获授权且未启动。
+`reading_note.md` 已冻结为 `state: human_reviewed`。RW-04 accepted and
+complete and published at commit `fb0538c`；RW-05 accepted and complete；
+KA-01 accepted and complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`，使用 prompt `v0.1`，分类为 5 create / 16
+duplicate / 7 no-op；五个 proposal 均保持 `state: proposed`。KA-02 尚未启动；
+KA-03、state transition 和 promotion 仍未获授权。
 
 ## RW-04 Human Review and Freeze
 
-状态：RW-04 freeze implemented from explicitly accepted RW-03 content and
-explicit human authority on 2026-08-18; pending final audit and publication.
+状态：RW-04 accepted and complete and published at commit `fb0538c`; RW-05
+accepted and complete; KA-01 accepted and complete as a one-source manual
+proposal trial in run `ka01-20260818t065446z-67f9fb66` with 5 create / 16
+duplicate / 7 no-op. All five proposals remain `state: proposed`.
 
 最终 `reading_note.md` 已创建并冻结为 `state: human_reviewed`；
 `reading_note.draft.md` 保留为 RW-03 历史记录。冻结记录的是该版本的人工接受，
-不是普遍科学真理；最终笔记可作为未来 handoff 候选，但尚未被选择用于任何 KA-01
-run。
+不是普遍科学真理；最终笔记已作为唯一来源选择用于上述已接受的 KA-01 run。
 
 目标：由人审阅并只选择一份 `reading_note.md` 作为冻结的 reading note。
 内容若在审阅后改变，必须重新审阅才可再次作为未来 KA 来源。
 
 ## RW-05 KA-01 Handoff Trial
 
-状态：Not started.
+状态：Accepted and complete (2026-08-18).
 
 目标：验证一份人工选择并审阅的 `reading_note.md` 是否能保持 KA-01
 现有的一文件输入边界。KA-01 只读取人指定的那一份文件，不跟随阅读 session、
@@ -378,11 +387,12 @@ PDF、其他论文或 LLM transcript。
 
 ## RW and KA gates
 
--   KA-01 仍未获授权且尚未启动，当前不存在 KA-01 run assessment 或 Concept
-    proposal artifacts。
--   人已表达在存在合格、经过审阅的来源后运行 KA-01 的意图；该意图不构成
-    执行授权。protocol-valid run 仍要求一个精确的 `SOURCE_PATH`，并要求
-    人在执行时批准所用 prompt version。
+-   KA-01 已接受并完成一次单来源手动 proposal trial；run
+    `ka01-20260818t065446z-67f9fb66` 的 assessment 与五个 create proposal
+    单元均保留在 `00_Inbox/proposals/`，且状态仍为 `proposed`。
+-   Repository owner 已明确授权并完成 run
+    `ka01-20260818t065446z-67f9fb66`；未来每个 protocol-valid run 仍要求一个
+    精确的 `SOURCE_PATH`，并要求人在执行时批准所用 prompt version。
 -   当前 RW-03 synthesis 的 `SOURCE_PATH` 加 `SESSION_PATH` 是人工选择的强制
     上游输入；`EXTERNAL_SUMMARY_PATH` 只有在人为该次运行明确选择时才是可选第三
     输入。这些都不是 KA-01 输入，也不为任何输入增加 SHA 或其他 fingerprint。
@@ -392,8 +402,9 @@ PDF、其他论文或 LLM transcript。
 -   只有 KA-01 真正开始时，才按现有协议对最终选定的
     `reading_note.md` 计算一次 SHA-256；RW 不要求 PDF hash、session hash
     或第二个 provenance hash。
--   RW-04 freeze 已实现但仍待最终 audit 与 publication；Concept proposal 和
-    KA-01 仍未获授权且未启动。
+-   RW-04 已接受、完成并在 commit `fb0538c` 发布；RW-05 已接受并完成；KA-01
+    已接受并完成一次单来源手动 proposal trial。KA-02 尚未启动；KA-03、state
+    transition 和 promotion 仍未获授权。
 -   Stage 02 Information Acquisition 是独立的未来 concern，不属于 Reading
     Workspace source preparation。
 -   第一版 Reading Workspace 不包含 integrated AI runtime、automatic
@@ -437,9 +448,10 @@ proposal artifacts，并停下等待人工审阅。
 
 ## KA-01 Single-Source Manual Proposal Trial
 
-状态：Eligibility gate open; not authorized and not started. A separate
-explicit human instruction must approve one source and the KA-01 execution
-prompt.
+状态：Accepted and complete (2026-08-18). The repository owner explicitly
+approved the source and KA-01 execution prompt for run
+`ka01-20260818t065446z-67f9fb66`; this phase acceptance does not accept any
+proposal scientifically or authorize promotion.
 
 目标：
 

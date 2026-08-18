@@ -31,11 +31,12 @@
 - RW-02 is the published Reading Workspace baseline at commit `792c802`.
 - RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`.
 - `reading_note.md` is the frozen primary note with `state: human_reviewed`; `reading_note.draft.md` remains available as RW-03 history.
-- RW-04 freeze is implemented from explicit human authority and remains pending final audit and publication. The final note is eligible for a future handoff but has not been selected for any KA-01 run.
-- RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.
+- RW-04 is accepted and complete and published at commit `fb0538c`.
+- RW-05 is accepted and complete; KA-01 is accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66` from `00_Inbox/reading/ipac2019-weprb066/reading_note.md`, using prompt `v0.1`, with 5 create / 16 duplicate / 7 no-op. All five proposals remain `state: proposed`.
+- KA-02 is not started; KA-03, state transition, and promotion remain unauthorized.
 
 ## Next Actions
 
-1. Complete the final audit and publication of the RW-04 frozen note.
-2. Preserve the RW-03 draft as history and keep its accepted synthesis content and selected-text traceability intact.
-3. Do not begin RW-05, a Concept proposal, or KA-01 without separate authorization.
+1. Preserve the RW-03 draft as history and keep its accepted synthesis content and selected-text traceability intact.
+2. Review the five proposed KA-01 units as a separate human step; no promotion is implied.
+3. Do not start KA-02 or KA-03, change state, or promote a proposal without separate authorization.

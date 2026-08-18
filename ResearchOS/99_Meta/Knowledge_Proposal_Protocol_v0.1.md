@@ -1,7 +1,7 @@
 # Knowledge Proposal Protocol v0.1
 
 Version: v0.1\
-Status: KA-00 governance baseline human accepted on 2026-08-03; KA-01 eligibility gate open, not authorized or started\
+Status: KA-00 governance baseline human accepted on 2026-08-03; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 is not started, and KA-03, state transition, and promotion remain unauthorized\
 Applies to: proposed changes to stable Concept knowledge
 
 This protocol defines the smallest safe workflow for a manually triggered Codex

@@ -65,10 +65,13 @@ ResearchOS/
 最终 `reading_note.md` 已由 RW-04 从明确接受的 RW-03 内容冻结，状态为
 `human_reviewed`。RW-03 synthesis content human accepted on 2026-08-18;
 selected-text presentation correction applied; RW-03 accepted and complete and
-published at commit `7c5dc4f`。RW-04 freeze implemented from explicit human
-authority and remains pending final audit and publication。`reading_note.draft.md`
-仍为 `state: draft` 的 RW-03 历史记录；最终笔记可作为未来 handoff 候选，但尚未被
-选择用于任何 KA-01 run。RW-05、Concept proposal 和 KA-01 均未获授权且未启动。
+published at commit `7c5dc4f`。RW-04 accepted and complete and published at
+commit `fb0538c`。`reading_note.draft.md` 仍为 `state: draft` 的 RW-03 历史记录；
+最终笔记已作为唯一来源选择用于已接受的 KA-01 run
+`ka01-20260818t065446z-67f9fb66`，使用 prompt `v0.1`，分类为 5 create / 16
+duplicate / 7 no-op。RW-05 accepted and complete；KA-01 accepted and complete
+as a one-source manual proposal trial；五个 proposal 均保持 `state: proposed`。
+KA-02 尚未启动；KA-03、state transition 和 promotion 仍未获授权。
 
 每个 Concept 的稳定身份由 YAML `id` 提供，文件名和 H1 是规范显示名称，`aliases` 保存缩写、译名和历史名称。正文遵循固定的十个 H2 区块；详细约束见 [Concept Schema v0.1](ResearchOS/99_Meta/Concept_Schema_v0.1.md)。
 
@@ -202,10 +205,12 @@ commit `792c802` 是已发布的 RW-02 baseline。RW-03 已于 2026-08-11 另行
 RW-03 synthesis content human accepted on 2026-08-18; selected-text
 presentation correction applied; RW-03 accepted and complete and published at
 commit `7c5dc4f`。最终 `reading_note.md` 已冻结为 `state: human_reviewed`；
-`reading_note.draft.md` 仍作为 RW-03 历史记录保留。RW-04 freeze implemented
-from explicit human authority and remains pending final audit and publication。
-最终笔记可作为未来 handoff 候选，但尚未被选择用于任何 KA-01 run；RW-05、Concept
-proposal 和 KA-01 均未获授权且未启动。
+`reading_note.draft.md` 仍作为 RW-03 历史记录保留。RW-04 accepted and complete
+and published at commit `fb0538c`。RW-05 accepted and complete；KA-01 accepted
+and complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66`，使用 prompt `v0.1`，分类为 5 create / 16
+duplicate / 7 no-op；五个 proposal 均保持 `state: proposed`。KA-02 尚未启动；
+KA-03、state transition 和 promotion 仍未获授权。
 这个原型是 `concept_index.json` 的第二个本地确定性消费者，
 不替换 P01/P01.5：
 `reading_ui.py` 读取一篇 UTF-8 Markdown 技术资料，复用
@@ -286,10 +291,12 @@ frozen; commit `792c802` is the published RW-02 baseline. RW-03 synthesis
 content human accepted on 2026-08-18; selected-text presentation correction
 applied; RW-03 accepted and complete and published at commit `7c5dc4f`. The
 final `reading_note.md` is `state: human_reviewed`; `reading_note.draft.md`
-remains available as RW-03 history. RW-04 freeze is implemented from explicit
-human authority and remains pending final audit and publication. The final note
-is eligible for a future handoff but has not been selected for any KA-01 run;
-RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted. 实现与验收记录在
+remains available as RW-03 history. RW-04 is accepted and complete and published
+at commit `fb0538c`. RW-05 is accepted and complete; KA-01 is accepted and
+complete as a one-source manual proposal trial in run
+`ka01-20260818t065446z-67f9fb66` using prompt `v0.1`, with 5 create / 16
+duplicate / 7 no-op; all five proposals remain `state: proposed`. KA-02 is not
+started; KA-03, state transition, and promotion remain unauthorized. 实现与验收记录在
 [RW-02 UI Validation](ResearchOS/99_Meta/RW02_UI_Validation.md)。
 
 ## 日常工作流

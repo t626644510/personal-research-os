@@ -2,7 +2,7 @@
 
 Date: 2026-08-18\
 Base commit: `7c5dc4f9b815719677e5fcced3831309b8bc0e06`\
-Status: **RW-04 freeze implemented from explicitly accepted RW-03 content; pending final audit and publication.**
+Status: **RW-04 accepted and complete; published at commit `fb0538c`.**
 
 ## Authority and selected artifacts
 
@@ -60,9 +60,13 @@ Status: **RW-04 freeze implemented from explicitly accepted RW-03 content; pendi
   open.
 - Machine-specific beam, lifetime, impedance, and engineering verification
   remain open.
-- RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.
-- The final note is eligible for a future handoff but has not been selected for
-  any KA-01 run; KA-01 was not started.
+- RW-05 is accepted and complete; KA-01 is accepted and complete as a one-source
+  manual proposal trial in run `ka01-20260818t065446z-67f9fb66`.
+- The final note was selected as the sole source from
+  `00_Inbox/reading/ipac2019-weprb066/reading_note.md`; all five proposals
+  remain `state: proposed`, with 5 create / 16 duplicate / 7 no-op.
+- KA-02 is not started; KA-03, state transition, and promotion remain
+  unauthorized.
 - RW-04 added no SHA, fingerprint, model metadata, reviewer identity, or new
   provenance field to the final note. The base commit above is a validation
   anchor, not an artifact fingerprint.
@@ -77,8 +81,8 @@ Status: **RW-04 freeze implemented from explicitly accepted RW-03 content; pendi
 
 ## Validation results
 
-Implementation validation completed; final audit and publication remain
-pending.
+Implementation validation and final audit completed; RW-04 was published at
+commit `fb0538c`.
 
 - The committed RW-03 draft remains identical to `HEAD` at the required base
   commit, and the staging area is empty.
@@ -97,5 +101,6 @@ pending.
   pre-existing excluded untracked `ResearchOS/.obsidian/`, `read data/`, and
   `tmp/` directories; those excluded local artifacts remain untouched.
 
-These checks establish implementation consistency. They do not claim RW-04
-publication or completion of the final technical audit.
+These checks establish implementation consistency and document the completed
+RW-04 publication boundary. They do not claim scientific completion of any
+open technical question.
