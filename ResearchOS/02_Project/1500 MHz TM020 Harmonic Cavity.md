@@ -14,7 +14,7 @@ Establish an evidence-backed design basis for the planned approximately 1500 MHz
 
 ## Scope and Non-goals
 
-The scope is the harmonic-cavity candidate for the current storage-ring project. The known main RF system is an approximately 500 MHz normal-conducting system; selecting or redesigning its cavity mode is outside this project page's scope. This page does not authorize cavity implementation, RW-04, Concept proposals, or KA-01.
+The scope is the harmonic-cavity candidate for the current storage-ring project. The known main RF system is an approximately 500 MHz normal-conducting system; selecting or redesigning its cavity mode is outside this project page's scope. This page does not authorize cavity implementation, RW-05, Concept proposals, or KA-01.
 
 ## Known Inputs
 
@@ -22,7 +22,8 @@ The scope is the harmonic-cavity candidate for the current storage-ring project.
 - A roughly 1500 MHz harmonic RF system is planned.
 - TM020 is a candidate only for the harmonic cavity in this project.
 - The current source record is [[00_Inbox/reading/ipac2019-weprb066/source_record]].
-- The current synthesis artifact is [[00_Inbox/reading/ipac2019-weprb066/reading_note.draft]]; its RW-03 synthesis content was human accepted on 2026-08-18, while the file remains `state: draft` and is not `human_reviewed`.
+- The current synthesis artifact is [[00_Inbox/reading/ipac2019-weprb066/reading_note]]; it was frozen by RW-04 from explicitly accepted RW-03 content and has state `human_reviewed`.
+- The [[00_Inbox/reading/ipac2019-weprb066/reading_note.draft]] remains available as RW-03 history with state `draft`.
 
 ## Working Assumptions
 
@@ -48,7 +49,8 @@ No engineering design decision is frozen. Active versus passive operation, targe
 ## Papers and Reading Notes
 
 - [[00_Inbox/reading/ipac2019-weprb066/source_record]]
-- [[00_Inbox/reading/ipac2019-weprb066/reading_note.draft]]
+- [[00_Inbox/reading/ipac2019-weprb066/reading_note]]
+- [[00_Inbox/reading/ipac2019-weprb066/reading_note.draft]] (RW-03 history)
 
 ## Existing Concepts
 
@@ -72,7 +74,7 @@ No experiment or simulation campaign has been started from this page. Candidate 
 
 ## Next Actions
 
-1. Preserve the accepted RW-03 synthesis content and its explicit uncertainties without promoting the draft to final `reading_note.md`.
+1. Complete the final audit and publication of the RW-04 frozen `reading_note.md`; preserve the draft as RW-03 history.
 2. Confirm the machine, fill-pattern, and RF requirements that bound the harmonic-cavity problem.
 3. Define a verification sequence before freezing any cavity design decision.
 
@@ -83,4 +85,4 @@ No experiment or simulation campaign has been started from this page. Candidate 
 ## History
 
 - 2026-08-11: Initial project page created for the RW-03 synthesis trial and minimal Obsidian foundation.
-- 2026-08-18: RW-03 synthesis content human accepted and selected-text presentation correction applied; no engineering decision, RW-04 freeze, Concept proposal, or KA-01 work was started.
+- 2026-08-18: RW-03 synthesis content human accepted and selected-text presentation correction applied; RW-04 was explicitly authorized and the frozen note was created; no engineering decision, RW-05, Concept proposal, or KA-01 work was started.

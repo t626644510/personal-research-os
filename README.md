@@ -1,6 +1,6 @@
 # Personal Research OS v0.1
 
-Personal Research OS 是一个以 Obsidian 为阅读界面、Git 为审计与版本层、Python 为确定性维护工具的个人科研知识库。v0.1 以稳定的 Concept Database 和 Hover Encyclopedia 数据为基础，并包含最小 Obsidian Foundation 与 RW-03 人工审阅草稿入口；不包含 RAG、向量数据库、AI 实时查询、自动爬虫或定时扫描。
+Personal Research OS 是一个以 Obsidian 为阅读界面、Git 为审计与版本层、Python 为确定性维护工具的个人科研知识库。v0.1 以稳定的 Concept Database 和 Hover Encyclopedia 数据为基础，并包含最小 Obsidian Foundation、RW-03 人工审阅草稿入口和 RW-04 冻结阅读笔记；不包含 RAG、向量数据库、AI 实时查询、自动爬虫或定时扫描。
 
 ## 快速开始
 
@@ -24,7 +24,7 @@ python ResearchOS/99_Meta/tools/hover_resolver.py "HOM impedance and wake field"
 ResearchOS/
 ├── Home.md                  # Vault 导航入口
 ├── 00_Inbox/
-│   ├── reading/<paper_id>/  # source record、RW-03 draft 与本地阅读 bundle
+│   ├── reading/<paper_id>/  # source record、RW-03 draft、RW-04 final note 与本地阅读 bundle
 │   │   └── _local/          # ignored；论文、session、译文与展示产物不提交
 │   ├── papers/              # 待处理论文
 │   ├── html/                # 待处理网页快照
@@ -52,20 +52,23 @@ ResearchOS/
         └── reading_ui.css
 ```
 
-## Obsidian Foundation / RW-03
+## Obsidian Foundation / RW-03 / RW-04
 
 `ResearchOS/Home.md` 是当前 Vault 导航入口。当前 Project 是
-`ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity.md`，当前人工审阅草稿是
+`ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity.md`，当前主阅读笔记是
+`ResearchOS/00_Inbox/reading/ipac2019-weprb066/reading_note.md`；RW-03 草稿仍作为历史记录保留在
 `ResearchOS/00_Inbox/reading/ipac2019-weprb066/reading_note.draft.md`。
 
 `Project.md` 用于项目目标、边界、决策与行动；`Paper.md` 用于后续论文级记录；
 `Reading_Note.md` 用于 mandatory source/session 加 optional external summary 的阅读
-综合草稿。当前没有 `ResearchOS/03_Paper/IPAC2019-WEPRB066.md`、最终
-`reading_note.md` 或共享 `.obsidian/` 配置。RW-03 synthesis content human
-accepted on 2026-08-18; selected-text presentation correction applied; RW-03
-accepted and complete。`reading_note.draft.md` 仍为 `state: draft`，没有 artifact
-被赋予 `human_reviewed`；RW-04 Human Review and Freeze、Concept proposal 和
-KA-01 均未启动，KA-01 仍未获授权。
+综合草稿。当前没有 `ResearchOS/03_Paper/IPAC2019-WEPRB066.md` 或共享 `.obsidian/` 配置。
+最终 `reading_note.md` 已由 RW-04 从明确接受的 RW-03 内容冻结，状态为
+`human_reviewed`。RW-03 synthesis content human accepted on 2026-08-18;
+selected-text presentation correction applied; RW-03 accepted and complete and
+published at commit `7c5dc4f`。RW-04 freeze implemented from explicit human
+authority and remains pending final audit and publication。`reading_note.draft.md`
+仍为 `state: draft` 的 RW-03 历史记录；最终笔记可作为未来 handoff 候选，但尚未被
+选择用于任何 KA-01 run。RW-05、Concept proposal 和 KA-01 均未获授权且未启动。
 
 每个 Concept 的稳定身份由 YAML `id` 提供，文件名和 H1 是规范显示名称，`aliases` 保存缩写、译名和历史名称。正文遵循固定的十个 H2 区块；详细约束见 [Concept Schema v0.1](ResearchOS/99_Meta/Concept_Schema_v0.1.md)。
 
@@ -197,9 +200,12 @@ RW-02.2 当前自动验证：25 个 Concepts 通过校验，Reading UI 聚焦套
 总体人工 UI 结论为“通过，未报告其他问题”。RW-02 已接受并完成，HTML 原型已冻结；
 commit `792c802` 是已发布的 RW-02 baseline。RW-03 已于 2026-08-11 另行授权；
 RW-03 synthesis content human accepted on 2026-08-18; selected-text
-presentation correction applied; RW-03 accepted and complete。
-`reading_note.draft.md` 仍为 `state: draft`，没有 artifact 被赋予
-`human_reviewed`；RW-04、Concept proposal 和 KA-01 均未启动，KA-01 仍未获授权。
+presentation correction applied; RW-03 accepted and complete and published at
+commit `7c5dc4f`。最终 `reading_note.md` 已冻结为 `state: human_reviewed`；
+`reading_note.draft.md` 仍作为 RW-03 历史记录保留。RW-04 freeze implemented
+from explicit human authority and remains pending final audit and publication。
+最终笔记可作为未来 handoff 候选，但尚未被选择用于任何 KA-01 run；RW-05、Concept
+proposal 和 KA-01 均未获授权且未启动。
 这个原型是 `concept_index.json` 的第二个本地确定性消费者，
 不替换 P01/P01.5：
 `reading_ui.py` 读取一篇 UTF-8 Markdown 技术资料，复用
@@ -278,10 +284,12 @@ presentation mode；中文参考仍是未验证、非权威派生显示。RW-02.
 accepted on 2026-08-11; RW-02 is accepted and complete; the HTML prototype is
 frozen; commit `792c802` is the published RW-02 baseline. RW-03 synthesis
 content human accepted on 2026-08-18; selected-text presentation correction
-applied; RW-03 accepted and complete. `reading_note.draft.md` remains
-`state: draft`; no artifact is assigned `human_reviewed`; RW-04 Human Review
-and Freeze has not started; final `reading_note.md` does not exist; Concept
-proposal and KA-01 remain unauthorized and unstarted. 实现与验收记录在
+applied; RW-03 accepted and complete and published at commit `7c5dc4f`. The
+final `reading_note.md` is `state: human_reviewed`; `reading_note.draft.md`
+remains available as RW-03 history. RW-04 freeze is implemented from explicit
+human authority and remains pending final audit and publication. The final note
+is eligible for a future handoff but has not been selected for any KA-01 run;
+RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted. 实现与验收记录在
 [RW-02 UI Validation](ResearchOS/99_Meta/RW02_UI_Validation.md)。
 
 ## 日常工作流

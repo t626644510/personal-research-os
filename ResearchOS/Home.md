@@ -4,7 +4,11 @@
 
 - [[02_Project/1500 MHz TM020 Harmonic Cavity]]
 
-## Current Reading Draft
+## Current Reading Note
+
+- [[00_Inbox/reading/ipac2019-weprb066/reading_note]]
+
+## RW-03 History
 
 - [[00_Inbox/reading/ipac2019-weprb066/reading_note.draft]]
 
@@ -25,12 +29,13 @@
 ## Workflow Status
 
 - RW-02 is the published Reading Workspace baseline at commit `792c802`.
-- RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete.
-- `reading_note.draft.md` remains `state: draft`; no artifact is assigned `human_reviewed`; final `reading_note.md` does not exist.
-- RW-04 Human Review and Freeze has not started; Concept proposal and KA-01 remain unauthorized and unstarted.
+- RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`.
+- `reading_note.md` is the frozen primary note with `state: human_reviewed`; `reading_note.draft.md` remains available as RW-03 history.
+- RW-04 freeze is implemented from explicit human authority and remains pending final audit and publication. The final note is eligible for a future handoff but has not been selected for any KA-01 run.
+- RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.
 
 ## Next Actions
 
-1. Preserve the accepted RW-03 synthesis content and selected-text traceability in the current draft.
-2. Do not promote the draft or create final `reading_note.md` without separate RW-04 authorization.
-3. Do not begin a Concept proposal or KA-01 without separate authorization.
+1. Complete the final audit and publication of the RW-04 frozen note.
+2. Preserve the RW-03 draft as history and keep its accepted synthesis content and selected-text traceability intact.
+3. Do not begin RW-05, a Concept proposal, or KA-01 without separate authorization.

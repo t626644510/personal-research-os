@@ -115,10 +115,13 @@ unique annotatable source blocks. The owner recorded the overall conclusion as
 “通过，未报告其他问题”. RW-02 is accepted and complete; the HTML prototype
 is frozen; commit `792c802` is the published RW-02 baseline. RW-03 synthesis
 content human accepted on 2026-08-18; selected-text presentation correction
-applied; RW-03 accepted and complete. `reading_note.draft.md` remains
-`state: draft`; no artifact is assigned `human_reviewed`; RW-04 Human Review
-and Freeze has not started; final `reading_note.md` does not exist; Concept
-proposal and KA-01 remain unauthorized and unstarted.
+applied; RW-03 accepted and complete and published at commit `7c5dc4f`.
+`reading_note.draft.md` remains `state: draft` as RW-03 history. The final
+`reading_note.md` is `state: human_reviewed`; RW-04 freeze is implemented from
+explicit human authority and remains pending final audit and publication. The
+final note is eligible for a future handoff but has not been selected for any
+KA-01 run. RW-05, Concept proposal, and KA-01 remain unauthorized and
+unstarted.
 
 RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
 创建 Reading Workspace 实现、reading session、RW source file、reading-note
@@ -281,9 +284,11 @@ handoff，但不启动 synthesis。
 complete; the HTML prototype is frozen; commit `792c802` is the published RW-02
 baseline. RW-03 was separately authorized on 2026-08-11. Its synthesis content
 was human accepted on 2026-08-18 and the selected-text presentation correction
-was applied; RW-03 is accepted and complete. Its draft remains `state: draft`
-without `human_reviewed`. RW-04 has not started, and KA-01 remains unauthorized
-and not started.
+was applied; RW-03 is accepted and complete and published at commit `7c5dc4f`.
+Its draft remains `state: draft` as history, and final `reading_note.md` is
+`state: human_reviewed`. RW-04 freeze is implemented from explicit human
+authority and remains pending final audit and publication; RW-05, Concept
+proposal, and KA-01 remain unauthorized and unstarted.
 
 目标：使用一篇人工选择的真实 technical paper，对 RW-01 已实现的 human-owned
 annotation、human question、question packet 和外部 LLM answer capture
@@ -325,7 +330,8 @@ baseline。以下是 RW-02 发布时的 historical/pre-authorization state：RW-
 ## RW-03 Reading Note Synthesis Trial
 
 状态：RW-03 synthesis content human accepted on 2026-08-18; selected-text
-presentation correction applied; RW-03 accepted and complete.
+presentation correction applied; RW-03 accepted and complete and published at
+commit `7c5dc4f`。
 
 目标：由人精确选择一个原始资料 `SOURCE_PATH` 和一个
 `reading_session.md` 的 `SESSION_PATH`，作为每次 synthesis 的强制输入。人可以
@@ -343,15 +349,21 @@ origin label，不得通过合并掩盖来源。
 `reading_session.md` 默认不嵌入完整原文；RW-03 不增加 source、session、external
 summary hash 或其他 fingerprint，也不改变 KA-01 的一文件输入边界。
 
-`reading_note.draft.md` 仍为 `state: draft`，没有 artifact 被赋予
-`human_reviewed`。RW-04 Human Review and Freeze 尚未启动，最终
-`reading_note.md` 不存在；Concept proposal 与 KA-01 仍未获授权且未启动。
+`reading_note.draft.md` 仍为 `state: draft` 的 RW-03 历史记录。最终
+`reading_note.md` 已冻结为 `state: human_reviewed`。RW-04 freeze implemented
+from explicit human authority and remains pending final audit and publication；
+最终笔记可作为未来 handoff 候选，但尚未被选择用于任何 KA-01 run。RW-05、
+Concept proposal 与 KA-01 仍未获授权且未启动。
 
 ## RW-04 Human Review and Freeze
 
-状态：Not started. RW-03 synthesis content is accepted and RW-03 is complete,
-but the draft remains `state: draft`, no artifact is `human_reviewed`, and no
-final `reading_note.md` exists.
+状态：RW-04 freeze implemented from explicitly accepted RW-03 content and
+explicit human authority on 2026-08-18; pending final audit and publication.
+
+最终 `reading_note.md` 已创建并冻结为 `state: human_reviewed`；
+`reading_note.draft.md` 保留为 RW-03 历史记录。冻结记录的是该版本的人工接受，
+不是普遍科学真理；最终笔记可作为未来 handoff 候选，但尚未被选择用于任何 KA-01
+run。
 
 目标：由人审阅并只选择一份 `reading_note.md` 作为冻结的 reading note。
 内容若在审阅后改变，必须重新审阅才可再次作为未来 KA 来源。
@@ -380,7 +392,8 @@ PDF、其他论文或 LLM transcript。
 -   只有 KA-01 真正开始时，才按现有协议对最终选定的
     `reading_note.md` 计算一次 SHA-256；RW 不要求 PDF hash、session hash
     或第二个 provenance hash。
--   RW-04、Concept proposal 和 KA-01 均未启动；KA-01 仍未获授权。
+-   RW-04 freeze 已实现但仍待最终 audit 与 publication；Concept proposal 和
+    KA-01 仍未获授权且未启动。
 -   Stage 02 Information Acquisition 是独立的未来 concern，不属于 Reading
     Workspace source preparation。
 -   第一版 Reading Workspace 不包含 integrated AI runtime、automatic

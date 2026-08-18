@@ -1,7 +1,7 @@
 # Reading Workspace Protocol v0.1
 
 Version: v0.1\
-Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; commit 792c802 is the published RW-02 baseline; RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete; `reading_note.draft.md` remains `state: draft`; no artifact is `human_reviewed`; RW-04, Concept proposal, and KA-01 not started; KA-01 unauthorized\
+Status: RW-00 governance human accepted on 2026-08-04; RW-01 and RW-01.1 accepted and complete at commit 8afa9aa; configurable 34/42/50rem session-panel correction received final visual confirmation; 25 Concepts passed validation; focused Reading UI suite: 16 tests passed; full suite: 33 tests passed; RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete; HTML prototype frozen; commit 792c802 is the published RW-02 baseline; RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit 7c5dc4f; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 freeze explicitly authorized and implemented, pending final audit and publication; RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted\
 Applies to: reading and source preparation upstream of KA-01
 
 This protocol defines the smallest implementation-neutral contract for a local
@@ -16,11 +16,11 @@ commit `792c802` is the published RW-02 baseline.
 RW-02.1 remains a historical narrow presentation correction, not an
 architecture redesign. RW-03 was separately authorized on 2026-08-11.
 RW-03 synthesis content human accepted on 2026-08-18; selected-text
-presentation correction applied; RW-03 accepted and complete.
-`reading_note.draft.md` remains `state: draft`; no artifact is assigned
-`human_reviewed`; RW-04 Human Review and Freeze has not started; final
-`reading_note.md` does not exist; Concept proposal and KA-01 remain
-unauthorized and unstarted.
+presentation correction applied; RW-03 accepted and complete and published at
+commit `7c5dc4f`. `reading_note.draft.md` remains `state: draft` as RW-03
+history; final `reading_note.md` is `state: human_reviewed`. RW-04 freeze was
+explicitly authorized and implemented, pending final audit and publication;
+RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.
 
 ## 1. Purpose and boundaries
 
@@ -68,8 +68,8 @@ Responsibilities:
 | Artifact | Responsibility |
 | --- | --- |
 | `source_record.md` | Git-visible source identity and provenance record |
-| `reading_note.draft.md` | RW-03 synthesis artifact; content human accepted on 2026-08-18, while the file remains `state: draft` and is not `human_reviewed` |
-| `reading_note.md` | Optional final note; may be created only after RW-04 human review and freeze, and does not currently exist |
+| `reading_note.draft.md` | RW-03 synthesis artifact and retained history; content human accepted on 2026-08-18, while the file remains `state: draft` |
+| `reading_note.md` | RW-04 frozen final note; `state: human_reviewed`, pending final audit and publication |
 | `_local/source.reading.md` | Authoritative paper-text input for this workflow |
 | `_local/source.zh-CN.reading.md` | Unverified, non-authoritative reference translation |
 | `_local/reading_session.md` | Authoritative exported human session |
@@ -80,8 +80,9 @@ Responsibilities:
 This is the actual v0.1 layout, not a future proposal. The current bundle's
 session is `_local/reading_session.md`; there is no paper-root
 `reading_session.md`. The entire `_local/` subtree is ignored by default and
-must not be committed. `reading_note.md` is absent until a separately authorized
-RW-04 human review and freeze creates it.
+must not be committed. `reading_note.md` was created by the separately
+authorized RW-04 human review and freeze; it remains pending final audit and
+publication.
 
 ### 2.1 RW-02.1 presentation boundary
 
@@ -168,9 +169,11 @@ Obsidian Home, and the 1500 MHz TM020 Harmonic Cavity project page required
 separate authorization describes the historical RW-02 publication boundary.
 RW-03 was subsequently authorized on 2026-08-11. Its synthesis content was
 human accepted on 2026-08-18 and the selected-text presentation correction was
-applied; RW-03 is accepted and complete. The draft file remains `state: draft`,
-no artifact is `human_reviewed`, and RW-04, Concept proposal, and KA-01 have
-not started; KA-01 remains unauthorized.
+applied; RW-03 is accepted and complete and published at commit `7c5dc4f`. The
+draft file remains `state: draft` as history, and final `reading_note.md` is
+`state: human_reviewed`. RW-04 freeze was explicitly authorized and
+implemented, pending final audit and publication; RW-05, Concept proposal, and
+KA-01 remain unauthorized and unstarted.
 
 ## 3. Content ownership and review metadata
 
@@ -371,13 +374,29 @@ Reading-note states:
 | `human_reviewed` | A human explicitly reviewed and froze the selected reading note |
 | `superseded` | A retained reading note has been replaced by a later one |
 
-An LLM or implementation agent may create only `active` reading-session
-content and `draft` reading notes. It may not assign `human_reviewed`,
-impersonate a reviewer, or select the KA-01 source on the human's behalf.
+Without an explicit human freeze decision, an LLM or implementation agent may
+create only `active` reading-session content and `draft` reading notes; it may
+not infer or assign `human_reviewed`.
 
-Only a human may assign `human_reviewed` to one reading note and select it for
-handoff. Human review freezes the meaning of that version; it does not assert
-scientific truth or promote any Concept.
+Only a human makes the semantic review and freeze decision. An implementation
+agent may mechanically materialize `state: human_reviewed` only when all three
+conditions hold:
+
+1. The human explicitly accepted the content.
+2. The human uniquely identified the note/version to freeze.
+3. The human explicitly authorized the freeze.
+
+Mechanical materialization is not independent review, delegated judgment,
+reviewer impersonation, automatic promotion, or KA-01 source selection. A
+`human_reviewed` reading note is merely eligible for a future handoff; selecting
+it for a KA-01 run still requires a separate explicit instruction.
+
+RW-04 satisfies this rule: the accepted content is the RW-03 draft; the
+uniquely identified version is that draft as committed at full commit
+`7c5dc4f9b815719677e5fcced3831309b8bc0e06`; and the explicit freeze
+authorization is the repository owner's 2026-08-18 RW-04 instruction. The
+implementation agent mechanically materialized the state only after those
+human decisions; it did not make the semantic review or select a KA-01 source.
 
 If a human-reviewed reading note changes later, the changed content loses its
 frozen meaning and must return to `draft` until it is explicitly reviewed
@@ -389,10 +408,11 @@ selects the intended version again.
 
 RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
 accepted on 2026-08-18; selected-text presentation correction applied; RW-03
-accepted and complete. `reading_note.draft.md` remains `state: draft`; no
-artifact is assigned `human_reviewed`; RW-04 Human Review and Freeze has not
-started; final `reading_note.md` does not exist; Concept proposal and KA-01
-remain unauthorized and unstarted. A valid synthesis trial requires the human
+accepted and complete and published at commit `7c5dc4f`. `reading_note.draft.md`
+remains `state: draft` as history; final `reading_note.md` is
+`state: human_reviewed`. RW-04 freeze was explicitly authorized and
+implemented, pending final audit and publication; RW-05, Concept proposal, and
+KA-01 remain unauthorized and unstarted. A valid synthesis trial requires the human
 to select both mandatory inputs:
 
 - one exact `SOURCE_PATH` for the original technical source; and
@@ -425,7 +445,9 @@ SHA, or any other fingerprint.
 
 The mandatory two-file input, with the optional explicitly selected external
 summary, is upstream preparation only. It does not change the KA-01 one-file
-handoff described below. RW-04 human review and freeze has not started.
+handoff described below. RW-04 freeze is implemented from explicit human
+authority and remains pending final audit and publication; the final note has
+not been selected for any KA-01 run.
 
 ## 7. KA-01 bridge
 
@@ -486,7 +508,8 @@ generated HTML metrics are recorded above. RW-02 is accepted and complete; the
 HTML prototype is frozen;
 commit `792c802` is the published RW-02 baseline. RW-03 was subsequently
 authorized on 2026-08-11. RW-03 synthesis content human accepted on 2026-08-18;
-selected-text presentation correction applied; RW-03 accepted and complete.
-The draft remains `state: draft`; no artifact is `human_reviewed`; RW-04 Human
-Review and Freeze has not started; final `reading_note.md` does not exist;
-Concept proposal and KA-01 remain unauthorized and unstarted.
+selected-text presentation correction applied; RW-03 accepted and complete and
+published at commit `7c5dc4f`. The draft remains `state: draft` as history; final
+`reading_note.md` is `state: human_reviewed`. RW-04 freeze was explicitly
+authorized and implemented, pending final audit and publication; RW-05,
+Concept proposal, and KA-01 remain unauthorized and unstarted.

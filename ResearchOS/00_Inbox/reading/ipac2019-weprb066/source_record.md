@@ -45,6 +45,7 @@ used from the repository root.
 | Byte-identical real session copy (ignored) | `00_Inbox/reading/ipac2019-weprb066/_local/reading_session.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/_local/reading_session.md` |
 | Corrected external LLM summary copy (ignored) | `00_Inbox/reading/ipac2019-weprb066/_local/external_llm_conversation_summary.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/_local/external_llm_conversation_summary.md` |
 | RW-03 reading-note draft | `00_Inbox/reading/ipac2019-weprb066/reading_note.draft.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/reading_note.draft.md` |
+| RW-04 frozen reading note | `00_Inbox/reading/ipac2019-weprb066/reading_note.md` | `ResearchOS/00_Inbox/reading/ipac2019-weprb066/reading_note.md` |
 
 The PDF is the authoritative local source for visual verification. The
 `source.reading.md` file is a one-time, page-marked derived transcription for
@@ -67,10 +68,13 @@ justification and visual/source review.
 **Status:** RW-02.2 human UI accepted on 2026-08-11. RW-02 is accepted and
 complete; the HTML prototype is frozen; commit `792c802` is the published
 RW-02 baseline. RW-03 synthesis content human accepted on 2026-08-18;
-selected-text presentation correction applied; RW-03 accepted and complete.
-`reading_note.draft.md` remains `state: draft`; no artifact is assigned
-`human_reviewed`; RW-04 Human Review and Freeze has not started; final
-`reading_note.md` does not exist; Concept proposal and KA-01 remain
+selected-text presentation correction applied; RW-03 accepted and complete and
+published at commit `7c5dc4f`. `reading_note.draft.md` remains `state: draft` as
+RW-03 history. RW-04 freeze was explicitly authorized by the repository owner
+on 2026-08-18 and is implemented from the accepted committed draft; final
+`reading_note.md` is `state: human_reviewed` and remains pending final audit
+and publication. The final note is eligible for a future handoff but has not
+been selected for any KA-01 run. RW-05, Concept proposal, and KA-01 remain
 unauthorized and unstarted.
 
 The local source bundle is prepared for human comparison of the Markdown
@@ -117,7 +121,7 @@ The five legacy session entries are semantically authoritative-source
 selections under the compatibility rule for absent `selected_text_origin`.
 Their exact session `selected_text` values were verified against the
 authoritative English reading source and are displayed beside the two human
-questions and three human notes in the RW-03 draft.
+questions and three human notes in the RW-03 draft and frozen note.
 
 No SHA-256, source fingerprint, session fingerprint, or second provenance
 fingerprint is recorded for RW-02. Current RW-02.2 automated verification
@@ -129,8 +133,9 @@ the overall conclusion “通过，未报告其他问题”. RW-02 is accepted a
 the HTML prototype is frozen; commit `792c802` is the published RW-02 baseline.
 RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
 accepted on 2026-08-18; selected-text presentation correction applied; RW-03
-accepted and complete. The draft remains `state: draft`, no artifact is
-`human_reviewed`, and no source, session, or external-summary SHA/fingerprint
-was added. RW-04 Human Review and Freeze has not started; final
-`reading_note.md` does not exist; Concept proposal and KA-01 remain
-unauthorized and unstarted.
+accepted and complete and published at commit `7c5dc4f`. The draft remains
+`state: draft` as history, and the final `reading_note.md` is
+`human_reviewed`. No source, session, or external-summary SHA/fingerprint was
+added; RW-04 added no SHA or fingerprint to the final note. RW-04 freeze was
+explicitly authorized and implemented, pending final audit and publication;
+RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted.

@@ -4,7 +4,7 @@ Status: KA-00 governance accepted; RW-00 governance accepted and complete on 202
 RW-01 and RW-01.1 accepted and complete at commit `8afa9aa`;\
 RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete;\
 HTML prototype frozen; commit `792c802` is the published RW-02 baseline;\
-RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete; `reading_note.draft.md` remains `state: draft`; no artifact is assigned `human_reviewed`; RW-04, Concept proposal, and KA-01 not started; KA-01 unauthorized\
+RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 freeze was explicitly authorized and implemented, pending final audit and publication; RW-05, Concept proposal, and KA-01 remain unauthorized and unstarted\
 Pre-KA-00 implementation baseline: `d622b92c78d3fcaf327db93e599e6a77fe112f1c`\
 Current governance version: identified by this document's Git history\
 Future KA-01 run baseline: `git rev-parse HEAD` at run start\
@@ -117,10 +117,12 @@ and 131 unique annotatable source blocks. RW-02 is accepted and complete; the
 HTML prototype is frozen; commit `792c802` is the published RW-02 baseline.
 RW-03 was separately authorized on 2026-08-11. RW-03 synthesis content human
 accepted on 2026-08-18; selected-text presentation correction applied; RW-03
-accepted and complete. `reading_note.draft.md` remains `state: draft`; no
-artifact is assigned `human_reviewed`; RW-04 Human Review and Freeze has not
-started; final `reading_note.md` does not exist; Concept proposal and KA-01
-remain unauthorized and unstarted. The frozen prototype itself still
+accepted and complete and published at commit `7c5dc4f`. The draft remains
+`state: draft` as RW-03 history, and final `reading_note.md` is
+`state: human_reviewed`. RW-04 freeze was explicitly authorized and
+implemented, pending final audit and publication. The final note is eligible
+for a future handoff but has not been selected for any KA-01 run. RW-05,
+Concept proposal, and KA-01 remain unauthorized and unstarted. The frozen prototype itself still
 does not embed model calls or permit a KA-01 run. Integrated
 AI runtime and automatic acquisition remain outside this prototype. Stage 02
 Information Acquisition remains a separate future concern.
@@ -159,8 +161,11 @@ about the RW-02.2 publication boundary: RW-02.2 did not create or start RW-03
 reading-note closure, Obsidian Home, or the 1500 MHz TM020 Harmonic Cavity
 project page. RW-03 was subsequently authorized on 2026-08-11. Its synthesis
 content was human accepted on 2026-08-18 and the selected-text presentation
-correction was applied; RW-03 is accepted and complete. The draft remains
-`state: draft`, no artifact is `human_reviewed`, and RW-04 has not started.
+correction was applied; RW-03 is accepted and complete and published at commit
+`7c5dc4f`. The draft remains `state: draft` as history, and final
+`reading_note.md` is `state: human_reviewed`. RW-04 freeze is explicitly
+authorized and implemented, pending final audit and publication; RW-05,
+Concept proposal, and KA-01 remain unauthorized and unstarted.
 
 No Reading Workspace implementation and no KA-01 execution have occurred
 during RW-00. No reading session, source, reading-note, run-assessment, or
@@ -172,7 +177,8 @@ KA-01 after an eligible reviewed source exists; intent alone is not execution
 authority. A protocol-valid run still requires a separate explicit human
 instruction naming exactly one eligible `SOURCE_PATH` and approving the
 prompt version used at execution time. For a Reading Workspace handoff, that
-source is the one human-selected, reviewed `reading_note.md`. Only the
+source is the one human-selected, reviewed `reading_note.md`. The final note is
+eligible for a future handoff but has not been selected for any KA-01 run. Only the
 separately approved KA-01 conversation may create one run assessment and
 Concept proposal artifacts under `ResearchOS/00_Inbox/proposals/`, then it
 must stop for human review.
