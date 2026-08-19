@@ -1,10 +1,19 @@
 # Personal Research OS Project Context
 
+The current status is recorded in the KA-03 Stage 2 addendum below; the
+following long status ledger preserves the pre-Stage-2 publication history.
+
 Status: KA-00 governance accepted; RW-00 governance accepted and complete on 2026-08-04;\
 RW-01 and RW-01.1 accepted and complete at commit `8afa9aa`;\
 RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete;\
 HTML prototype frozen; commit `792c802` is the published RW-02 baseline;\
-RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66` from `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 is not started, and KA-03, state transition, and promotion remain unauthorized\
+RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66` from `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 completed human review and audit closeout on 2026-08-18 with 2 revision / 1 merge-supersede plan / 2 defer plans; P01/P03 targeted revisions are prepared under authorized KA-03 Stage 1; KA-01 publication commit is `5418b92f2b6d007ad94150755a6fd30599e9ecaf`; KA-03 First Promotion Trial is authorized and in progress; Stage 1 review package prepared; human scientific review pending; no stable Concept promotion occurred; KA-04 remains unstarted and unauthorized\
+Current KA-03 status: Stage 2 and its independent audit passed on 2026-08-18
+under the explicit gate from human reviewer `owner-01`; P01/P03 are accepted
+and promoted, P02 is superseded by P01, P04/P05 are deferred, and the audit
+confirmed candidate/stable byte fidelity, 27 Concepts, 49 tests, and immutable
+source/run artifacts. KA-03 is accepted and complete and ready for the agreed
+Major Phase A publication point; KA-04 remains unstarted and unauthorized.\
 Pre-KA-00 implementation baseline: `d622b92c78d3fcaf327db93e599e6a77fe112f1c`\
 Current governance version: identified by this document's Git history\
 Future KA-01 run baseline: `git rev-parse HEAD` at run start\
@@ -125,8 +134,13 @@ complete as a one-source manual proposal trial in run
 `ka01-20260818t065446z-67f9fb66` from
 `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`,
 with 5 create / 16 duplicate / 7 no-op; all five proposals remain
-`state: proposed`. KA-02 is not started; KA-03, state transition, and
-promotion remain unauthorized. The frozen prototype itself still does not
+`state: proposed` at the KA-02 closeout boundary. KA-02 completed human review
+and audit closeout on 2026-08-18 with 2 revision / 1 merge-supersede plan / 2
+defer plans; its evaluation worksheet records the five worksheet-level
+outcomes. P01/P03 targeted revisions were not part of that closeout; KA-03
+Stage 2 subsequently executed the explicitly authorized lifecycle outcomes
+and manual promotion. KA-01 publication commit is
+`5418b92f2b6d007ad94150755a6fd30599e9ecaf`. The frozen prototype itself still does not
 embed model calls or automatic KA-01 execution. Integrated
 AI runtime and automatic acquisition remain outside this prototype. Stage 02
 Information Acquisition remains a separate future concern.
@@ -171,8 +185,9 @@ correction was applied; RW-03 is accepted and complete and published at commit
 and published at commit `fb0538c`; RW-05 is accepted and complete; KA-01 is
 accepted and complete as a one-source manual proposal trial in run
 `ka01-20260818t065446z-67f9fb66`. All five proposals remain `state: proposed`;
-KA-02 is not started; KA-03, state transition, and promotion remain
-unauthorized.
+at the RW-02 publication boundary KA-02 and KA-03 were not started; the current
+KA-02 closeout and KA-03 Stage 1 status are recorded below. No proposal state
+transition or promotion had occurred at that historical boundary.
 
 No Reading Workspace implementation and no KA-01 execution have occurred
 during RW-00. No reading session, source, reading-note, run-assessment, or
@@ -187,6 +202,50 @@ handoff, the source was the one human-selected, reviewed `reading_note.md`.
 The final note was selected for this run, which created one run assessment and
 the five create proposal artifacts under `ResearchOS/00_Inbox/proposals/`,
 then stopped for human review. Future KA-01 runs remain separately gated.
+
+## KA-02 Proposal Quality Evaluation
+
+KA-02 completed human review and audit closeout on 2026-08-18. The evaluation
+worksheet is
+`ResearchOS/99_Meta/KA02_Proposal_Quality_Evaluation.md`; the accepted upstream
+run is `ka01-20260818t065446z-67f9fb66`, published at commit
+`5418b92f2b6d007ad94150755a6fd30599e9ecaf`.
+
+Summary: 2 revision / 1 merge-supersede plan / 2 defer plans.
+
+| Proposal | Worksheet-level evaluation disposition |
+| --- | --- |
+| P01 `Harmonic cavity` | `retain_for_revision` |
+| P02 `Passive harmonic cavity` | `merge_into_p01` |
+| P03 `Frequency tuner` | `revise_identity_and_aliases` |
+| P04 `Coupling tuner` | `defer_for_reference_11` |
+| P05 `Bunch lengthening` | `defer_for_later_beam_physics_study` |
+
+These are worksheet-level evaluation outcomes, not Knowledge Proposal Protocol
+lifecycle states. At the KA-02 closeout boundary all five proposals remained
+`state: proposed`; no proposal/candidate, stable Concept, or index was modified
+by that closeout. KA-03 Stage 2 later executed the separately authorized
+lifecycle outcomes and manual promotion recorded below.
+
+## KA-03 First Promotion Trial
+
+KA-03 First Promotion Trial Stage 2 is complete on 2026-08-18 under the
+explicit gate from human reviewer `owner-01`. P01 and P03 are accepted and
+manually promoted; P02 is superseded by P01; P04 is deferred pending reference
+`[11]`; and P05 is deferred pending a later systematic beam-physics study. No
+engineering design decision has been frozen. The independent audit passed on
+2026-08-18: candidate/stable byte fidelity, lifecycle and promotion records,
+27 Concepts, 49 tests, and source/run immutability all passed. KA-03 is accepted
+and complete and ready for the agreed Major Phase A publication point.
+
+- Validation record: `ResearchOS/99_Meta/KA03_Promotion_Trial_Validation.md`
+- Project verification matrix: `ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity Verification Matrix.md`
+- P01 `Harmonic cavity` was promoted to `ResearchOS/01_Concept/Harmonic cavity.md`;
+  P03 `Tuner` was promoted to `ResearchOS/01_Concept/Tuner.md`.
+- P02, P04, and P05 remain retained proposal audit records with their recorded
+  superseded/deferred states; no stable Concept was created from them.
+- The mandatory human gate passed with reviewer `owner-01`; KA-04 remains
+  unstarted and unauthorized.
 
 ## Explicit non-goals
 

@@ -3,8 +3,8 @@
 - Proposal ID: `ka01-20260818t065446z-67f9fb66-p02-create`
 - Run ID: `ka01-20260818t065446z-67f9fb66`
 - Type: create
-- State: proposed
-- Human owner: unassigned
+- State: superseded
+- Human owner: owner-01
 - Prompt path: `ResearchOS/99_Meta/prompts/concept_proposal_v0.1.md`
 - Prompt version: `v0.1`
 - Repository baseline commit: `fb0538ce9ddf22a8e3c151a05820f03fc5dc7892`
@@ -16,12 +16,14 @@
 - Target stable id: not applicable
 - Target stable path: not applicable
 - Supersedes: none
+- Superseded by: `ka01-20260818t065446z-67f9fb66-p01-create`
 
 ## Summary
 
-Propose a limited `Passive harmonic cavity` Concept candidate from direct
-paper-supported operating-mode content. The candidate is review material only;
-it is not stable knowledge and does not imply approval or promotion.
+This retained proposal records a limited `Passive harmonic cavity` candidate
+from direct paper-supported operating-mode content. It was superseded by P01;
+the passive operation scope is retained as an operating-mode subsection inside
+`Harmonic cavity`, not as a separate stable Concept.
 
 ## Proposed Changes
 
@@ -107,16 +109,20 @@ it is not stable knowledge and does not imply approval or promotion.
 
 ## Review Record
 
-- Human review: pending; no human owner is assigned.
-- Scientific acceptance: not recorded.
+- Human review: superseded by owner-01 on 2026-08-18.
+- Supersession decision: proposal
+  `ka01-20260818t065446z-67f9fb66-p01-create` replaces this candidate because
+  it incorporates the accepted passive-operation scope inside `Harmonic cavity`
+  without creating a separate passive-cavity Concept or alias.
+- Scientific acceptance: superseded; no stable Concept was promoted from P02.
 
 ## Promotion Record
 
 - Promoted: no
-- Promotion approval: not recorded; separate explicit human authorization is
-  required.
+- Promotion approval: not applicable after supersession.
 - Stable path: not applicable
 
 ## Lifecycle Log
 
 - 2026-08-18T07:20:42.967Z - Created as a proposed candidate by KA-01 post-audit correction; pending human review.
+- 2026-08-18T14:40:54.940Z - owner-01 transitioned this proposal from proposed to superseded by `ka01-20260818t065446z-67f9fb66-p01-create`; the accepted merge rationale is passive operation as an internal operating mode, with this artifact retained permanently.

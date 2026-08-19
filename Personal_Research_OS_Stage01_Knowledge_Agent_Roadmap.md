@@ -122,9 +122,15 @@ and published at commit `fb0538c`. RW-05 is accepted and complete; KA-01 is
 accepted and complete as a one-source manual proposal trial in run
 `ka01-20260818t065446z-67f9fb66` from
 `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with
-5 create / 16 duplicate / 7 no-op. All five proposals remain `state: proposed`;
-KA-02 is not started; KA-03, state transition, and promotion remain
-unauthorized.
+5 create / 16 duplicate / 7 no-op;
+KA-02 completed human review and audit closeout on 2026-08-18, with 2 revision /
+1 merge-supersede plan / 2 defer plans. The KA-02 closeout did not execute the
+targeted P01/P03 revisions; authorized KA-03 Stage 1 now prepares them. KA-01
+publication commit is
+`5418b92f2b6d007ad94150755a6fd30599e9ecaf`. KA-03 First Promotion Trial
+Stage 2 is complete under the explicit gate from human reviewer `owner-01`:
+P01 and P03 are accepted and manually promoted, P02 is superseded by P01, and
+P04/P05 are deferred. KA-04 remains unstarted and unauthorized.
 
 RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
 创建 Reading Workspace 实现、reading session、RW source file、reading-note
@@ -293,8 +299,9 @@ Its draft remains `state: draft` as history, and final `reading_note.md` is
 commit `fb0538c`; RW-05 is accepted and complete; KA-01 is accepted and
 complete as a one-source manual proposal trial in run
 `ka01-20260818t065446z-67f9fb66`, with 5 create / 16 duplicate / 7 no-op.
-All five proposals remain `state: proposed`; KA-02 is not started; KA-03,
-state transition, and promotion remain unauthorized.
+All five proposals remain `state: proposed`; at the RW-02 publication boundary
+KA-02 and KA-03 had not started. The current KA-02 closeout and KA-03 Stage 1
+status are recorded below; no state transition or promotion has occurred.
 
 目标：使用一篇人工选择的真实 technical paper，对 RW-01 已实现的 human-owned
 annotation、human question、question packet 和外部 LLM answer capture
@@ -360,8 +367,9 @@ summary hash 或其他 fingerprint，也不改变 KA-01 的一文件输入边界
 complete and published at commit `fb0538c`；RW-05 accepted and complete；
 KA-01 accepted and complete as a one-source manual proposal trial in run
 `ka01-20260818t065446z-67f9fb66`，使用 prompt `v0.1`，分类为 5 create / 16
-duplicate / 7 no-op；五个 proposal 均保持 `state: proposed`。KA-02 尚未启动；
-KA-03、state transition 和 promotion 仍未获授权。
+duplicate / 7 no-op；五个 proposal 均保持 `state: proposed`。在该历史发布边界，
+KA-02 尚未启动；KA-02 随后于 2026-08-18 完成人工评估和审计收口。KA-03、
+state transition 和 promotion 仍未获授权。
 
 ## RW-04 Human Review and Freeze
 
@@ -403,8 +411,11 @@ PDF、其他论文或 LLM transcript。
     `reading_note.md` 计算一次 SHA-256；RW 不要求 PDF hash、session hash
     或第二个 provenance hash。
 -   RW-04 已接受、完成并在 commit `fb0538c` 发布；RW-05 已接受并完成；KA-01
-    已接受并完成一次单来源手动 proposal trial。KA-02 尚未启动；KA-03、state
-    transition 和 promotion 仍未获授权。
+    已接受并完成一次单来源手动 proposal trial。KA-02 已于 2026-08-18 完成人工
+    评估和审计收口，汇总为 2 revision / 1 merge-supersede plan / 2 defer plans；
+     KA-03 First Promotion Trial Stage 2 已在 owner-01 的明确人工门后完成：P01
+     和 P03 accepted 并手工 promotion，P02 superseded by P01，P04/P05 deferred；
+     KA-04 remains unstarted and unauthorized.
 -   Stage 02 Information Acquisition 是独立的未来 concern，不属于 Reading
     Workspace source preparation。
 -   第一版 Reading Workspace 不包含 integrated AI runtime、automatic
@@ -487,6 +498,21 @@ proposal scientifically or authorize promotion.
 
 ## KA-02 Proposal Quality Evaluation
 
+状态：Completed; human review completed and audit interpretation accepted on
+2026-08-18。工作表：
+[KA02_Proposal_Quality_Evaluation](ResearchOS/99_Meta/KA02_Proposal_Quality_Evaluation.md)。
+汇总为 2 revision / 1 merge-supersede plan / 2 defer plans。P01 和 P03 的
+targeted proposal revision was not executed at the KA-02 closeout boundary；P02 的 merge/supersede plan、P04 的
+reference `[11]` defer plan 和 P05 的 later beam-physics defer plan 也尚未转为
+lifecycle state。五个 proposal 仍为 `state: proposed`；KA-01 publication commit
+为 `5418b92f2b6d007ad94150755a6fd30599e9ecaf`。KA-03 Stage 2 随后在明确
+人工门后完成了五项授权 lifecycle outcomes 以及 P01/P03 的手工 promotion；
+KA-04 remains unstarted and unauthorized。
+
+本轮仅完成 documentation-only governance closeout，没有修改 proposal/candidate。
+At the KA-02 closeout boundary, the next item was a separately authorized targeted proposal revision for P01 and
+P03; that historical closeout did not execute the revision.
+
 目标：
 
 人工评估 KA-01 的单来源结果：
@@ -502,6 +528,23 @@ proposal scientifically or authorize promotion.
 ------------------------------------------------------------------------
 
 ## KA-03 Human Review and Manual Promotion Trial
+
+Status: Stage 2 complete (2026-08-18) after the explicit human gate from
+reviewer `owner-01`. P01 and P03 are accepted and manually promoted; P02 is
+superseded by P01; P04 is deferred pending reference `[11]`; and P05 is
+deferred pending a later systematic beam-physics study. The independent audit
+passed on 2026-08-18: candidate/stable byte fidelity, lifecycle and promotion
+records, 27 Concepts, 49 tests, and source/run immutability all passed. KA-03
+is accepted and complete and ready for the agreed Major Phase A publication
+point. No engineering design decision is frozen.
+
+Stage 1 validation record: `ResearchOS/99_Meta/KA03_Promotion_Trial_Validation.md`.
+Project verification matrix: `ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity Verification Matrix.md`.
+The mandatory human gate and independent audit passed; the validation record
+contains the reviewer, timestamps, rationales, promotion paths, and audit
+results. The next step is the agreed Major Phase A publication closeout; future
+KA-04 planning remains separately authorized work. KA-04 remains unstarted and
+unauthorized.
 
 建立人机协作流程：
 
@@ -532,6 +575,8 @@ proposal scientifically or authorize promotion.
 ------------------------------------------------------------------------
 
 ## KA-04 Knowledge Relation Proposal Trial
+
+Status: Unstarted and unauthorized.
 
 目标：
 

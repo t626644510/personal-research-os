@@ -3,8 +3,8 @@
 - Proposal ID: `ka01-20260818t065446z-67f9fb66-p04-create`
 - Run ID: `ka01-20260818t065446z-67f9fb66`
 - Type: create
-- State: proposed
-- Human owner: unassigned
+- State: deferred
+- Human owner: owner-01
 - Prompt path: `ResearchOS/99_Meta/prompts/concept_proposal_v0.1.md`
 - Prompt version: `v0.1`
 - Repository baseline commit: `fb0538ce9ddf22a8e3c151a05820f03fc5dc7892`
@@ -96,8 +96,9 @@ only; it is not stable knowledge and does not imply approval or promotion.
 
 ## Review Record
 
-- Human review: pending; no human owner is assigned.
-- Scientific acceptance: not recorded.
+- Human review: deferred by owner-01 on 2026-08-18 pending reference `[11]`.
+- Scientific acceptance: not recorded; the unresolved coupling-tuner scope and
+  evidence remain retained for later review.
 
 ## Promotion Record
 
@@ -109,3 +110,4 @@ only; it is not stable knowledge and does not imply approval or promotion.
 ## Lifecycle Log
 
 - 2026-08-18T07:20:42.967Z - Created as a proposed candidate by KA-01 post-audit correction; pending human review.
+- 2026-08-18T14:40:54.940Z - owner-01 transitioned this proposal from proposed to deferred pending reference `[11]`; no candidate content or stable Concept promotion was authorized.

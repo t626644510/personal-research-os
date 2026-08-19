@@ -178,6 +178,24 @@
       "CST wakefield solver"
     ]
   },
+  "Harmonic cavity": {
+    "path": "01_Concept/Harmonic cavity.md",
+    "aliases": [
+      "谐波腔"
+    ],
+    "hover_summary": "谐波腔是工作在主 RF 系统整数谐波频率、用于塑造纵向 RF 势阱的 RF 腔；选定论文案例为约 500.12 MHz 主频的 1500.36 MHz 三次谐波腔。",
+    "id": "harmonic_cavity",
+    "category": [
+      "accelerator physics",
+      "RF engineering"
+    ],
+    "related_concepts": [
+      "Cavity mode",
+      "Shunt impedance",
+      "R over Q",
+      "Q factor"
+    ]
+  },
   "Higher-order mode": {
     "path": "01_Concept/Higher-order mode.md",
     "aliases": [
@@ -472,6 +490,22 @@
       "Transverse impedance",
       "Kick factor",
       "Panofsky-Wenzel theorem"
+    ]
+  },
+  "Tuner": {
+    "path": "01_Concept/Tuner.md",
+    "aliases": [
+      "调谐器",
+      "Frequency tuner",
+      "频率调谐器"
+    ],
+    "hover_summary": "调谐器是用于调整加速器 RF 腔体谐振频率的装置或机构；耦合因子调节属于 Coupling tuner，不在本 Concept 范围内。",
+    "id": "tuner",
+    "category": [
+      "RF engineering"
+    ],
+    "related_concepts": [
+      "Cavity mode"
     ]
   },
   "Wakefield": {
