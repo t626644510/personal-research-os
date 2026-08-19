@@ -193,7 +193,8 @@
       "Cavity mode",
       "Shunt impedance",
       "R over Q",
-      "Q factor"
+      "Q factor",
+      "Tuner"
     ]
   },
   "Higher-order mode": {

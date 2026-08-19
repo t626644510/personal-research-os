@@ -38,8 +38,13 @@
 - KA-02 completed human review and audit closeout on 2026-08-18: 2 revision / 1 merge-supersede plan / 2 defer plans. P01 is retained for revision, P02 is planned to merge into P01, P03 needs identity/alias revision, P04 awaits reference `[11]`, and P05 awaits later beam-physics study. All five proposals remain `state: proposed`; the KA-02 closeout itself did not execute P01/P03 revisions. KA-01 publication commit is `5418b92f2b6d007ad94150755a6fd30599e9ecaf`.
 - KA-03 First Promotion Trial Stage 2 is complete under the explicit human gate
   by `owner-01`: P01 and P03 are accepted and manually promoted, P02 is
-  superseded by P01, and P04/P05 are deferred. KA-04 remains unstarted and
-  unauthorized.
+  superseded by P01, and P04/P05 are deferred. Major Phase A was published at
+  `2ef697927ee5d6e739b5cbb48c5745622312961d`. KA-04 is accepted and complete
+  in run `ka01-20260819t010714z-67f9fb66`: 3 relation proposals / 5 no-op
+  results; P01 deferred, P02 accepted and promoted, P03 deferred; only
+  `Harmonic cavity` → `Tuner` was added and no reverse link was added. KA-05
+  and Stage 01 are human accepted and complete; 27 Concepts and 49 tests pass.
+  Stage 02 is not started; the next activity is separate Stage 02 planning.
 
 ## KA-02 Proposal Quality Evaluation
 
@@ -54,14 +59,17 @@
   frozen.
 - The KA-03 Stage 2 independent audit passed on 2026-08-18: candidate/stable
   byte fidelity, lifecycle and promotion records, 27 Concepts, 49 tests, and
-  source/run immutability all passed. KA-03 is accepted and complete and ready
-  for the agreed Major Phase A publication point.
+  source/run immutability all passed. KA-03 is accepted and complete; Major
+  Phase A was published at `2ef697927ee5d6e739b5cbb48c5745622312961d`. KA-04
+  and KA-05 are accepted and complete; Stage 01 is accepted and complete.
 
 ## Next Actions
 
-1. Complete the agreed Major Phase A publication closeout for the audited
-   KA-03 package.
-2. Plan future KA-04 work only under separate explicit authorization; keep
-   KA-04 unstarted and unauthorized.
-3. Continue P04 pending reference `[11]` and P05 deferred for a later
-   systematic beam-physics study.
+1. After this publication, plan Stage 02 only under separate explicit planning
+   authorization; do not start Stage 02 implementation here.
+2. Continue P04 pending reference `[11]` and P05 deferred for a later
+   systematic beam-physics study; do not acquire a new source or start a new
+   KA proposal run.
+3. Keep engineering cavity design, operating mode, target voltage, cavity
+   count, geometry, tuner, coupler, HOM, and project applicability open until
+   separately reviewed.

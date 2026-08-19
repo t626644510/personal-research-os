@@ -130,7 +130,15 @@ publication commit is
 `5418b92f2b6d007ad94150755a6fd30599e9ecaf`. KA-03 First Promotion Trial
 Stage 2 is complete under the explicit gate from human reviewer `owner-01`:
 P01 and P03 are accepted and manually promoted, P02 is superseded by P01, and
-P04/P05 are deferred. KA-04 remains unstarted and unauthorized.
+P04/P05 are deferred. KA-04 is accepted and complete in run
+`ka01-20260819t010714z-67f9fb66`: Stage 1 produced 3 relation proposals and 5
+no-op results; P01 was deferred, P02 was accepted and promoted, and P03 was
+deferred; the stable relation is `Harmonic cavity` → `Tuner` with no reverse
+link. KA-05 is human accepted and complete; Stage 01 is accepted and complete;
+Major Phase A was published at `2ef697927ee5d6e739b5cbb48c5745622312961d`;
+27 Concepts and 49 tests pass. Stage 02 is not started; the next activity is
+separate Stage 02 planning, and publication remains limited to explicit
+closeouts or major-phase completion.
 
 RW-00 本身只定义 Reading Workspace 的治理、数据边界和最小 UI 契约；它没有
 创建 Reading Workspace 实现、reading session、RW source file、reading-note
@@ -415,7 +423,8 @@ PDF、其他论文或 LLM transcript。
     评估和审计收口，汇总为 2 revision / 1 merge-supersede plan / 2 defer plans；
      KA-03 First Promotion Trial Stage 2 已在 owner-01 的明确人工门后完成：P01
      和 P03 accepted 并手工 promotion，P02 superseded by P01，P04/P05 deferred；
-     KA-04 remains unstarted and unauthorized.
+     KA-04 已 accepted and complete，KA-05 与 Stage 01 已 accepted and complete；
+     Stage 02 尚未启动，下一项活动是单独授权的 Stage 02 planning。
 -   Stage 02 Information Acquisition 是独立的未来 concern，不属于 Reading
     Workspace source preparation。
 -   第一版 Reading Workspace 不包含 integrated AI runtime、automatic
@@ -507,7 +516,8 @@ reference `[11]` defer plan 和 P05 的 later beam-physics defer plan 也尚未�
 lifecycle state。五个 proposal 仍为 `state: proposed`；KA-01 publication commit
 为 `5418b92f2b6d007ad94150755a6fd30599e9ecaf`。KA-03 Stage 2 随后在明确
 人工门后完成了五项授权 lifecycle outcomes 以及 P01/P03 的手工 promotion；
-KA-04 remains unstarted and unauthorized。
+KA-04 已 accepted and complete；KA-05 与 Stage 01 已 accepted and complete；
+Stage 02 尚未启动，下一项活动是单独授权的 Stage 02 planning。
 
 本轮仅完成 documentation-only governance closeout，没有修改 proposal/candidate。
 At the KA-02 closeout boundary, the next item was a separately authorized targeted proposal revision for P01 and
@@ -535,16 +545,17 @@ superseded by P01; P04 is deferred pending reference `[11]`; and P05 is
 deferred pending a later systematic beam-physics study. The independent audit
 passed on 2026-08-18: candidate/stable byte fidelity, lifecycle and promotion
 records, 27 Concepts, 49 tests, and source/run immutability all passed. KA-03
-is accepted and complete and ready for the agreed Major Phase A publication
-point. No engineering design decision is frozen.
+is accepted and complete and Major Phase A was published at
+`2ef697927ee5d6e739b5cbb48c5745622312961d`. No engineering design decision is
+frozen.
 
 Stage 1 validation record: `ResearchOS/99_Meta/KA03_Promotion_Trial_Validation.md`.
 Project verification matrix: `ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity Verification Matrix.md`.
 The mandatory human gate and independent audit passed; the validation record
 contains the reviewer, timestamps, rationales, promotion paths, and audit
-results. The next step is the agreed Major Phase A publication closeout; future
-KA-04 planning remains separately authorized work. KA-04 remains unstarted and
-unauthorized.
+results. KA-04 is accepted and complete, and KA-05/Stage 01 are human accepted
+and complete. The next activity is separate Stage 02 planning after publication;
+Stage 02 is not started.
 
 建立人机协作流程：
 
@@ -576,7 +587,12 @@ unauthorized.
 
 ## KA-04 Knowledge Relation Proposal Trial
 
-Status: Unstarted and unauthorized.
+Status: Accepted and complete (2026-08-19).
+
+Run `ka01-20260819t010714z-67f9fb66` produced 3 relation proposals and 5 no-op
+results. P01 was deferred, P02 was accepted and promoted, and P03 was deferred.
+The only stable relation added was `Harmonic cavity` → `Tuner`; no reverse link
+was added. The independent audit passed with 27 Concepts and 49 tests.
 
 目标：
 
@@ -592,7 +608,11 @@ Codex 可基于可追溯证据建议现有 Concept 之间的 Obsidian wikilinks�
 
 ## KA-05 Stage Evaluation
 
-在 KA-01 至 KA-04 的人工门槛通过后，评估 Stage 01 是否值得扩展。
+Status: Human accepted on 2026-08-19; Stage 01 accepted and complete.
+
+KA-05 accepted the manually triggered, offline, deterministic Stage 01 workflow.
+Stage 02 is not started. The next activity is separate Stage 02 planning only,
+under explicit planning authorization.
 
 评价：
 

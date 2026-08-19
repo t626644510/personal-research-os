@@ -16,7 +16,7 @@ Establish an evidence-backed design basis for the planned approximately 1500 MHz
 
 The scope is the harmonic-cavity candidate for the current storage-ring project. The known main RF system is an approximately 500 MHz normal-conducting system; selecting or redesigning its cavity mode is outside this project page's scope.
 
-This page does not freeze an engineering cavity design or authorize automatic promotion. KA-01 is complete; KA-03 First Promotion Trial Stage 2 is complete after the owner-authorized human gate and manual promotion. KA-04 remains unstarted and unauthorized.
+This page does not freeze an engineering cavity design or authorize automatic promotion. KA-01 is complete; KA-03 First Promotion Trial Stage 2 is complete after the owner-authorized human gate and manual promotion. Major Phase A was published at `2ef697927ee5d6e739b5cbb48c5745622312961d`. KA-04 and KA-05 are accepted and complete; Stage 01 is accepted and complete; Stage 02 is not started.
 
 ## Known Inputs
 
@@ -29,6 +29,11 @@ This page does not freeze an engineering cavity design or authorize automatic pr
 - RW-04 and RW-05 are complete; KA-01 is complete; KA-02 human evaluation is complete.
 - KA-03 First Promotion Trial Stage 2 is complete: P01 and P03 were accepted
   and manually promoted; P02 was superseded by P01; P04 and P05 were deferred.
+- KA-04 is accepted and complete in run `ka01-20260819t010714z-67f9fb66`:
+  Stage 1 produced 3 relation proposals / 5 no-op results; P01 was deferred,
+  P02 was accepted and promoted, and P03 was deferred. Only
+  `Harmonic cavity` → `Tuner` was added; no reverse link was added.
+- KA-05 is human accepted and complete; Stage 01 is accepted and complete.
 
 ## Working Assumptions
 
@@ -50,8 +55,9 @@ deferred pending reference `[11]`; and P05 is deferred pending a later
 systematic beam-physics study. The independent audit passed on 2026-08-18:
 candidate/stable byte fidelity, lifecycle and promotion records, 27 Concepts,
 49 tests, and source/run immutability all passed. KA-03 is accepted and
-complete and ready for the agreed Major Phase A publication point. No
-engineering design decision is frozen by this page.
+complete, and Major Phase A was published at
+`2ef697927ee5d6e739b5cbb48c5745622312961d`. No engineering design decision is
+frozen by this page.
 
 The mandatory human gate is recorded in
 [[99_Meta/KA03_Promotion_Trial_Validation]].
@@ -101,13 +107,12 @@ No experiment or simulation campaign has been started from this page. Candidate 
 
 ## Next Actions
 
-1. Complete the agreed Major Phase A publication closeout for the audited
-   KA-03 package.
-2. Plan future KA-04 work only under separate explicit authorization; keep
-   KA-04 unstarted and unauthorized.
-3. Continue P04 reference `[11]` review and the P05 later systematic
-   beam-physics study; do not acquire new sources in this phase.
-4. Keep current operating mode, target voltage, cavity count, geometry, tuner,
+1. After this publication, plan Stage 02 only under separate explicit planning
+   authorization; do not start Stage 02 implementation here.
+2. Continue P04 reference `[11]` review and the P05 later systematic
+   beam-physics study; do not acquire a new source or start a new KA proposal
+   run in this phase.
+3. Keep current operating mode, target voltage, cavity count, geometry, tuner,
    coupler, HOM, and project-applicability decisions open until separately
    reviewed.
 

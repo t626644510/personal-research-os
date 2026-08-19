@@ -8,12 +8,20 @@ RW-01 and RW-01.1 accepted and complete at commit `8afa9aa`;\
 RW-02.2 human UI accepted on 2026-08-11; RW-02 accepted and complete;\
 HTML prototype frozen; commit `792c802` is the published RW-02 baseline;\
 RW-03 synthesis content human accepted on 2026-08-18; selected-text presentation correction applied; RW-03 accepted and complete and published at commit `7c5dc4f`; `reading_note.draft.md` remains `state: draft` as RW-03 history; final `reading_note.md` is `state: human_reviewed`; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66` from `00_Inbox/reading/ipac2019-weprb066/reading_note.md` using prompt `v0.1`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 completed human review and audit closeout on 2026-08-18 with 2 revision / 1 merge-supersede plan / 2 defer plans; P01/P03 targeted revisions are prepared under authorized KA-03 Stage 1; KA-01 publication commit is `5418b92f2b6d007ad94150755a6fd30599e9ecaf`; KA-03 First Promotion Trial is authorized and in progress; Stage 1 review package prepared; human scientific review pending; no stable Concept promotion occurred; KA-04 remains unstarted and unauthorized\
-Current KA-03 status: Stage 2 and its independent audit passed on 2026-08-18
+Current KA-03 status: Stage 2 and its independent audit passed on 2026-08-19
 under the explicit gate from human reviewer `owner-01`; P01/P03 are accepted
 and promoted, P02 is superseded by P01, P04/P05 are deferred, and the audit
 confirmed candidate/stable byte fidelity, 27 Concepts, 49 tests, and immutable
-source/run artifacts. KA-03 is accepted and complete and ready for the agreed
-Major Phase A publication point; KA-04 remains unstarted and unauthorized.\
+source/run artifacts. KA-03 is accepted and complete; Major Phase A was
+published at `2ef697927ee5d6e739b5cbb48c5745622312961d`.\
+Current KA-04 status: accepted and complete in run
+`ka01-20260819t010714z-67f9fb66`; Stage 1 produced 3 relation proposals / 5
+no-op results; P01 was deferred, P02 was accepted and promoted, and P03 was
+deferred. Only `Harmonic cavity` → `Tuner` was added; no reverse link was
+added. KA-05 is human accepted and complete; Stage 01 is accepted and
+complete; Stage 02 is not started. The next activity is separate Stage 02
+planning, and publication remains limited to explicit closeouts or major-phase
+completion.\
 Pre-KA-00 implementation baseline: `d622b92c78d3fcaf327db93e599e6a77fe112f1c`\
 Current governance version: identified by this document's Git history\
 Future KA-01 run baseline: `git rev-parse HEAD` at run start\
@@ -236,7 +244,9 @@ manually promoted; P02 is superseded by P01; P04 is deferred pending reference
 engineering design decision has been frozen. The independent audit passed on
 2026-08-18: candidate/stable byte fidelity, lifecycle and promotion records,
 27 Concepts, 49 tests, and source/run immutability all passed. KA-03 is accepted
-and complete and ready for the agreed Major Phase A publication point.
+and complete; Major Phase A was published at
+`2ef697927ee5d6e739b5cbb48c5745622312961d`. KA-04 and KA-05 are accepted and
+complete; Stage 01 is accepted and complete; Stage 02 is not started.
 
 - Validation record: `ResearchOS/99_Meta/KA03_Promotion_Trial_Validation.md`
 - Project verification matrix: `ResearchOS/02_Project/1500 MHz TM020 Harmonic Cavity Verification Matrix.md`
@@ -244,8 +254,8 @@ and complete and ready for the agreed Major Phase A publication point.
   P03 `Tuner` was promoted to `ResearchOS/01_Concept/Tuner.md`.
 - P02, P04, and P05 remain retained proposal audit records with their recorded
   superseded/deferred states; no stable Concept was created from them.
-- The mandatory human gate passed with reviewer `owner-01`; KA-04 remains
-  unstarted and unauthorized.
+- The mandatory human gate passed with reviewer `owner-01`; KA-04 and KA-05
+  are accepted and complete, and Stage 02 is not started.
 
 ## Explicit non-goals
 

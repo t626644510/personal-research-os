@@ -1,7 +1,7 @@
 # Knowledge Proposal Protocol v0.1
 
 Version: v0.1\
-Status: KA-00 governance baseline human accepted on 2026-08-03; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66`, with 5 create / 16 duplicate / 7 no-op; all five proposals remain `state: proposed`; KA-02 is not started, and KA-03, state transition, and promotion remain unauthorized\
+Status: KA-00 governance baseline human accepted on 2026-08-03; RW-04 accepted and complete and published at commit `fb0538c`; RW-05 accepted and complete; KA-01 accepted and complete as a one-source manual proposal trial in run `ka01-20260818t065446z-67f9fb66`, with 5 create / 16 duplicate / 7 no-op; KA-02 completed; Major Phase A was published at `2ef697927ee5d6e739b5cbb48c5745622312961d`; KA-03 accepted and complete; KA-04 accepted and complete in run `ka01-20260819t010714z-67f9fb66` with 3 relation proposals / 5 no-op results, P01 deferred, P02 accepted and promoted, P03 deferred, P04/P05 deferred, and only `Harmonic cavity` → `Tuner` added; KA-05 human accepted and complete; Stage 01 accepted and complete; Stage 02 not started; next activity is separate Stage 02 planning; publication remains limited to explicit closeouts or major-phase completion\
 Applies to: proposed changes to stable Concept knowledge
 
 This protocol defines the smallest safe workflow for a manually triggered Codex

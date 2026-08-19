@@ -72,8 +72,14 @@ commit `fb0538c`。`reading_note.draft.md` 仍为 `state: draft` 的 RW-03 历�
 duplicate / 7 no-op。RW-05 accepted and complete；KA-01 accepted and complete
 as a one-source manual proposal trial。KA-02 已完成人工评估和审计收口；KA-03
 Stage 2 已在 owner-01 的明确人工门后完成：P01/P03 accepted and promoted，
-P02 superseded by P01，P04/P05 deferred。KA-04 remains unstarted and
-unauthorized。
+P02 superseded by P01，P04/P05 deferred。Major Phase A was published at
+`2ef697927ee5d6e739b5cbb48c5745622312961d`。KA-04 is accepted and complete in
+run `ka01-20260819t010714z-67f9fb66`: 3 relation proposals / 5 no-op results;
+P01 deferred, P02 accepted and promoted, P03 deferred; only
+`Harmonic cavity` → `Tuner` was added and no reverse link was added. KA-05 and
+Stage 01 are human accepted and complete; 27 Concepts and 49 tests pass. Stage
+02 is not started; the next activity is separate Stage 02 planning, and future
+publication remains limited to explicit closeouts or major-phase completion。
 
 每个 Concept 的稳定身份由 YAML `id` 提供，文件名和 H1 是规范显示名称，`aliases` 保存缩写、译名和历史名称。正文遵循固定的十个 H2 区块；详细约束见 [Concept Schema v0.1](ResearchOS/99_Meta/Concept_Schema_v0.1.md)。
 
@@ -214,8 +220,9 @@ and complete as a one-source manual proposal trial in run
 duplicate / 7 no-op；At the KA-01 publication boundary, all five proposals
 were proposed and KA-02/KA-03 had not started. KA-02 completed; KA-03 Stage 2
 completed under reviewer `owner-01`; P01/P03 were accepted and manually
-promoted; P02 was superseded by P01; and P04/P05 were deferred. KA-04 remains
-unstarted and unauthorized.
+promoted; P02 was superseded by P01; and P04/P05 were deferred. KA-04 is
+accepted and complete; KA-05 and Stage 01 are human accepted and complete;
+Stage 02 is not started and the next activity is separate Stage 02 planning.
 这个原型是 `concept_index.json` 的第二个本地确定性消费者，
 不替换 P01/P01.5：
 `reading_ui.py` 读取一篇 UTF-8 Markdown 技术资料，复用
@@ -303,8 +310,10 @@ complete as a one-source manual proposal trial in run
 duplicate / 7 no-op. At the KA-01 publication boundary, all five proposals
 were proposed and KA-02/KA-03 had not started. KA-02 completed; KA-03 Stage 2
 completed under reviewer `owner-01`; P01/P03 were accepted and manually
-promoted; P02 was superseded by P01; and P04/P05 were deferred. KA-04 remains
-unstarted and unauthorized. 实现与验收记录在
+promoted; P02 was superseded by P01; and P04/P05 were deferred. KA-04 is
+accepted and complete; KA-05 and Stage 01 are human accepted and complete;
+Stage 02 is not started and the next activity is separate Stage 02 planning。
+实现与验收记录在
 [RW-02 UI Validation](ResearchOS/99_Meta/RW02_UI_Validation.md)。
 
 ## 日常工作流
